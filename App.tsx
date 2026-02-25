@@ -116,9 +116,16 @@ const App: React.FC = () => {
           isVisible: bizData.isVisible ?? bizData.is_visible ?? true,
           logoUrl: bizData.logoUrl ?? bizData.logo_url,
           coverPhotos: bizData.coverPhotos ?? bizData.cover_photos ?? [],
+          averageRating: bizData.averageRating ?? bizData.average_rating ?? 0,
+          ratingsCount: bizData.ratingsCount ?? bizData.ratings_count ?? 0,
+          planExpiresAt: bizData.planExpiresAt ?? bizData.plan_expires_at,
+          cuisineTypes: bizData.cuisineTypes ?? bizData.cuisine_types ?? [],
+          deliveryEnabled: bizData.deliveryEnabled ?? bizData.delivery_enabled ?? false,
+          deliveryPriceInside: bizData.deliveryPriceInside ?? bizData.delivery_price_inside ?? 0,
+          deliveryPriceOutside: bizData.deliveryPriceOutside ?? bizData.delivery_price_outside ?? 0,
           leads: [], 
           stats: bizData.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
-        });
+        } as Business);
       }
     } catch (e: any) {
       console.error("Load active error:", e);
@@ -166,8 +173,35 @@ const App: React.FC = () => {
     
     const { products, categories, events, banners, leads, ...businessData } = updated;
     
+    // Mapeo a snake_case para Supabase
+    const dbData = {
+      ...businessData,
+      is_visible: businessData.isVisible,
+      logo_url: businessData.logoUrl,
+      cover_photos: businessData.coverPhotos,
+      plan_expires_at: businessData.planExpiresAt,
+      cuisine_types: businessData.cuisineTypes,
+      delivery_enabled: businessData.deliveryEnabled,
+      delivery_price_inside: businessData.deliveryPriceInside,
+      delivery_price_outside: businessData.deliveryPriceOutside,
+      average_rating: businessData.averageRating,
+      ratings_count: businessData.ratingsCount
+    };
+
+    // Eliminar las versiones camelCase para evitar conflictos o ruido en la DB
+    delete (dbData as any).isVisible;
+    delete (dbData as any).logoUrl;
+    delete (dbData as any).coverPhotos;
+    delete (dbData as any).planExpiresAt;
+    delete (dbData as any).cuisineTypes;
+    delete (dbData as any).deliveryEnabled;
+    delete (dbData as any).deliveryPriceInside;
+    delete (dbData as any).deliveryPriceOutside;
+    delete (dbData as any).averageRating;
+    delete (dbData as any).ratingsCount;
+    
     try {
-      await supabase.from('businesses').upsert(businessData);
+      await supabase.from('businesses').upsert(dbData);
     } catch (err) {
       console.error("Error upserting business:", err);
     }

@@ -66,9 +66,19 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           if (bizData) {
             setDbBusiness({
               ...bizData,
+              isVisible: bizData.isVisible ?? bizData.is_visible ?? true,
+              logoUrl: bizData.logoUrl ?? bizData.logo_url,
+              coverPhotos: bizData.coverPhotos ?? bizData.cover_photos ?? [],
+              averageRating: bizData.averageRating ?? bizData.average_rating ?? 0,
+              ratingsCount: bizData.ratingsCount ?? bizData.ratings_count ?? 0,
+              planExpiresAt: bizData.planExpiresAt ?? bizData.plan_expires_at,
+              cuisineTypes: bizData.cuisineTypes ?? bizData.cuisine_types ?? [],
+              deliveryEnabled: bizData.deliveryEnabled ?? bizData.delivery_enabled ?? false,
+              deliveryPriceInside: bizData.deliveryPriceInside ?? bizData.delivery_price_inside ?? 0,
+              deliveryPriceOutside: bizData.deliveryPriceOutside ?? bizData.delivery_price_outside ?? 0,
               leads: [],
               stats: bizData.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
-            });
+            } as Business);
           }
         } catch (err) {
           console.error("Error fetching detail data:", err);
@@ -130,7 +140,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
 
       const { error } = await supabase
         .from('businesses')
-        .update({ averageRating: newAvg, ratingsCount: newCount })
+        .update({ average_rating: newAvg, ratings_count: newCount })
         .eq('id', business.id);
 
       if (!error) {
@@ -324,11 +334,11 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
               </div>
               
               <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-                <button onClick={() => window.open(`tel:${business?.phone}`, '_self')} className="shrink-0 bg-[#242426] text-amber-500 h-10 px-5 rounded-2xl text-[12px] font-black uppercase flex items-center gap-2 border border-white/5 hover:bg-white hover:text-black transition-all">
-                  <Phone size={16} /> Llamar
+                <button onClick={() => window.open(`tel:${business?.phone}`, '_self')} className="shrink-0 bg-[#242426] text-amber-500 w-10 h-10 rounded-full flex items-center justify-center border border-white/5 hover:bg-white hover:text-black transition-all">
+                  <Phone size={18} />
                 </button>
-                <button onClick={() => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank')} className="shrink-0 bg-[#25d366]/10 text-[#25d366] h-10 px-5 rounded-2xl text-[12px] font-black uppercase flex items-center gap-2 border border-[#25d366]/20 hover:bg-[#25d366] hover:text-white transition-all">
-                  <MessageCircle size={16} /> WhatsApp
+                <button onClick={() => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank')} className="shrink-0 bg-[#25d366]/10 text-[#25d366] w-10 h-10 rounded-full flex items-center justify-center border border-[#25d366]/20 hover:bg-[#25d366] hover:text-white transition-all">
+                  <MessageCircle size={18} />
                 </button>
               </div>
 
@@ -373,14 +383,14 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                 </div>
               </button>
 
-              <div className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${showFullSchedule ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
-                <div className="pt-4 border-t border-white/5 space-y-1">
+              <div className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${showFullSchedule ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
+                <div className="pt-2 border-t border-white/5 space-y-0.5">
                   {sortedSchedule.map((item) => {
                     const isToday = item.day === todayName;
                     return (
                       <div 
                         key={item.day} 
-                        className={`flex justify-between items-center px-4 py-2.5 rounded-xl transition-colors ${isToday ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-transparent'}`}
+                        className={`flex justify-between items-center px-4 py-1.5 rounded-xl transition-colors ${isToday ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-transparent'}`}
                       >
                         <span className={`text-[11px] font-bold uppercase tracking-widest ${isToday ? 'text-amber-500' : 'text-gray-500'}`}>
                           {item.day}

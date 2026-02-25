@@ -29,6 +29,10 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
       if (error) throw error;
       const formatted = (data || []).map(b => ({
         ...b,
+        isVisible: b.isVisible ?? b.is_visible ?? true,
+        logoUrl: b.logoUrl ?? b.logo_url,
+        coverPhotos: b.coverPhotos ?? b.cover_photos ?? [],
+        planExpiresAt: b.planExpiresAt ?? b.plan_expires_at,
         stats: b.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
       }));
       setBusinesses(formatted);
@@ -52,7 +56,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
   const toggleVisibility = async (id: string, currentStatus: boolean) => {
     setIsActionLoading(id);
     try {
-      const { error } = await supabase.from('businesses').update({ isVisible: !currentStatus }).eq('id', id);
+      const { error } = await supabase.from('businesses').update({ is_visible: !currentStatus }).eq('id', id);
       if (error) throw error;
       setBusinesses(prev => prev.map(b => b.id === id ? { ...b, isVisible: !currentStatus } : b));
     } catch (err) {
@@ -85,7 +89,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
         .from('businesses')
         .update({ 
           plan: PlanType.PRO, 
-          planExpiresAt: expiresAt.toISOString() 
+          plan_expires_at: expiresAt.toISOString() 
         })
         .eq('id', selectedBizId);
 
@@ -113,7 +117,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
         .from('businesses')
         .update({ 
           plan: PlanType.FREE, 
-          planExpiresAt: null 
+          plan_expires_at: null 
         })
         .eq('id', id);
 

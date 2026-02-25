@@ -50,13 +50,13 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
         password: formData.password,
         description: formData.description,
         plan: PlanType.FREE,
-        logoUrl: 'https://via.placeholder.com/150',
-        coverPhotos: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200'],
+        logo_url: 'https://via.placeholder.com/150',
+        cover_photos: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200'],
         stats: { visits: 0, qrScans: 0, uniqueVisitors: 0 },
-        isVisible: true,
+        is_visible: true,
         role: 'user',
-        averageRating: 0,
-        ratingsCount: 0
+        average_rating: 0,
+        ratings_count: 0
       });
 
       if (bizError) {
