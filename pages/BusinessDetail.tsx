@@ -5,7 +5,7 @@ import {
   MapPin, Phone, MessageCircle, Clock, ChevronRight, 
   Plus, Star, LayoutGrid, Calendar, Camera, 
   Crown, Loader2, ShoppingBag, X, Minus, Truck, Info, CheckCircle, Send,
-  Instagram, Facebook, Mail, Globe, ChevronDown, ChevronUp, Trash2
+  Instagram, Facebook, Mail, Globe, ChevronDown, ChevronUp, Trash2, Navigation
 } from 'lucide-react';
 import { Business, Product, Category, PlanType, Event } from '../types.ts';
 import { supabase } from '../lib/supabase.ts';
@@ -102,22 +102,24 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
     return daysMap[new Date().getDay()];
   }, []);
 
+  const todaySchedule = useMemo(() => {
+    if (!business?.schedule) return null;
+    return (business.schedule as Record<string, any>)[todayName];
+  }, [business, todayName]);
+
   const isCurrentlyOpen = useMemo(() => {
-    if (!business?.schedule) return true;
-    const config = (business.schedule as Record<string, any>)[todayName];
-    
-    if (!config || !config.open) return false;
+    if (!todaySchedule || !todaySchedule.open) return false;
     
     const now = new Date();
-    const [hOpen, mOpen] = config.from.split(':').map(Number);
-    const [hClose, mClose] = config.to.split(':').map(Number);
+    const [hOpen, mOpen] = todaySchedule.from.split(':').map(Number);
+    const [hClose, mClose] = todaySchedule.to.split(':').map(Number);
     
     const openTime = hOpen * 60 + mOpen;
     const closeTime = hClose * 60 + mClose;
     const currentTime = now.getHours() * 60 + now.getMinutes();
     
     return currentTime >= openTime && currentTime < closeTime;
-  }, [business, todayName]);
+  }, [todaySchedule]);
 
   const sortedSchedule = useMemo(() => {
     if (!business?.schedule) return [];
@@ -323,28 +325,49 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           </div>
         )}
 
-        {/* Info Card con Redes Sociales y Horarios */}
-        <div className="bg-[#141416] rounded-3xl p-4 md:p-6 border border-white/5 shadow-2xl space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="flex items-start gap-4">
-                <MapPin className="text-amber-500 shrink-0 mt-1" size={20} />
-                <div>
-                  <p className="text-white text-base font-bold">{business?.address}</p>
-                  <p className="text-gray-500 text-[12px] font-medium uppercase tracking-widest">{business?.municipality}, {business?.province}</p>
-                </div>
+        {/* Info Card con Redes Sociales y Horarios - REDISEÑADO */}
+        <div className="bg-[#141416] rounded-3xl border border-white/5 shadow-2xl overflow-hidden">
+          {/* Sección Superior: Ubicación y Botones */}
+          <div className="p-6 space-y-6">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                <MapPin className="text-amber-500" size={20} />
               </div>
+              <div>
+                <h3 className="text-white text-lg font-bold leading-tight">{business?.address}</h3>
+                <p className="text-gray-500 text-sm font-medium">{business?.municipality}, {business?.province}</p>
+              </div>
+            </div>
+            
+            <div className="flex flex-wrap items-center gap-3">
+              <button 
+                onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business?.address + ', ' + business?.municipality + ', ' + business?.province)}`, '_blank')}
+                className="flex items-center gap-2 bg-[#242426] text-amber-500 px-5 py-2.5 rounded-full border border-white/5 hover:bg-white hover:text-black transition-all text-sm font-bold"
+              >
+                <Navigation size={16} className="rotate-45" />
+                Llegar
+              </button>
               
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-                <button onClick={() => window.open(`tel:${business?.phone}`, '_self')} className="shrink-0 bg-[#242426] text-amber-500 w-10 h-10 rounded-full flex items-center justify-center border border-white/5 hover:bg-white hover:text-black transition-all">
-                  <Phone size={18} />
-                </button>
-                <button onClick={() => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank')} className="shrink-0 bg-[#25d366]/10 text-[#25d366] w-10 h-10 rounded-full flex items-center justify-center border border-[#25d366]/20 hover:bg-[#25d366] hover:text-white transition-all">
-                  <MessageCircle size={18} />
-                </button>
-              </div>
+              <button 
+                onClick={() => window.open(`tel:${business?.phone}`, '_self')}
+                className="flex items-center gap-2 bg-[#242426] text-amber-500 px-5 py-2.5 rounded-full border border-white/5 hover:bg-white hover:text-black transition-all text-sm font-bold"
+              >
+                <Phone size={16} />
+                {business?.phone}
+              </button>
+              
+              <button 
+                onClick={() => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank')}
+                className="flex items-center gap-2 bg-[#25d366] text-white px-5 py-2.5 rounded-full hover:bg-[#22c35e] transition-all text-sm font-bold shadow-lg shadow-[#25d366]/20"
+              >
+                <MessageCircle size={16} />
+                WhatsApp
+              </button>
+            </div>
 
-              <div className="flex items-center gap-3 pt-3 border-t border-white/5">
+            {/* Redes Sociales Secundarias */}
+            {(business?.instagram || business?.facebook || business?.email) && (
+              <div className="flex items-center gap-3 pt-2">
                 {business?.instagram && (
                   <button onClick={() => window.open(business.instagram?.includes('http') ? business.instagram : `https://instagram.com/${business.instagram}`, '_blank')} className="w-10 h-10 rounded-full bg-[#1a1a1c] border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#e4405f] transition-all">
                     <Instagram size={18} />
@@ -361,55 +384,57 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                   </button>
                 )}
               </div>
-            </div>
+            )}
+          </div>
 
-            {/* Horarios de Atención - MEJORADO */}
-            <div className="bg-black/20 rounded-3xl p-4 border border-white/5 overflow-hidden transition-all duration-300">
-              <button 
-                onClick={() => setShowFullSchedule(!showFullSchedule)}
-                className="w-full flex items-center justify-between group"
-              >
+          {/* Sección Inferior: Horarios - ESTILO IMAGEN */}
+          <div className="bg-black/20 border-t border-white/5">
+            <button 
+              onClick={() => setShowFullSchedule(!showFullSchedule)}
+              className="w-full p-6 flex items-center justify-between group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
+                  <Clock className="text-amber-500" size={20} />
+                </div>
                 <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-xl ${isCurrentlyOpen ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
-                    <Clock size={20} />
-                  </div>
-                  <div className="text-left">
-                    <h4 className="text-white font-black text-xs uppercase tracking-[0.2em]">Horario Comercial</h4>
-                    <p className={`text-[10px] font-bold uppercase tracking-widest ${isCurrentlyOpen ? 'text-green-500' : 'text-red-500'}`}>
-                      {isCurrentlyOpen ? 'Abierto ahora' : 'Cerrado temporalmente'}
-                    </p>
-                  </div>
-                </div>
-                <div className="p-2 rounded-xl bg-white/5 group-hover:bg-amber-500 group-hover:text-black transition-all">
-                   {showFullSchedule ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                </div>
-              </button>
-
-              <div className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${showFullSchedule ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
-                <div className="pt-2 border-t border-white/5 space-y-0.5">
-                  {sortedSchedule.map((item) => {
-                    const isToday = item.day === todayName;
-                    return (
-                      <div 
-                        key={item.day} 
-                        className={`flex justify-between items-center px-4 py-1.5 rounded-xl transition-colors ${isToday ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-transparent'}`}
-                      >
-                        <span className={`text-[11px] font-bold uppercase tracking-widest ${isToday ? 'text-amber-500' : 'text-gray-500'}`}>
-                          {item.day}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          {!item.open && <span className="w-1.5 h-1.5 rounded-full bg-red-500/50" />}
-                          <span className={`text-[11px] font-bold uppercase tracking-widest ${item.open ? 'text-white' : 'text-red-500/50'}`}>
-                            {item.open ? `${item.from} - ${item.to}` : 'Cerrado'}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {sortedSchedule.length === 0 && (
-                    <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest italic py-2 text-center">Horarios no especificados</p>
+                  <span className="text-white font-bold text-base capitalize">{todayName}</span>
+                  <span className="text-gray-400 font-medium text-base">
+                    {todaySchedule?.open ? `${todaySchedule.from} - ${todaySchedule.to}` : 'Cerrado'}
+                  </span>
+                  {isCurrentlyOpen ? (
+                    <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] ml-1" />
+                  ) : (
+                    <span className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)] ml-1" />
                   )}
                 </div>
+              </div>
+              <div className={`transition-transform duration-300 ${showFullSchedule ? 'rotate-180' : ''}`}>
+                <ChevronDown size={20} className="text-gray-500 group-hover:text-white" />
+              </div>
+            </button>
+
+            <div className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${showFullSchedule ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+              <div className="px-6 pb-6 space-y-1">
+                {sortedSchedule.map((item) => {
+                  const isToday = item.day === todayName;
+                  return (
+                    <div 
+                      key={item.day} 
+                      className={`flex justify-between items-center px-4 py-2.5 rounded-2xl transition-colors ${isToday ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-transparent'}`}
+                    >
+                      <span className={`text-sm font-bold capitalize ${isToday ? 'text-amber-500' : 'text-gray-400'}`}>
+                        {item.day}
+                      </span>
+                      <div className="flex items-center gap-3">
+                        {!item.open && <span className="w-1.5 h-1.5 rounded-full bg-red-500/50" />}
+                        <span className={`text-sm font-bold ${item.open ? 'text-white' : 'text-red-500/50'}`}>
+                          {item.open ? `${item.from} - ${item.to}` : 'Cerrado'}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
