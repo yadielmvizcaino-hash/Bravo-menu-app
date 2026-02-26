@@ -1,12 +1,41 @@
 
-import React, { useState } from 'react';
-import { Crown, Check, X, ShieldCheck, CreditCard, Copy, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Crown, Check, X, ShieldCheck, CreditCard, Copy, CheckCircle2, Loader2 } from 'lucide-react';
 import { Business, PlanType } from '../types';
+import { supabase } from '../lib/supabase';
 
 const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
   const isPro = business.plan === PlanType.PRO;
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isLoadingSettings, setIsLoadingSettings] = useState(false);
+  const [systemSettings, setSystemSettings] = useState({
+    payment_card: '9227 0699 9426 7907',
+    payment_phone: '+53 59631292'
+  });
+
   const paymentCode = "CZ-" + Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      setIsLoadingSettings(true);
+      try {
+        const { data } = await supabase.from('system_settings').select('*').eq('id', 'main').single();
+        if (data) {
+          setSystemSettings({
+            payment_card: data.payment_card,
+            payment_phone: data.payment_phone
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching settings:", err);
+      } finally {
+        setIsLoadingSettings(false);
+      }
+    };
+    if (showPaymentModal) {
+      fetchSettings();
+    }
+  }, [showPaymentModal]);
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -29,7 +58,13 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
                <p className="text-xs text-amber-500 font-bold uppercase tracking-widest mb-2">Tu código de pago</p>
                <div className="flex items-center justify-center gap-3">
                   <span className="text-2xl font-mono font-bold text-white tracking-widest">{paymentCode}</span>
-                  <button className="text-amber-500 hover:text-amber-400 p-1">
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard.writeText(paymentCode);
+                      alert("Código copiado");
+                    }}
+                    className="text-amber-500 hover:text-amber-400 p-1"
+                  >
                     <Copy size={18} />
                   </button>
                </div>
@@ -39,12 +74,15 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
                <h3 className="text-white font-bold flex items-center gap-2">
                  <CheckCircle2 size={18} className="text-green-500" /> Instrucciones de pago:
                </h3>
-               <ol className="space-y-4 text-sm text-gray-400 list-decimal pl-5">
-                 <li>Paga <b>500 CUP</b> mediante EnZona al comercio: <b>CubaGastroHub</b></li>
-                 <li>O realiza una transferencia bancaria a la tarjeta: <b className="text-white">9227 0699 9426 7907</b></li>
-                 <li>Envía el comprobante por WhatsApp al: <b className="text-green-400">+53 59631292</b></li>
-                 <li><b className="text-white">IMPORTANTE:</b> Incluye tu código {paymentCode} en el mensaje.</li>
-               </ol>
+               {isLoadingSettings ? (
+                 <div className="flex justify-center py-4"><Loader2 className="animate-spin text-amber-500" /></div>
+               ) : (
+                 <ol className="space-y-4 text-sm text-gray-400 list-decimal pl-5">
+                   <li>Realiza una transferencia bancaria a la tarjeta: <b className="text-white">{systemSettings.payment_card}</b></li>
+                   <li>Envía el comprobante por WhatsApp al: <b className="text-green-400">{systemSettings.payment_phone}</b></li>
+                   <li><b className="text-white">IMPORTANTE:</b> Incluye tu código {paymentCode} en el mensaje.</li>
+                 </ol>
+               )}
                <p className="text-xs text-gray-500 italic">Tu plan PRO se activará en un máximo de 24 horas tras recibir el comprobante.</p>
             </div>
 

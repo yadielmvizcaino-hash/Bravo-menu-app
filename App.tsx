@@ -58,7 +58,11 @@ const App: React.FC = () => {
 
   const fetchInitialData = useCallback(async () => {
     try {
-      const { data, error } = await supabase.from('businesses').select('*');
+      // Solo traemos negocios visibles para la página principal
+      const { data, error } = await supabase
+        .from('businesses')
+        .select('*')
+        .eq('is_visible', true);
       if (error) throw error;
       if (data) {
         const cleanedData = await checkAndDowngradeExpiredPlans(data);
@@ -74,6 +78,7 @@ const App: React.FC = () => {
           deliveryEnabled: biz.deliveryEnabled ?? biz.delivery_enabled ?? false,
           deliveryPriceInside: biz.deliveryPriceInside ?? biz.delivery_price_inside ?? 0,
           deliveryPriceOutside: biz.deliveryPriceOutside ?? biz.delivery_price_outside ?? 0,
+          role: biz.role || 'user',
           
           products: biz.products || [],
           categories: biz.categories || [],
@@ -123,6 +128,7 @@ const App: React.FC = () => {
           deliveryEnabled: bizData.deliveryEnabled ?? bizData.delivery_enabled ?? false,
           deliveryPriceInside: bizData.deliveryPriceInside ?? bizData.delivery_price_inside ?? 0,
           deliveryPriceOutside: bizData.deliveryPriceOutside ?? bizData.delivery_price_outside ?? 0,
+          role: bizData.role || 'user',
           leads: [], 
           stats: bizData.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
         } as Business);

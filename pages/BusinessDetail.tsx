@@ -5,7 +5,7 @@ import {
   MapPin, Phone, MessageCircle, Clock, ChevronRight, 
   Plus, Star, LayoutGrid, Calendar, Camera, 
   Crown, Loader2, ShoppingBag, X, Minus, Truck, Info, CheckCircle, Send,
-  Instagram, Facebook, Mail, Globe, ChevronDown, ChevronUp
+  Instagram, Facebook, Mail, Globe, ChevronDown, ChevronUp, Trash2
 } from 'lucide-react';
 import { Business, Product, Category, PlanType, Event } from '../types.ts';
 import { supabase } from '../lib/supabase.ts';
@@ -272,6 +272,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           className="scale-105 grayscale-[10%]"
           alt="Hero" 
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b] via-black/40 to-black/10" />
         <div className="absolute bottom-8 left-0 right-0 px-6 max-w-5xl mx-auto flex items-end gap-6">
@@ -281,6 +282,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             className="rounded-2xl" 
             alt="Logo" 
             loading="eager"
+            fetchPriority="high"
           />
           <div className="flex-1 mb-2">
             <div className="flex items-center gap-2 mb-2">
@@ -570,7 +572,22 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[90]" onClick={() => setIsCartOpen(false)} />
           <div className="fixed bottom-0 left-0 right-0 z-[100] bg-[#141416] rounded-t-3xl border-t border-white/10 shadow-2xl animate-slide-up max-h-[85vh] flex flex-col">
             <div className="p-6 flex items-center justify-between border-b border-white/5">
-              <h2 className="text-xl font-bold text-white tracking-tight">Tu Pedido</h2>
+              <div className="flex items-center gap-4">
+                <h2 className="text-xl font-bold text-white tracking-tight">Tu Pedido</h2>
+                {cart.length > 0 && (
+                  <button 
+                    onClick={() => {
+                      if (window.confirm('¿Limpiar toda la lista de productos?')) {
+                        setCart([]);
+                      }
+                    }}
+                    className="p-2 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all"
+                    title="Limpiar lista"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                )}
+              </div>
               <button onClick={() => setIsCartOpen(false)} className="text-gray-500"><X size={24} /></button>
             </div>
             <div className="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar">

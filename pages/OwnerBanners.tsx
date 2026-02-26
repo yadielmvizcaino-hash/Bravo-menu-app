@@ -84,6 +84,10 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
   };
 
   const openCreateModal = () => {
+    if (business.banners.length >= 3) {
+      alert('Has alcanzado el límite de 3 banners promocionales permitido en el Plan PRO.');
+      return;
+    }
     setEditingBanner(null);
     setFormData({ title: '', imageUrl: '', linkUrl: '#', position: 'header' });
     setIsModalOpen(true);

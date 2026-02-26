@@ -111,6 +111,11 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
   }, [business.products, searchTerm, selectedCatId]);
 
   const openNewProductModal = () => {
+    const maxProducts = business.plan === PlanType.FREE ? 10 : Infinity;
+    if (business.products.length >= maxProducts) {
+      alert(`Tu plan actual (${business.plan}) solo permite hasta ${maxProducts} productos. ¡Sube a PRO para productos ilimitados!`);
+      return;
+    }
     setEditingProduct(null);
     setFormData({
       name: '',

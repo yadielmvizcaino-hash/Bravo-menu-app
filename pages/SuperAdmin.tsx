@@ -5,7 +5,7 @@ import {
   Eye, EyeOff, Trash2, ArrowDown, 
   X, Loader2, CheckCircle2, 
   Clock, Calendar, ArrowLeft, Zap, RefreshCw,
-  TrendingUp, AlertCircle, ExternalLink, Banknote
+  TrendingUp, AlertCircle, ExternalLink, Banknote, CreditCard, Save
 } from 'lucide-react';
 import { Business, PlanType } from '../types.ts';
 import { supabase } from '../lib/supabase.ts';
@@ -22,11 +22,28 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
   const [selectedBizId, setSelectedBizId] = useState<string | null>(null);
   const [proDays, setProDays] = useState('30');
 
+  // Estados para Configuración del Sistema
+  const [systemSettings, setSystemSettings] = useState({
+    payment_card: '9227 0699 9426 7907',
+    payment_phone: '+53 59631292'
+  });
+  const [isSettingsSaving, setIsSettingsSaving] = useState(false);
+
   const fetchBusinesses = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.from('businesses').select('*').order('created_at', { ascending: false });
       if (error) throw error;
+      
+      // Fetch system settings
+      const { data: settingsData } = await supabase.from('system_settings').select('*').eq('id', 'main').single();
+      if (settingsData) {
+        setSystemSettings({
+          payment_card: settingsData.payment_card,
+          payment_phone: settingsData.payment_phone
+        });
+      }
+
       const formatted = (data || []).map(b => ({
         ...b,
         isVisible: b.isVisible ?? b.is_visible ?? true,
@@ -146,6 +163,24 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
     }
   };
 
+  const handleSaveSettings = async () => {
+    setIsSettingsSaving(true);
+    try {
+      const { error } = await supabase.from('system_settings').upsert({
+        id: 'main',
+        payment_card: systemSettings.payment_card,
+        payment_phone: systemSettings.payment_phone,
+        updated_at: new Date().toISOString()
+      });
+      if (error) throw error;
+      alert("Configuración guardada correctamente");
+    } catch (err) {
+      alert("Error al guardar configuración");
+    } finally {
+      setIsSettingsSaving(false);
+    }
+  };
+
   const getTimeRemaining = (expiresAt: string | null | undefined) => {
     if (!expiresAt) return null;
     const now = new Date();
@@ -239,6 +274,46 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
               <p className="text-[10px] font-black uppercase tracking-widest text-green-500 mb-0.5">Ingresos Mensuales</p>
               <h3 className="text-2xl font-black text-white">${stats.income.toLocaleString()} <span className="text-xs text-gray-500 font-medium">CUP</span></h3>
             </div>
+          </div>
+        </div>
+        
+        {/* Configuración de Pagos */}
+        <div className="bg-[#141416] p-6 rounded-3xl border border-white/5 shadow-2xl space-y-4">
+          <div className="flex items-center gap-2 mb-2">
+            <CreditCard className="text-amber-500" size={18} />
+            <h2 className="text-sm font-black text-white uppercase tracking-tight">Configuración de Pagos</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Número de Tarjeta</label>
+              <input 
+                type="text" 
+                className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-white outline-none focus:border-amber-500/50 transition-all"
+                value={systemSettings.payment_card}
+                onChange={(e) => setSystemSettings({...systemSettings, payment_card: e.target.value})}
+                placeholder="9227 ...."
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Teléfono de Comprobación</label>
+              <input 
+                type="text" 
+                className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-white outline-none focus:border-amber-500/50 transition-all"
+                value={systemSettings.payment_phone}
+                onChange={(e) => setSystemSettings({...systemSettings, payment_phone: e.target.value})}
+                placeholder="+53 ...."
+              />
+            </div>
+          </div>
+          <div className="flex justify-end pt-2">
+            <button 
+              onClick={handleSaveSettings}
+              disabled={isSettingsSaving}
+              className="bg-amber-500 text-black px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-amber-400 transition-all flex items-center gap-2 disabled:opacity-50"
+            >
+              {isSettingsSaving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+              Guardar Configuración
+            </button>
           </div>
         </div>
 

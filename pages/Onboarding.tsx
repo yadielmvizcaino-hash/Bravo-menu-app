@@ -52,6 +52,8 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
         plan: PlanType.FREE,
         logo_url: 'https://via.placeholder.com/150',
         cover_photos: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200'],
+        delivery_price_inside: 0,
+        delivery_price_outside: 0,
         stats: { visits: 0, qrScans: 0, uniqueVisitors: 0 },
         is_visible: true,
         role: 'user',

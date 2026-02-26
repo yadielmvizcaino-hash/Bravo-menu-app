@@ -54,6 +54,7 @@ const Home: React.FC<{ businesses: Business[] }> = ({ businesses }) => {
             className="w-full h-full object-cover opacity-60"
             alt="Fondo Bar"
             loading="eager"
+            {...({ fetchpriority: "high" } as any)}
           />
           <div className="absolute inset-0 bg-black/40" />
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0f0f11] via-[#0f0f11]/80 to-transparent" />

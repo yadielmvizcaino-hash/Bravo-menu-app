@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   containerClassName?: string;
+  fetchPriority?: 'high' | 'low' | 'auto';
 }
 
 const OptimizedImage: React.FC<OptimizedImageProps> = ({ 
@@ -11,6 +12,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   className, 
   containerClassName = "", 
   loading = "lazy",
+  fetchPriority = "auto",
   ...props 
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -40,6 +42,8 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         src={src}
         alt={alt}
         loading={loading}
+        {...({ fetchpriority: fetchPriority } as any)}
+        referrerPolicy="no-referrer"
         onLoad={() => setIsLoaded(true)}
         onError={() => setHasError(true)}
         className={`w-full h-full object-cover transition-opacity duration-300 ease-in-out ${

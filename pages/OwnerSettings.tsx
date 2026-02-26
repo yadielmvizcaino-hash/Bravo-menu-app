@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Save, Upload, Image as ImageIcon, Store, MapPin, Phone, MessageSquare, Info, Loader2, X, Plus, Clock, Instagram, Facebook, Mail, Crown, Copy, Truck, ChevronDown } from 'lucide-react';
-import { Business, BusinessType } from '../types';
+import { Business, BusinessType, PlanType } from '../types';
 import { compressImage } from '../utils/image';
 import { uploadImage } from '../lib/supabase';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
@@ -116,18 +116,35 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
   };
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
+    const maxPhotos = business.plan === PlanType.PRO ? 10 : 1;
+    const currentPhotos = formData.coverPhotos || [];
+    
+    if (currentPhotos.length >= maxPhotos) {
+      alert(`Tu plan actual (${business.plan}) solo permite hasta ${maxPhotos} fotos en la galería.`);
+      return;
+    }
+
     setIsUploadingCover(true);
     try {
+      const file = files[0];
       const compressed = await compressImage(file, 1400, 0.7);
       const url = await uploadImage(compressed, `covers/${business.id}`);
-      setFormData(prev => ({ ...prev, coverPhotos: [url, ...(prev.coverPhotos || []).slice(1)] }));
+      setFormData(prev => ({ ...prev, coverPhotos: [...(prev.coverPhotos || []), url] }));
     } catch (err) {
-      alert("Error al subir portada");
+      alert("Error al subir imagen");
     } finally {
       setIsUploadingCover(false);
     }
+  };
+
+  const removeCoverPhoto = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      coverPhotos: (prev.coverPhotos || []).filter((_, i) => i !== index)
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -248,24 +265,41 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Imagen de portada</label>
-              <div className="relative h-[200px] w-full rounded-2xl overflow-hidden bg-gray-800 border-2 border-dashed border-gray-700 group">
-                {isUploadingCover ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
-                ) : formData.coverPhotos?.[0] && (
-                  <>
-                    <img src={formData.coverPhotos[0]} className="w-full h-full object-cover" alt="Portada" />
-                    <button type="button" onClick={() => setFormData(p => ({...p, coverPhotos: []}))} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md z-20 hover:bg-red-600 shadow-lg"><X size={14} /></button>
-                  </>
-                )}
-                {!formData.coverPhotos?.[0] && (
-                  <button type="button" onClick={() => coverInputRef.current?.click()} className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500">
-                    <Upload size={24} className="mb-2" /><span className="text-xs font-bold uppercase tracking-widest">Subir</span>
+            <div className="space-y-4">
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Galería de fotos ({formData.coverPhotos?.length || 0}/{business.plan === PlanType.PRO ? 10 : 1})</label>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {(formData.coverPhotos || []).map((url, index) => (
+                  <div key={index} className="relative h-32 rounded-xl overflow-hidden group border border-gray-800">
+                    <img src={url} className="w-full h-full object-cover" alt={`Foto ${index + 1}`} />
+                    <button 
+                      type="button" 
+                      onClick={() => removeCoverPhoto(index)} 
+                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+                
+                {(formData.coverPhotos?.length || 0) < (business.plan === PlanType.PRO ? 10 : 1) && (
+                  <button 
+                    type="button" 
+                    onClick={() => coverInputRef.current?.click()} 
+                    className="h-32 rounded-xl border-2 border-dashed border-gray-700 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 hover:border-amber-500/50 transition-all"
+                  >
+                    {isUploadingCover ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <>
+                        <Plus size={24} className="mb-1" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Añadir</span>
+                      </>
+                    )}
                   </button>
                 )}
-                <input type="file" ref={coverInputRef} className="hidden" accept="image/*" onChange={handleCoverUpload} />
               </div>
+              <input type="file" ref={coverInputRef} className="hidden" accept="image/*" onChange={handleCoverUpload} />
             </div>
           </div>
         </section>

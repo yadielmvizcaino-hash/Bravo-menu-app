@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Plus, GripVertical, Edit2, Trash2, Layers, X, Save, Loader2 } from 'lucide-react';
-import { Business, Category } from '../types';
+import { Business, Category, PlanType } from '../types';
 import { supabase } from '../lib/supabase';
 
 const OwnerCategories: React.FC<{ business: Business, onUpdate: (b: Business) => void }> = ({ business, onUpdate }) => {
@@ -11,6 +11,11 @@ const OwnerCategories: React.FC<{ business: Business, onUpdate: (b: Business) =>
   const [isSaving, setIsSaving] = useState(false);
 
   const openCreateModal = () => {
+    const maxCategories = business.plan === PlanType.FREE ? 3 : Infinity;
+    if (business.categories.length >= maxCategories) {
+      alert(`Tu plan actual (${business.plan}) solo permite hasta ${maxCategories} categorías. ¡Sube a PRO para categorías ilimitadas!`);
+      return;
+    }
     setEditingCategory(null);
     setCatName('');
     setIsModalOpen(true);
