@@ -347,9 +347,6 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
         <header className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
             <button onClick={() => setIsSidebarOpen(true)} className="md:hidden p-2 text-gray-400 bg-gray-800 rounded-lg"><MenuIcon size={20} /></button>
-            <Link to={`/negocio/${business.id}`} className="text-amber-500 hover:underline text-sm font-bold flex items-center gap-2">
-                <Share2 size={14} /> Ver mi página
-            </Link>
           </div>
           <div className="flex items-center gap-4">
              {isAdmin && (

@@ -195,7 +195,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-5">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Tipo de negocio *</label>
                 <select 
@@ -209,24 +209,27 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                   ))}
                 </select>
               </div>
+              
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Tipos de cocina</label>
-                <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    className="flex-1 bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm font-medium"
-                    placeholder="Ej: Cubana, Internacional..."
-                    value={newCuisine}
-                    onChange={e => setNewCuisine(e.target.value)}
-                    onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addCuisine())}
-                  />
-                  <button 
-                    type="button"
-                    onClick={addCuisine}
-                    className="bg-[#242426] border border-gray-700 text-gray-400 p-4 rounded-xl hover:text-white transition-colors"
-                  >
-                    <Plus size={20} />
-                  </button>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="flex-1 flex gap-2">
+                    <input 
+                      type="text" 
+                      className="flex-1 bg-[#242426] border border-gray-700 rounded-xl py-3 px-4 text-white focus:border-amber-500/50 outline-none text-sm font-medium"
+                      placeholder="Ej: Cubana, Internacional..."
+                      value={newCuisine}
+                      onChange={e => setNewCuisine(e.target.value)}
+                      onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addCuisine())}
+                    />
+                    <button 
+                      type="button"
+                      onClick={addCuisine}
+                      className="bg-[#242426] border border-gray-700 text-gray-400 p-3 rounded-xl hover:text-white transition-colors"
+                    >
+                      <Plus size={20} />
+                    </button>
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-3">
                   {formData.cuisineTypes?.map(tag => (
@@ -241,66 +244,72 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
           </div>
         </section>
 
-        {/* Imágenes */}
+        {/* Identidad Visual */}
         <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
-          <h3 className="text-white font-bold text-base mb-6 uppercase tracking-tight">Imágenes</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Logo</label>
-              <div className="relative aspect-square max-w-[200px] rounded-2xl overflow-hidden bg-gray-800 border-2 border-dashed border-gray-700 group">
-                {isUploadingLogo ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
-                ) : formData.logoUrl && (
-                  <>
-                    <img src={formData.logoUrl} className="w-full h-full object-cover" alt="Logo" />
-                    <button type="button" onClick={() => setFormData(p => ({...p, logoUrl: ''}))} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md z-20 hover:bg-red-600 transition-colors shadow-lg"><X size={14} /></button>
-                  </>
-                )}
-                {!formData.logoUrl && (
-                  <button type="button" onClick={() => logoInputRef.current?.click()} className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 transition-colors">
-                    <Upload size={24} className="mb-2" /><span className="text-xs font-bold uppercase tracking-widest">Subir</span>
-                  </button>
-                )}
-                <input type="file" ref={logoInputRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
-              </div>
+          <h3 className="text-white font-bold text-base mb-6 uppercase tracking-tight">Identidad Visual</h3>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Logo del negocio</label>
+            <div className="relative aspect-square w-32 rounded-2xl overflow-hidden bg-gray-800 border-2 border-dashed border-gray-700 group">
+              {isUploadingLogo ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
+              ) : formData.logoUrl && (
+                <>
+                  <img src={formData.logoUrl} className="w-full h-full object-cover" alt="Logo" />
+                  <button type="button" onClick={() => setFormData(p => ({...p, logoUrl: ''}))} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md z-20 hover:bg-red-600 transition-colors shadow-lg"><X size={14} /></button>
+                </>
+              )}
+              {!formData.logoUrl && (
+                <button type="button" onClick={() => logoInputRef.current?.click()} className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 transition-colors">
+                  <Upload size={20} className="mb-1" /><span className="text-[10px] font-bold uppercase tracking-widest">Subir</span>
+                </button>
+              )}
+              <input type="file" ref={logoInputRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
             </div>
+            <p className="text-[10px] text-gray-500 mt-2">Se recomienda una imagen cuadrada (1:1).</p>
+          </div>
+        </section>
 
-            <div className="space-y-4">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Galería de fotos ({formData.coverPhotos?.length || 0}/{business.plan === PlanType.PRO ? 10 : 1})</label>
-              
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {(formData.coverPhotos || []).map((url, index) => (
-                  <div key={index} className="relative h-32 rounded-xl overflow-hidden group border border-gray-800">
-                    <img src={url} className="w-full h-full object-cover" alt={`Foto ${index + 1}`} />
-                    <button 
-                      type="button" 
-                      onClick={() => removeCoverPhoto(index)} 
-                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                    >
-                      <X size={14} />
-                    </button>
-                  </div>
-                ))}
-                
-                {(formData.coverPhotos?.length || 0) < (business.plan === PlanType.PRO ? 10 : 1) && (
+        {/* Galería de fotos */}
+        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
+          <h3 className="text-white font-bold text-base mb-6 uppercase tracking-tight">Galería de fotos</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Fotos del local o platos ({formData.coverPhotos?.length || 0}/{business.plan === PlanType.PRO ? 10 : 1})</label>
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {(formData.coverPhotos || []).map((url, index) => (
+                <div key={index} className="relative aspect-video sm:aspect-square rounded-xl overflow-hidden group border border-gray-800">
+                  <img src={url} className="w-full h-full object-cover" alt={`Foto ${index + 1}`} />
                   <button 
                     type="button" 
-                    onClick={() => coverInputRef.current?.click()} 
-                    className="h-32 rounded-xl border-2 border-dashed border-gray-700 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 hover:border-amber-500/50 transition-all"
+                    onClick={() => removeCoverPhoto(index)} 
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                   >
-                    {isUploadingCover ? (
-                      <Loader2 className="animate-spin" />
-                    ) : (
-                      <>
-                        <Plus size={24} className="mb-1" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Añadir</span>
-                      </>
-                    )}
+                    <X size={14} />
                   </button>
-                )}
-              </div>
-              <input type="file" ref={coverInputRef} className="hidden" accept="image/*" onChange={handleCoverUpload} />
+                </div>
+              ))}
+              
+              {(formData.coverPhotos?.length || 0) < (business.plan === PlanType.PRO ? 10 : 1) && (
+                <button 
+                  type="button" 
+                  onClick={() => coverInputRef.current?.click()} 
+                  className="aspect-video sm:aspect-square rounded-xl border-2 border-dashed border-gray-700 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 hover:border-amber-500/50 transition-all"
+                >
+                  {isUploadingCover ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <>
+                      <Plus size={24} className="mb-1" />
+                      <span className="text-[10px] font-bold uppercase tracking-widest">Añadir</span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
+            <input type="file" ref={coverInputRef} className="hidden" accept="image/*" onChange={handleCoverUpload} />
+            <p className="text-[10px] text-gray-500">Estas fotos aparecerán en la cabecera y galería de tu negocio.</p>
           </div>
         </section>
 
@@ -401,39 +410,41 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
         </section>
 
         {/* Horarios de Atención */}
-        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
+        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden">
           <div className="flex items-center gap-2 mb-8">
             <Clock size={20} className="text-amber-500" />
-            <h3 className="text-white font-bold text-lg tracking-tight">Horario</h3>
+            <h3 className="text-white font-bold text-lg tracking-tight uppercase">Horario de atención</h3>
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-3">
             {Object.entries(formData.schedule || DEFAULT_SCHEDULE).map(([day, config]) => (
-              <div key={day} className="flex items-center gap-4 py-1">
-                <span className="text-[14px] text-gray-300 w-24 capitalize">{day}</span>
-                
-                <div className="flex items-center gap-3 w-28">
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      const newSchedule = { ...formData.schedule };
-                      newSchedule[day] = { ...config, open: !config.open };
-                      setFormData({ ...formData, schedule: newSchedule });
-                    }}
-                    className="w-11 h-6 rounded-full relative transition-all duration-300 bg-white"
-                  >
-                    <div className={`absolute top-[3px] w-4.5 h-4.5 rounded-full transition-all shadow-sm ${config.open ? 'bg-black left-[22px]' : 'bg-gray-300 left-[3px]'}`} />
-                  </button>
-                  <span className="text-[13px] text-gray-500">
-                    {config.open ? 'Abierto' : 'Cerrado'}
-                  </span>
+              <div key={day} className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 py-3 border-b border-gray-800/50 last:border-0">
+                <div className="flex items-center justify-between sm:w-44">
+                  <span className="text-sm font-bold text-gray-300 capitalize">{day}</span>
+                  
+                  <div className="flex items-center gap-3">
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        const newSchedule = { ...formData.schedule };
+                        newSchedule[day] = { ...config, open: !config.open };
+                        setFormData({ ...formData, schedule: newSchedule });
+                      }}
+                      className={`w-10 h-5 rounded-full relative transition-all duration-300 ${config.open ? 'bg-amber-500' : 'bg-gray-700'}`}
+                    >
+                      <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all shadow-sm ${config.open ? 'left-6' : 'left-1'}`} />
+                    </button>
+                    <span className={`text-[10px] font-black uppercase tracking-widest w-12 ${config.open ? 'text-amber-500' : 'text-gray-500'}`}>
+                      {config.open ? 'Abierto' : 'Cerrado'}
+                    </span>
+                  </div>
                 </div>
 
                 {config.open && (
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
+                  <div className="flex items-center gap-2 sm:gap-3 ml-0 sm:ml-auto">
+                    <div className="relative flex-1 sm:flex-none">
                       <select 
-                        className="bg-[#242426] border border-gray-700 rounded-lg pl-4 pr-10 py-2.5 text-[14px] text-white outline-none focus:border-amber-500/50 appearance-none font-medium min-w-[100px]"
+                        className="w-full bg-[#242426] border border-gray-700 rounded-lg pl-3 pr-8 py-2 text-xs text-white outline-none focus:border-amber-500/50 appearance-none font-bold"
                         value={config.from}
                         onChange={e => {
                           const newSchedule = { ...formData.schedule };
@@ -443,12 +454,12 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                       >
                         {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
-                      <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                      <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                     </div>
-                    <span className="text-gray-600">-</span>
-                    <div className="relative">
+                    <span className="text-gray-600 text-xs font-bold">a</span>
+                    <div className="relative flex-1 sm:flex-none">
                       <select 
-                        className="bg-[#242426] border border-gray-700 rounded-lg pl-4 pr-10 py-2.5 text-[14px] text-white outline-none focus:border-amber-500/50 appearance-none font-medium min-w-[100px]"
+                        className="w-full bg-[#242426] border border-gray-700 rounded-lg pl-3 pr-8 py-2 text-xs text-white outline-none focus:border-amber-500/50 appearance-none font-bold"
                         value={config.to}
                         onChange={e => {
                           const newSchedule = { ...formData.schedule };
@@ -458,7 +469,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                       >
                         {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
-                      <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                      <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                     </div>
                   </div>
                 )}

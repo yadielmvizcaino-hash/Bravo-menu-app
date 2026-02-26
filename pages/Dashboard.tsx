@@ -64,9 +64,6 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
            <button className="bg-white/5 border border-white/10 text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 hover:bg-white/10 transition-all">
              <Calendar size={14} /> Historial
            </button>
-           <Link to={`/negocio/${business.id}`} className="bg-amber-500 text-black px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/10">
-             <Zap size={14} fill="currentColor" /> Ver Mi Página
-           </Link>
         </div>
       </div>
 
