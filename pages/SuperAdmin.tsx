@@ -153,11 +153,24 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
   };
 
   const deleteBusiness = async (id: string) => {
-    if (!window.confirm("¿ELIMINAR ESTABLECIMIENTO? Esta acción es irreversible.")) return;
+    if (!window.confirm("¿ELIMINAR ESTABLECIMIENTO? Esta acción es irreversible y borrará todos los datos asociados.")) return;
     setIsActionLoading(id);
     try {
-      await supabase.from('businesses').delete().eq('id', id);
+      // 1. Delete related records first to avoid foreign key constraints
+      await supabase.from('products').delete().eq('businessId', id);
+      await supabase.from('categories').delete().eq('businessId', id);
+      await supabase.from('events').delete().eq('businessId', id);
+      await supabase.from('banners').delete().eq('businessId', id);
+      
+      // 2. Delete the business itself
+      const { error } = await supabase.from('businesses').delete().eq('id', id);
+      if (error) throw error;
+      
       setBusinesses(prev => prev.filter(b => b.id !== id));
+      alert("Establecimiento eliminado correctamente.");
+    } catch (err) {
+      console.error("Error deleting business:", err);
+      alert("Error al eliminar el negocio. Es posible que tenga dependencias activas.");
     } finally {
       setIsActionLoading(null);
     }

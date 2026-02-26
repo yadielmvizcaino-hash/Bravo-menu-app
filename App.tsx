@@ -12,8 +12,6 @@ import OwnerLeads from './pages/OwnerLeads.tsx';
 import OwnerPricing from './pages/OwnerPricing.tsx';
 import OwnerBanners from './pages/OwnerBanners.tsx';
 import OwnerEvents from './pages/OwnerEvents.tsx';
-import OwnerIdentity from './pages/OwnerIdentity.tsx';
-import OwnerGallery from './pages/OwnerGallery.tsx';
 import OwnerSettings from './pages/OwnerSettings.tsx';
 import SuperAdmin from './pages/SuperAdmin.tsx';
 import Onboarding from './pages/Onboarding.tsx';
@@ -193,39 +191,59 @@ const App: React.FC = () => {
     setActiveBusiness(updated);
     setBusinesses(prev => prev.map(b => b.id === updated.id ? updated : b));
     
-    const { products, categories, events, banners, leads, ...businessData } = updated;
-    
-    // Mapeo a snake_case para Supabase
-    const dbData = {
-      ...businessData,
-      is_visible: businessData.isVisible,
-      logo_url: businessData.logoUrl,
-      cover_photos: businessData.coverPhotos,
-      plan_expires_at: businessData.planExpiresAt,
-      cuisine_types: businessData.cuisineTypes,
-      delivery_enabled: businessData.deliveryEnabled,
-      delivery_price_inside: businessData.deliveryPriceInside,
-      delivery_price_outside: businessData.deliveryPriceOutside,
-      average_rating: businessData.averageRating,
-      ratings_count: businessData.ratingsCount
+    // Preparar objeto para Supabase (snake_case) de forma explícita
+    const dbData: any = {
+      id: updated.id,
+      name: updated.name,
+      description: updated.description,
+      type: updated.type,
+      province: updated.province,
+      municipality: updated.municipality,
+      address: updated.address,
+      phone: updated.phone,
+      whatsapp: updated.whatsapp,
+      instagram: updated.instagram,
+      facebook: updated.facebook,
+      email: updated.email,
+      logo_url: updated.logoUrl,
+      cover_photos: updated.coverPhotos,
+      plan: updated.plan,
+      plan_expires_at: updated.planExpiresAt,
+      is_visible: updated.isVisible,
+      cuisine_types: updated.cuisineTypes,
+      delivery_enabled: updated.deliveryEnabled,
+      delivery_price_inside: updated.deliveryPriceInside,
+      delivery_price_outside: updated.deliveryPriceOutside,
+      average_rating: updated.averageRating,
+      ratings_count: updated.ratingsCount,
+      schedule: updated.schedule,
+      stats: updated.stats,
+      role: updated.role
     };
-
-    // Eliminar las versiones camelCase para evitar conflictos o ruido en la DB
-    delete (dbData as any).isVisible;
-    delete (dbData as any).logoUrl;
-    delete (dbData as any).coverPhotos;
-    delete (dbData as any).planExpiresAt;
-    delete (dbData as any).cuisineTypes;
-    delete (dbData as any).deliveryEnabled;
-    delete (dbData as any).deliveryPriceInside;
-    delete (dbData as any).deliveryPriceOutside;
-    delete (dbData as any).averageRating;
-    delete (dbData as any).ratingsCount;
     
     try {
-      await supabase.from('businesses').upsert(dbData);
+      const { error } = await supabase.from('businesses').upsert(dbData);
+      if (error) throw error;
     } catch (err) {
       console.error("Error upserting business:", err);
+    }
+  };
+
+  const deleteBusiness = async (id: string) => {
+    try {
+      // 1. Delete related records first to avoid foreign key constraints
+      await supabase.from('products').delete().eq('businessId', id);
+      await supabase.from('categories').delete().eq('businessId', id);
+      await supabase.from('events').delete().eq('businessId', id);
+      await supabase.from('banners').delete().eq('businessId', id);
+      
+      // 2. Delete the business itself
+      const { error } = await supabase.from('businesses').delete().eq('id', id);
+      if (error) throw error;
+      handleLogout();
+    } catch (err) {
+      console.error("Error deleting business:", err);
+      throw err;
     }
   };
 
@@ -254,9 +272,7 @@ const App: React.FC = () => {
                 <Route path="events" element={<OwnerEvents business={activeBusiness} onUpdate={updateActiveBusiness} />} />
                 <Route path="leads" element={<OwnerLeads business={activeBusiness} />} />
                 <Route path="pricing" element={<OwnerPricing business={activeBusiness} />} />
-                <Route path="identity" element={<OwnerIdentity business={activeBusiness} onUpdate={updateActiveBusiness} />} />
-                <Route path="gallery" element={<OwnerGallery business={activeBusiness} onUpdate={updateActiveBusiness} />} />
-                <Route path="settings" element={<OwnerSettings business={activeBusiness} onUpdate={updateActiveBusiness} />} />
+                <Route path="settings" element={<OwnerSettings business={activeBusiness} onUpdate={updateActiveBusiness} onDelete={() => deleteBusiness(activeBusiness.id)} />} />
               </Routes>
             </AdminLayout>
           )
@@ -334,10 +350,8 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
           </div>
           <nav className="flex-1 overflow-y-auto no-scrollbar">
             {[
-              { to: '/admin/settings', icon: <Settings size={20} />, label: 'Mi Perfil' },
-              { to: '/admin/identity', icon: <Palette size={20} />, label: 'Identidad Visual' },
-              { to: '/admin/gallery', icon: <Camera size={20} />, label: 'Galería' },
               { to: '/admin', icon: <LayoutGrid size={20} />, label: 'Dashboard' },
+              { to: '/admin/settings', icon: <Settings size={20} />, label: 'Mi Perfil' },
               { to: '/admin/menu', icon: <Package size={20} />, label: 'Productos' },
               { to: '/admin/categories', icon: <Layers size={20} />, label: 'Categorías' },
               { to: '/admin/banners', icon: <ImageIcon size={20} />, label: 'Banners' },

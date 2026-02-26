@@ -1,7 +1,9 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Save, Store, MapPin, Phone, MessageSquare, Info, Loader2, X, Plus, Clock, Instagram, Facebook, Mail, Crown, Copy, Truck, ChevronDown } from 'lucide-react';
+import { Save, Store, MapPin, Phone, MessageSquare, Info, Loader2, X, Plus, Clock, Instagram, Facebook, Mail, Crown, Copy, Truck, ChevronDown, Upload, Image as ImageIcon, Camera, Palette, Trash2, AlertTriangle } from 'lucide-react';
 import { Business, BusinessType, PlanType } from '../types';
+import { compressImage } from '../utils/image';
+import { uploadImage } from '../lib/supabase';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
 
 interface DayConfig {
@@ -49,7 +51,7 @@ const getInitialSchedule = (schedule: any) => {
   return merged;
 };
 
-const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => void }> = ({ business, onUpdate }) => {
+const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => void, onDelete: () => Promise<void> }> = ({ business, onUpdate, onDelete }) => {
   const [formData, setFormData] = useState(() => ({ 
     ...business,
     whatsapp: business.whatsapp || business.phone || '',
@@ -75,7 +77,14 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
   
   const [newCuisine, setNewCuisine] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
   
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
   const addCuisine = () => {
     if (newCuisine.trim() && !formData.cuisineTypes?.includes(newCuisine.trim())) {
       setFormData(prev => ({
@@ -91,6 +100,64 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
       ...prev,
       cuisineTypes: prev.cuisineTypes?.filter(t => t !== tag) || []
     }));
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingLogo(true);
+    try {
+      const compressed = await compressImage(file, 400, 0.7);
+      const url = await uploadImage(compressed, `logos/${business.id}`);
+      setFormData(prev => ({ ...prev, logoUrl: url }));
+    } catch (err) {
+      alert("Error al subir logo");
+    } finally {
+      setIsUploadingLogo(false);
+    }
+  };
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
+    const maxPhotos = business.plan === PlanType.PRO ? 10 : 1;
+    const currentPhotos = formData.coverPhotos || [];
+    
+    if (currentPhotos.length >= maxPhotos) {
+      alert(`Tu plan actual (${business.plan}) solo permite hasta ${maxPhotos} fotos en la galería.`);
+      return;
+    }
+
+    setIsUploadingCover(true);
+    try {
+      const file = files[0];
+      const compressed = await compressImage(file, 1400, 0.7);
+      const url = await uploadImage(compressed, `covers/${business.id}`);
+      setFormData(prev => ({ ...prev, coverPhotos: [...(prev.coverPhotos || []), url] }));
+    } catch (err) {
+      alert("Error al subir imagen");
+    } finally {
+      setIsUploadingCover(false);
+    }
+  };
+
+  const removeCoverPhoto = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      coverPhotos: (prev.coverPhotos || []).filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await onDelete();
+    } catch (err) {
+      alert("Error al eliminar el negocio.");
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -187,6 +254,98 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Identidad Visual */}
+        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
+          <h3 className="text-white font-bold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Palette size={18} className="text-amber-500" /> Identidad Visual</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Logo del negocio</label>
+              <div className="relative aspect-square w-32 rounded-2xl overflow-hidden bg-gray-800 border-2 border-dashed border-gray-700 group">
+                {isUploadingLogo ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
+                ) : formData.logoUrl && (
+                  <>
+                    <img src={formData.logoUrl} className="w-full h-full object-cover" alt="Logo" />
+                    <button type="button" onClick={() => setFormData(p => ({...p, logoUrl: ''}))} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md z-20 hover:bg-red-600 transition-colors shadow-lg"><X size={14} /></button>
+                  </>
+                )}
+                {!formData.logoUrl && (
+                  <button type="button" onClick={() => logoInputRef.current?.click()} className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 transition-colors">
+                    <Upload size={20} className="mb-1" /><span className="text-[10px] font-bold uppercase tracking-widest">Subir</span>
+                  </button>
+                )}
+                <input type="file" ref={logoInputRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
+              </div>
+              <p className="text-[10px] text-gray-500 mt-2">Se recomienda una imagen cuadrada (1:1).</p>
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Banner Principal (Cabecera)</label>
+              <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-gray-800 border-2 border-dashed border-gray-700 group">
+                {isUploadingCover && (formData.coverPhotos?.length || 0) === 0 ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
+                ) : formData.coverPhotos?.[0] ? (
+                  <>
+                    <img src={formData.coverPhotos[0]} className="w-full h-full object-cover" alt="Banner" />
+                    <button type="button" onClick={() => removeCoverPhoto(0)} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md z-20 hover:bg-red-600 transition-colors shadow-lg"><X size={14} /></button>
+                  </>
+                ) : (
+                  <button type="button" onClick={() => coverInputRef.current?.click()} className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 transition-colors">
+                    <ImageIcon size={20} className="mb-1" /><span className="text-[10px] font-bold uppercase tracking-widest">Subir Banner</span>
+                  </button>
+                )}
+              </div>
+              <p className="text-[10px] text-gray-500">Esta es la primera foto que verán tus clientes.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Galería de fotos */}
+        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
+          <h3 className="text-white font-bold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Camera size={18} className="text-amber-500" /> Galería de fotos</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Fotos adicionales ({formData.coverPhotos?.length || 0}/{business.plan === PlanType.PRO ? 10 : 1})</label>
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {(formData.coverPhotos || []).map((url, index) => (
+                index > 0 && (
+                  <div key={index} className="relative aspect-video sm:aspect-square rounded-xl overflow-hidden group border border-gray-800">
+                    <img src={url} className="w-full h-full object-cover" alt={`Foto ${index + 1}`} />
+                    <button 
+                      type="button" 
+                      onClick={() => removeCoverPhoto(index)} 
+                      className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )
+              ))}
+              
+              {(formData.coverPhotos?.length || 0) < (business.plan === PlanType.PRO ? 10 : 1) && (
+                <button 
+                  type="button" 
+                  onClick={() => coverInputRef.current?.click()} 
+                  className="aspect-video sm:aspect-square rounded-xl border-2 border-dashed border-gray-700 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 hover:border-amber-500/50 transition-all"
+                >
+                  {isUploadingCover ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <>
+                      <Plus size={24} className="mb-1" />
+                      <span className="text-[10px] font-bold uppercase tracking-widest">Añadir</span>
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+            <input type="file" ref={coverInputRef} className="hidden" accept="image/*" onChange={handleCoverUpload} />
+            <p className="text-[10px] text-gray-500">Añade más fotos de tu local, platos o ambiente.</p>
           </div>
         </section>
 
@@ -416,7 +575,59 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
             Guardar cambios
           </button>
         </div>
+
+        {/* Zona de Peligro */}
+        <section className="mt-12 pt-12 border-t border-red-500/20">
+          <div className="bg-red-500/5 border border-red-500/20 rounded-3xl p-8">
+            <div className="flex items-center gap-3 mb-4 text-red-500">
+              <AlertTriangle size={24} />
+              <h3 className="text-xl font-black uppercase tracking-tight">Zona de Peligro</h3>
+            </div>
+            <p className="text-gray-400 text-sm mb-6 font-medium">
+              Al eliminar tu negocio, se borrarán permanentemente todos tus productos, categorías, eventos y banners. Esta acción no se puede deshacer.
+            </p>
+            <button 
+              type="button"
+              onClick={() => setShowDeleteConfirm(true)}
+              className="bg-red-500/10 text-red-500 border border-red-500/20 px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
+            >
+              <Trash2 size={16} /> Eliminar mi negocio permanentemente
+            </button>
+          </div>
+        </section>
       </form>
+
+      {/* Modal de Confirmación de Eliminación */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+          <div className="bg-[#1a1a1c] border border-red-500/30 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl">
+            <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <AlertTriangle size={32} />
+            </div>
+            <h2 className="text-2xl font-black text-white text-center mb-4 uppercase tracking-tight">¿Estás seguro?</h2>
+            <p className="text-gray-400 text-center mb-8 font-medium">
+              Esta acción eliminará <span className="text-white font-bold">{business.name}</span> y todos sus datos para siempre. No podrás recuperar esta información.
+            </p>
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="w-full bg-red-500 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-600 transition-all disabled:opacity-50"
+              >
+                {isDeleting ? <Loader2 className="animate-spin" size={18} /> : <Trash2 size={18} />}
+                Sí, eliminar definitivamente
+              </button>
+              <button 
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isDeleting}
+                className="w-full bg-white/5 text-gray-400 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
