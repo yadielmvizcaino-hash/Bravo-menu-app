@@ -13,8 +13,6 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
     payment_phone: '+53 59631292'
   });
 
-  const paymentCode = "CZ-" + Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
-
   useEffect(() => {
     const fetchSettings = async () => {
       setIsLoadingSettings(true);
@@ -51,22 +49,14 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
                 <CreditCard size={32} />
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">💎 Actualizar a PRO</h2>
-              <p className="text-gray-400">Generando tu código de activación único...</p>
+              <p className="text-gray-400">Sigue los pasos para activar todas las funciones premium.</p>
             </div>
 
             <div className="bg-[#242426] p-6 rounded-2xl border border-amber-500/30 mb-8 text-center">
-               <p className="text-xs text-amber-500 font-bold uppercase tracking-widest mb-2">Tu código de pago</p>
-               <div className="flex items-center justify-center gap-3">
-                  <span className="text-2xl font-mono font-bold text-white tracking-widest">{paymentCode}</span>
-                  <button 
-                    onClick={() => {
-                      navigator.clipboard.writeText(paymentCode);
-                      alert("Código copiado");
-                    }}
-                    className="text-amber-500 hover:text-amber-400 p-1"
-                  >
-                    <Copy size={18} />
-                  </button>
+               <p className="text-xs text-amber-500 font-bold uppercase tracking-widest mb-2">Precio del Plan PRO</p>
+               <div className="flex flex-col items-center justify-center gap-1">
+                  <span className="text-3xl font-bold text-white">500 CUP</span>
+                  <span className="text-gray-500 text-xs font-medium uppercase tracking-widest">por cada mes de servicio</span>
                </div>
             </div>
 
@@ -80,7 +70,8 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
                  <ol className="space-y-4 text-sm text-gray-400 list-decimal pl-5">
                    <li>Realiza una transferencia bancaria a la tarjeta: <b className="text-white">{systemSettings.payment_card}</b></li>
                    <li>Envía el comprobante por WhatsApp al: <b className="text-green-400">{systemSettings.payment_phone}</b></li>
-                   <li><b className="text-white">IMPORTANTE:</b> Incluye tu código {paymentCode} en el mensaje.</li>
+                   <li><b className="text-white">IMPORTANTE:</b> Envía 500 CUP por cada mes de plan PRO que desees adquirir.</li>
+                   <li>Indica el nombre de tu negocio en el mensaje de WhatsApp.</li>
                  </ol>
                )}
                <p className="text-xs text-gray-500 italic">Tu plan PRO se activará en un máximo de 24 horas tras recibir el comprobante.</p>

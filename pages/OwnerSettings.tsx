@@ -1,9 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Save, Upload, Image as ImageIcon, Store, MapPin, Phone, MessageSquare, Info, Loader2, X, Plus, Clock, Instagram, Facebook, Mail, Crown, Copy, Truck, ChevronDown } from 'lucide-react';
+import { Save, Store, MapPin, Phone, MessageSquare, Info, Loader2, X, Plus, Clock, Instagram, Facebook, Mail, Crown, Copy, Truck, ChevronDown } from 'lucide-react';
 import { Business, BusinessType, PlanType } from '../types';
-import { compressImage } from '../utils/image';
-import { uploadImage } from '../lib/supabase';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
 
 interface DayConfig {
@@ -77,12 +75,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
   
   const [newCuisine, setNewCuisine] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
-  const [isUploadingCover, setIsUploadingCover] = useState(false);
   
-  const logoInputRef = useRef<HTMLInputElement>(null);
-  const coverInputRef = useRef<HTMLInputElement>(null);
-
   const addCuisine = () => {
     if (newCuisine.trim() && !formData.cuisineTypes?.includes(newCuisine.trim())) {
       setFormData(prev => ({
@@ -97,53 +90,6 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
     setFormData(prev => ({
       ...prev,
       cuisineTypes: prev.cuisineTypes?.filter(t => t !== tag) || []
-    }));
-  };
-
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setIsUploadingLogo(true);
-    try {
-      const compressed = await compressImage(file, 400, 0.7);
-      const url = await uploadImage(compressed, `logos/${business.id}`);
-      setFormData(prev => ({ ...prev, logoUrl: url }));
-    } catch (err) {
-      alert("Error al subir logo");
-    } finally {
-      setIsUploadingLogo(false);
-    }
-  };
-
-  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    
-    const maxPhotos = business.plan === PlanType.PRO ? 10 : 1;
-    const currentPhotos = formData.coverPhotos || [];
-    
-    if (currentPhotos.length >= maxPhotos) {
-      alert(`Tu plan actual (${business.plan}) solo permite hasta ${maxPhotos} fotos en la galería.`);
-      return;
-    }
-
-    setIsUploadingCover(true);
-    try {
-      const file = files[0];
-      const compressed = await compressImage(file, 1400, 0.7);
-      const url = await uploadImage(compressed, `covers/${business.id}`);
-      setFormData(prev => ({ ...prev, coverPhotos: [...(prev.coverPhotos || []), url] }));
-    } catch (err) {
-      alert("Error al subir imagen");
-    } finally {
-      setIsUploadingCover(false);
-    }
-  };
-
-  const removeCoverPhoto = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      coverPhotos: (prev.coverPhotos || []).filter((_, i) => i !== index)
     }));
   };
 
@@ -241,75 +187,6 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Identidad Visual */}
-        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
-          <h3 className="text-white font-bold text-base mb-6 uppercase tracking-tight">Identidad Visual</h3>
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Logo del negocio</label>
-            <div className="relative aspect-square w-32 rounded-2xl overflow-hidden bg-gray-800 border-2 border-dashed border-gray-700 group">
-              {isUploadingLogo ? (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
-              ) : formData.logoUrl && (
-                <>
-                  <img src={formData.logoUrl} className="w-full h-full object-cover" alt="Logo" />
-                  <button type="button" onClick={() => setFormData(p => ({...p, logoUrl: ''}))} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md z-20 hover:bg-red-600 transition-colors shadow-lg"><X size={14} /></button>
-                </>
-              )}
-              {!formData.logoUrl && (
-                <button type="button" onClick={() => logoInputRef.current?.click()} className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 transition-colors">
-                  <Upload size={20} className="mb-1" /><span className="text-[10px] font-bold uppercase tracking-widest">Subir</span>
-                </button>
-              )}
-              <input type="file" ref={logoInputRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
-            </div>
-            <p className="text-[10px] text-gray-500 mt-2">Se recomienda una imagen cuadrada (1:1).</p>
-          </div>
-        </section>
-
-        {/* Galería de fotos */}
-        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
-          <h3 className="text-white font-bold text-base mb-6 uppercase tracking-tight">Galería de fotos</h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Fotos del local o platos ({formData.coverPhotos?.length || 0}/{business.plan === PlanType.PRO ? 10 : 1})</label>
-            </div>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {(formData.coverPhotos || []).map((url, index) => (
-                <div key={index} className="relative aspect-video sm:aspect-square rounded-xl overflow-hidden group border border-gray-800">
-                  <img src={url} className="w-full h-full object-cover" alt={`Foto ${index + 1}`} />
-                  <button 
-                    type="button" 
-                    onClick={() => removeCoverPhoto(index)} 
-                    className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              ))}
-              
-              {(formData.coverPhotos?.length || 0) < (business.plan === PlanType.PRO ? 10 : 1) && (
-                <button 
-                  type="button" 
-                  onClick={() => coverInputRef.current?.click()} 
-                  className="aspect-video sm:aspect-square rounded-xl border-2 border-dashed border-gray-700 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 hover:border-amber-500/50 transition-all"
-                >
-                  {isUploadingCover ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    <>
-                      <Plus size={24} className="mb-1" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest">Añadir</span>
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
-            <input type="file" ref={coverInputRef} className="hidden" accept="image/*" onChange={handleCoverUpload} />
-            <p className="text-[10px] text-gray-500">Estas fotos aparecerán en la cabecera y galería de tu negocio.</p>
           </div>
         </section>
 

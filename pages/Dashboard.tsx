@@ -25,7 +25,7 @@ const StatCard: React.FC<{ label: string, value: string | number, icon: React.Re
 
 const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
   const isPro = business.plan === PlanType.PRO;
-  const isAdmin = business.role === 'admin' || business.phone === '59631292' || business.phone === '5359631292';
+  const isAdmin = business.role === 'admin';
   const [isDownloading, setIsDownloading] = React.useState(false);
 
   // Generamos la URL pública precisa basada en la ubicación actual

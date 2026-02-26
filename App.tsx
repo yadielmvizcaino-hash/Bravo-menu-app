@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { HashRouter, Routes, Route, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
-import { LayoutGrid, Users, User, BarChart3, Package, Layers, Image as ImageIcon, Calendar, LogOut, Crown, Search, Menu as MenuIcon, Share2, X, Loader2, AlertCircle, PlusCircle, LogIn, Store, ChevronRight, Settings, ArrowLeft, Shield } from 'lucide-react';
+import { LayoutGrid, Users, User, BarChart3, Package, Layers, Image as ImageIcon, Calendar, LogOut, Crown, Search, Menu as MenuIcon, Share2, X, Loader2, AlertCircle, PlusCircle, LogIn, Store, ChevronRight, Settings, ArrowLeft, Shield, Camera, Palette } from 'lucide-react';
 
 import Home from './pages/Home.tsx';
 import BusinessDetail from './pages/BusinessDetail.tsx';
@@ -12,6 +12,8 @@ import OwnerLeads from './pages/OwnerLeads.tsx';
 import OwnerPricing from './pages/OwnerPricing.tsx';
 import OwnerBanners from './pages/OwnerBanners.tsx';
 import OwnerEvents from './pages/OwnerEvents.tsx';
+import OwnerIdentity from './pages/OwnerIdentity.tsx';
+import OwnerGallery from './pages/OwnerGallery.tsx';
 import OwnerSettings from './pages/OwnerSettings.tsx';
 import SuperAdmin from './pages/SuperAdmin.tsx';
 import Onboarding from './pages/Onboarding.tsx';
@@ -252,6 +254,8 @@ const App: React.FC = () => {
                 <Route path="events" element={<OwnerEvents business={activeBusiness} onUpdate={updateActiveBusiness} />} />
                 <Route path="leads" element={<OwnerLeads business={activeBusiness} />} />
                 <Route path="pricing" element={<OwnerPricing business={activeBusiness} />} />
+                <Route path="identity" element={<OwnerIdentity business={activeBusiness} onUpdate={updateActiveBusiness} />} />
+                <Route path="gallery" element={<OwnerGallery business={activeBusiness} onUpdate={updateActiveBusiness} />} />
                 <Route path="settings" element={<OwnerSettings business={activeBusiness} onUpdate={updateActiveBusiness} />} />
               </Routes>
             </AdminLayout>
@@ -310,7 +314,7 @@ const PublicLayout: React.FC<{ children: React.ReactNode, loggedInBusinessId: st
 const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onLogout: () => void }> = ({ children, business, onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isPro = business?.plan === PlanType.PRO;
-  const isAdmin = business?.role === 'admin' || business?.phone === '59631292' || business?.phone === '5359631292';
+  const isAdmin = business?.role === 'admin';
 
   return (
     <div className="flex min-h-screen bg-[#0f0f11] overflow-x-hidden">
@@ -331,6 +335,8 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
           <nav className="flex-1 overflow-y-auto no-scrollbar">
             {[
               { to: '/admin/settings', icon: <Settings size={20} />, label: 'Mi Perfil' },
+              { to: '/admin/identity', icon: <Palette size={20} />, label: 'Identidad Visual' },
+              { to: '/admin/gallery', icon: <Camera size={20} />, label: 'Galería' },
               { to: '/admin', icon: <LayoutGrid size={20} />, label: 'Dashboard' },
               { to: '/admin/menu', icon: <Package size={20} />, label: 'Productos' },
               { to: '/admin/categories', icon: <Layers size={20} />, label: 'Categorías' },
