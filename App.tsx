@@ -63,10 +63,11 @@ const App: React.FC = () => {
         .from('businesses')
         .select('*')
         .eq('is_visible', true);
+      
       if (error) throw error;
+      
       if (data) {
-        const cleanedData = await checkAndDowngradeExpiredPlans(data);
-        const formatted = cleanedData.map(biz => ({
+        const formatData = (bizList: any[]) => bizList.map(biz => ({
           ...biz,
           isVisible: biz.isVisible ?? biz.is_visible ?? true,
           logoUrl: biz.logoUrl ?? biz.logo_url,
@@ -87,11 +88,24 @@ const App: React.FC = () => {
           leads: biz.leads || [],
           stats: biz.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
         } as Business));
-        setBusinesses(formatted);
+
+        // Set initial data immediately to show businesses fast
+        const initialFormatted = formatData(data);
+        setBusinesses(initialFormatted);
+        setLoading(false); // Stop loading as soon as we have data
+
+        // Perform background check for expired plans without blocking UI
+        checkAndDowngradeExpiredPlans(data).then(cleanedData => {
+          if (cleanedData) {
+            const finalFormatted = formatData(cleanedData);
+            setBusinesses(finalFormatted);
+          }
+        });
+      } else {
+        setLoading(false);
       }
     } catch (e) {
       console.error("Fetch error:", e);
-    } finally {
       setLoading(false);
     }
   }, []);
@@ -216,7 +230,7 @@ const App: React.FC = () => {
   return (
     <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
-        <Route path="/" element={<PublicLayout loggedInBusinessId={loggedInId}><Home businesses={businesses} /></PublicLayout>} />
+        <Route path="/" element={<PublicLayout loggedInBusinessId={loggedInId}><Home businesses={businesses} loading={loading} /></PublicLayout>} />
         <Route path="/negocio/:id" element={<PublicLayout loggedInBusinessId={loggedInId}><BusinessDetail businesses={businesses} /></PublicLayout>} />
         <Route path="/crear-negocio" element={<PublicLayout loggedInBusinessId={loggedInId}><Onboarding onComplete={handleOnboardingComplete} /></PublicLayout>} />
         <Route path="/login" element={loggedInId && activeBusiness ? <Navigate to="/admin" replace /> : <PublicLayout loggedInBusinessId={loggedInId}><Auth onLogin={handleLogin} /></PublicLayout>} />

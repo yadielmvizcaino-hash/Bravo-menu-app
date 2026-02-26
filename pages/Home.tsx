@@ -6,7 +6,7 @@ import { Business, BusinessType, PlanType } from '../types';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
 import OptimizedImage from '../components/OptimizedImage';
 
-const Home: React.FC<{ businesses: Business[] }> = ({ businesses }) => {
+const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ businesses, loading }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProvince, setSelectedProvince] = useState('');
   const [selectedMunicipality, setSelectedMunicipality] = useState('');
@@ -149,7 +149,23 @@ const Home: React.FC<{ businesses: Business[] }> = ({ businesses }) => {
           <span>Lugares Disponibles ({sortedBusinesses.length})</span>
         </div>
 
-        {sortedBusinesses.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-[#1a1a1c] rounded-3xl overflow-hidden border border-gray-800/50 animate-pulse">
+                <div className="h-36 md:h-64 bg-white/5" />
+                <div className="p-5 space-y-4">
+                  <div className="h-6 bg-white/5 rounded-lg w-3/4" />
+                  <div className="h-4 bg-white/5 rounded-lg w-full" />
+                  <div className="pt-5 border-t border-white/5 flex justify-between">
+                    <div className="h-4 bg-white/5 rounded-lg w-24" />
+                    <div className="h-4 bg-white/5 rounded-lg w-20" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : sortedBusinesses.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {sortedBusinesses.map((business) => (
               <Link 
