@@ -20,6 +20,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
   
   const [dbBusiness, setDbBusiness] = useState<Business | null>(null);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'menu' | 'eventos' | 'fotos'>('menu');
   const [selectedCategory, setSelectedCategory] = useState('Todo');
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
@@ -63,6 +64,12 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             .eq('id', id)
             .single();
 
+          if (bizError) {
+            console.error("Supabase Error:", bizError);
+            setFetchError(bizError.message);
+            throw bizError;
+          }
+
           if (bizData) {
             setDbBusiness({
               ...bizData,
@@ -76,6 +83,28 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
               deliveryEnabled: bizData.deliveryEnabled ?? bizData.delivery_enabled ?? false,
               deliveryPriceInside: bizData.deliveryPriceInside ?? bizData.delivery_price_inside ?? 0,
               deliveryPriceOutside: bizData.deliveryPriceOutside ?? bizData.delivery_price_outside ?? 0,
+              products: (bizData.products || []).map((p: any) => ({
+                id: p.id,
+                name: p.name,
+                description: p.description,
+                price: p.price,
+                categoryId: p.categoryId ?? p.category_id,
+                imageUrl: p.imageUrl ?? p.image_url,
+                isVisible: p.isVisible ?? p.is_visible ?? true,
+                isHighlighted: p.isHighlighted ?? p.is_highlighted ?? false
+              })),
+              categories: bizData.categories || [],
+              events: (bizData.events || []).map((e: any) => ({
+                ...e,
+                dateTime: e.dateTime ?? e.date_time,
+                imageUrl: e.imageUrl ?? e.image_url,
+                interestedCount: e.interestedCount ?? e.interested_count ?? 0
+              })),
+              banners: (bizData.banners || []).map((b: any) => ({
+                ...b,
+                imageUrl: b.imageUrl ?? b.image_url,
+                linkUrl: b.linkUrl ?? b.link_url
+              })),
               leads: [],
               stats: bizData.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
             } as Business);
@@ -247,6 +276,17 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
   if (isLoadingDetails) return (
     <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center text-white">
       <Loader2 className="animate-spin text-amber-500" size={48} />
+    </div>
+  );
+
+  if (fetchError) return (
+    <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center text-white p-6">
+       <h1 className="text-2xl font-bold text-red-500 mb-4">Error de Base de Datos</h1>
+       <p className="text-gray-400 mb-6 text-center max-w-md">{fetchError}</p>
+       <p className="text-amber-500 text-sm mb-6 text-center max-w-md">
+         Asegúrate de haber ejecutado el script SQL en Supabase para crear las relaciones (Foreign Keys) correctamente.
+       </p>
+       <Link to="/" className="bg-amber-500 text-black px-6 py-3 rounded-xl font-bold">Volver al inicio</Link>
     </div>
   );
 

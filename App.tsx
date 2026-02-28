@@ -81,10 +81,28 @@ const App: React.FC = () => {
           deliveryPriceOutside: biz.deliveryPriceOutside ?? biz.delivery_price_outside ?? 0,
           role: biz.role || 'user',
           
-          products: biz.products || [],
+          products: (biz.products || []).map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            description: p.description,
+            price: p.price,
+            categoryId: p.categoryId ?? p.category_id,
+            imageUrl: p.imageUrl ?? p.image_url,
+            isVisible: p.isVisible ?? p.is_visible ?? true,
+            isHighlighted: p.isHighlighted ?? p.is_highlighted ?? false
+          })),
           categories: biz.categories || [],
-          events: biz.events || [],
-          banners: biz.banners || [],
+          events: (biz.events || []).map((e: any) => ({
+            ...e,
+            dateTime: e.dateTime ?? e.date_time,
+            imageUrl: e.imageUrl ?? e.image_url,
+            interestedCount: e.interestedCount ?? e.interested_count ?? 0
+          })),
+          banners: (biz.banners || []).map((b: any) => ({
+            ...b,
+            imageUrl: b.imageUrl ?? b.image_url,
+            linkUrl: b.linkUrl ?? b.link_url
+          })),
           leads: biz.leads || [],
           stats: biz.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
         } as Business));
@@ -119,7 +137,10 @@ const App: React.FC = () => {
         .eq('id', id)
         .single();
       
-      if (bizError) throw bizError;
+      if (bizError) {
+        console.error("Supabase Error in loadActiveBusiness:", bizError);
+        throw bizError;
+      }
 
       if (bizData) {
         const now = new Date();
@@ -143,6 +164,28 @@ const App: React.FC = () => {
           deliveryPriceInside: bizData.deliveryPriceInside ?? bizData.delivery_price_inside ?? 0,
           deliveryPriceOutside: bizData.deliveryPriceOutside ?? bizData.delivery_price_outside ?? 0,
           role: bizData.role || 'user',
+          products: (bizData.products || []).map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            description: p.description,
+            price: p.price,
+            categoryId: p.categoryId ?? p.category_id,
+            imageUrl: p.imageUrl ?? p.image_url,
+            isVisible: p.isVisible ?? p.is_visible ?? true,
+            isHighlighted: p.isHighlighted ?? p.is_highlighted ?? false
+          })),
+          categories: bizData.categories || [],
+          events: (bizData.events || []).map((e: any) => ({
+            ...e,
+            dateTime: e.dateTime ?? e.date_time,
+            imageUrl: e.imageUrl ?? e.image_url,
+            interestedCount: e.interestedCount ?? e.interested_count ?? 0
+          })),
+          banners: (bizData.banners || []).map((b: any) => ({
+            ...b,
+            imageUrl: b.imageUrl ?? b.image_url,
+            linkUrl: b.linkUrl ?? b.link_url
+          })),
           leads: [], 
           stats: bizData.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
         } as Business);

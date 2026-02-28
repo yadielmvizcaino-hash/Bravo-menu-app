@@ -45,19 +45,34 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
     try {
       const productData = {
         id: editingProduct?.id || Math.random().toString(36).substr(2, 9),
-        businessId: business.id,
-        ...formData,
-        price: parseFloat(formData.price)
+        business_id: business.id,
+        name: formData.name,
+        price: parseFloat(formData.price),
+        description: formData.description,
+        category_id: formData.categoryId,
+        image_url: formData.imageUrl,
+        is_visible: formData.isVisible
       };
 
       const { error } = await supabase.from('products').upsert(productData);
       if (error) throw error;
 
+      // Para el estado local seguimos usando camelCase
+      const localProduct: Product = {
+        id: productData.id,
+        name: productData.name,
+        price: productData.price,
+        description: productData.description,
+        categoryId: productData.category_id,
+        imageUrl: productData.image_url,
+        isVisible: productData.is_visible
+      };
+
       let updatedProducts;
       if (editingProduct) {
-        updatedProducts = business.products.map(p => p.id === editingProduct.id ? (productData as Product) : p);
+        updatedProducts = business.products.map(p => p.id === editingProduct.id ? localProduct : p);
       } else {
-        updatedProducts = [productData as Product, ...business.products];
+        updatedProducts = [localProduct, ...business.products];
       }
       
       onUpdate({ ...business, products: updatedProducts });
