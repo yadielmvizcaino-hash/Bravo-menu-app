@@ -183,7 +183,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Información Básica */}
-        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
+        <section className="bg-black border border-gray-800 rounded-3xl p-8 shadow-xl">
           <h3 className="text-white font-bold text-base mb-6 uppercase tracking-tight">Información básica</h3>
           <div className="space-y-5">
             <div className="space-y-1.5">
@@ -201,7 +201,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Descripción</label>
               <textarea 
                 rows={3} 
-                className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white resize-none focus:border-amber-500/50 outline-none text-sm font-medium"
+                className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white resize-none focus:border-amber-500/50 outline-none text-sm font-medium"
                 placeholder="Escribe una breve descripción de tu negocio..."
                 value={formData.description || ''}
                 onChange={e => setFormData({...formData, description: e.target.value})}
@@ -213,7 +213,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                 <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Tipo de negocio *</label>
                 <select 
                   required
-                  className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none appearance-none text-sm font-medium cursor-pointer"
+                  className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none appearance-none text-sm font-medium cursor-pointer"
                   value={formData.type}
                   onChange={e => setFormData({...formData, type: e.target.value as BusinessType})}
                 >
@@ -229,7 +229,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                   <div className="flex-1 flex gap-2">
                     <input 
                       type="text" 
-                      className="flex-1 bg-[#242426] border border-gray-700 rounded-xl py-3 px-4 text-white focus:border-amber-500/50 outline-none text-sm font-medium"
+                      className="flex-1 bg-black border border-gray-700 rounded-xl py-3 px-4 text-white focus:border-amber-500/50 outline-none text-sm font-medium"
                       placeholder="Ej: Cubana, Internacional..."
                       value={newCuisine}
                       onChange={e => setNewCuisine(e.target.value)}
@@ -238,7 +238,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                     <button 
                       type="button"
                       onClick={addCuisine}
-                      className="bg-[#242426] border border-gray-700 text-gray-400 p-3 rounded-xl hover:text-white transition-colors"
+                      className="bg-black border border-gray-700 text-gray-400 p-3 rounded-xl hover:text-white transition-colors"
                     >
                       <Plus size={20} />
                     </button>
@@ -258,7 +258,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
         </section>
 
         {/* Identidad Visual */}
-        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
+        <section className="bg-black border border-gray-800 rounded-3xl p-8 shadow-xl">
           <h3 className="text-white font-bold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Palette size={18} className="text-amber-500" /> Identidad Visual</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-2">
@@ -304,7 +304,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
         </section>
 
         {/* Galería de fotos */}
-        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
+        <section className="bg-black border border-gray-800 rounded-3xl p-8 shadow-xl">
           <h3 className="text-white font-bold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Camera size={18} className="text-amber-500" /> Galería de fotos</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -350,13 +350,13 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
         </section>
 
         {/* Ubicación */}
-        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
+        <section className="bg-black border border-gray-800 rounded-3xl p-8 shadow-xl">
           <h3 className="text-white font-bold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><MapPin size={18} className="text-amber-500" /> Ubicación</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Provincia *</label>
               <select 
-                className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none appearance-none text-sm font-medium cursor-pointer"
+                className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none appearance-none text-sm font-medium cursor-pointer"
                 value={formData.province || ''}
                 onChange={e => setFormData({...formData, province: e.target.value})}
               >
@@ -367,7 +367,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Municipio *</label>
               <select 
-                className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none appearance-none disabled:opacity-50 text-sm font-medium cursor-pointer"
+                className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none appearance-none disabled:opacity-50 text-sm font-medium cursor-pointer"
                 disabled={!formData.province}
                 value={formData.municipality || ''}
                 onChange={e => setFormData({...formData, municipality: e.target.value})}
@@ -381,7 +381,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
             <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Dirección completa</label>
             <input 
               type="text" 
-              className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
+              className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
               placeholder="Ej: Calle 23 e/ L y M, Vedado"
               value={formData.address || ''}
               onChange={e => setFormData({...formData, address: e.target.value})}
@@ -390,14 +390,14 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
         </section>
 
         {/* Contacto */}
-        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 shadow-xl">
+        <section className="bg-black border border-gray-800 rounded-3xl p-8 shadow-xl">
           <h3 className="text-white font-bold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Phone size={18} className="text-amber-500" /> Contacto</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Teléfono</label>
               <input 
                 type="text" 
-                className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
+                className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
                 value={formData.phone || ''}
                 onChange={e => setFormData({...formData, phone: e.target.value})}
               />
@@ -406,7 +406,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">WhatsApp</label>
               <input 
                 type="text" 
-                className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
+                className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
                 value={formData.whatsapp || ''}
                 onChange={e => setFormData({...formData, whatsapp: e.target.value})}
               />
@@ -417,7 +417,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Email</label>
               <input 
                 type="email" 
-                className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
+                className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
                 value={formData.email || ''}
                 onChange={e => setFormData({...formData, email: e.target.value})}
               />
@@ -426,7 +426,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Instagram</label>
               <input 
                 type="text" 
-                className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
+                className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
                 placeholder="@minegocio"
                 value={formData.instagram || ''}
                 onChange={e => setFormData({...formData, instagram: e.target.value})}
@@ -437,7 +437,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
             <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Facebook</label>
             <input 
               type="text" 
-              className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
+              className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
               placeholder="https://facebook.com/minegocio"
               value={formData.facebook || ''}
               onChange={e => setFormData({...formData, facebook: e.target.value})}
@@ -446,7 +446,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
         </section>
 
         {/* Horarios de Atención */}
-        <section className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden">
+        <section className="bg-black border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden">
           <div className="flex items-center gap-2 mb-8">
             <Clock size={20} className="text-amber-500" />
             <h3 className="text-white font-bold text-lg tracking-tight uppercase">Horario de atención</h3>
@@ -480,7 +480,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                   <div className="flex items-center gap-2 sm:gap-3 ml-0 sm:ml-auto">
                     <div className="relative flex-1 sm:flex-none">
                       <select 
-                        className="w-full bg-[#242426] border border-gray-700 rounded-lg pl-3 pr-8 py-2 text-xs text-white outline-none focus:border-amber-500/50 appearance-none font-bold"
+                        className="w-full bg-black border border-gray-700 rounded-lg pl-3 pr-8 py-2 text-xs text-white outline-none focus:border-amber-500/50 appearance-none font-bold"
                         value={config.from}
                         onChange={e => {
                           const newSchedule = { ...formData.schedule };
@@ -495,7 +495,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                     <span className="text-gray-600 text-xs font-bold">a</span>
                     <div className="relative flex-1 sm:flex-none">
                       <select 
-                        className="w-full bg-[#242426] border border-gray-700 rounded-lg pl-3 pr-8 py-2 text-xs text-white outline-none focus:border-amber-500/50 appearance-none font-bold"
+                        className="w-full bg-black border border-gray-700 rounded-lg pl-3 pr-8 py-2 text-xs text-white outline-none focus:border-amber-500/50 appearance-none font-bold"
                         value={config.to}
                         onChange={e => {
                           const newSchedule = { ...formData.schedule };
@@ -515,7 +515,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
         </section>
 
         {/* Pedidos a domicilio */}
-        <section className="bg-[#141416] border border-white/5 rounded-3xl p-8 shadow-xl space-y-8 relative">
+        <section className="bg-black border border-white/5 rounded-3xl p-8 shadow-xl space-y-8 relative">
           <div className="absolute top-8 right-8">
             <button 
               type="button"
@@ -543,7 +543,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                 </label>
                 <input 
                   type="number" 
-                  className="w-full bg-[#1a1a1c] border border-gray-800 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-bold"
+                  className="w-full bg-black border border-gray-800 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-bold"
                   value={formData.deliveryPriceInside}
                   onChange={e => setFormData({...formData, deliveryPriceInside: parseFloat(e.target.value) || 0})}
                   placeholder="200"
@@ -555,7 +555,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                 </label>
                 <input 
                   type="number" 
-                  className="w-full bg-[#1a1a1c] border border-gray-800 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-bold"
+                  className="w-full bg-black border border-gray-800 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-bold"
                   value={formData.deliveryPriceOutside}
                   onChange={e => setFormData({...formData, deliveryPriceOutside: parseFloat(e.target.value) || 0})}
                   placeholder="500"
@@ -600,7 +600,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
       {/* Modal de Confirmación de Eliminación */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
-          <div className="bg-[#1a1a1c] border border-red-500/30 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl">
+          <div className="bg-black border border-red-500/30 rounded-[2.5rem] p-8 max-w-md w-full shadow-2xl">
             <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <AlertTriangle size={32} />
             </div>

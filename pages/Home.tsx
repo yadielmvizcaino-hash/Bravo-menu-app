@@ -46,19 +46,9 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
   });
 
   return (
-    <div className="min-h-screen bg-[#0f0f11] font-sans text-gray-200">
+    <div className="min-h-screen bg-black font-sans text-gray-200">
       <header className="relative min-h-[75vh] flex flex-col items-center justify-center pt-10 pb-8 px-4 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=2000" 
-            className="w-full h-full object-cover opacity-60"
-            alt="Fondo Bar"
-            loading="eager"
-            {...({ fetchpriority: "high" } as any)}
-          />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0f0f11] via-[#0f0f11]/80 to-transparent" />
-        </div>
+        <div className="absolute inset-0 z-0 bg-black" />
         
         <div className="relative z-10 max-w-4xl w-full text-center px-4">
           <div className="flex items-center justify-center gap-4 mb-4">

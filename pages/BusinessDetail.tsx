@@ -274,13 +274,13 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
   };
 
   if (isLoadingDetails) return (
-    <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center text-white">
+    <div className="min-h-screen bg-black flex items-center justify-center text-white">
       <Loader2 className="animate-spin text-amber-500" size={48} />
     </div>
   );
 
   if (fetchError) return (
-    <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center text-white p-6">
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6">
        <h1 className="text-2xl font-bold text-red-500 mb-4">Error de Base de Datos</h1>
        <p className="text-gray-400 mb-6 text-center max-w-md">{fetchError}</p>
        <p className="text-amber-500 text-sm mb-6 text-center max-w-md">
@@ -291,14 +291,14 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
   );
 
   if (!business && !isLoadingDetails) return (
-    <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center text-white p-6">
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6">
        <h1 className="text-2xl font-bold mb-4">Negocio no encontrado</h1>
        <Link to="/" className="text-amber-500 hover:underline">Volver al inicio</Link>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] pb-20 font-sans relative">
+    <div className="min-h-screen bg-black pb-20 font-sans relative">
       {cartItemsCount > 0 && !isCartOpen && !showDeliveryForm && (
         <button onClick={() => setIsCartOpen(true)} className="fixed bottom-6 right-6 z-[80] bg-amber-500 text-black px-4 py-3 rounded-full shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all">
           <ShoppingBag size={24} strokeWidth={2.5} />
@@ -671,7 +671,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                 </div>
               ))}
             </div>
-            <div className="p-8 border-t border-white/5 bg-[#0a0a0b]/50 space-y-6">
+            <div className="p-8 border-t border-white/5 bg-black/50 space-y-6">
               <div className="flex justify-between font-bold">
                 <span className="text-gray-500 uppercase tracking-widest text-xs">Total</span>
                 <span className="text-amber-500 text-2xl">${cartTotal}</span>
@@ -700,8 +700,8 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
       )}
 
       {showDeliveryForm && (
-        <div className="fixed inset-0 z-[110] bg-[#0a0a0b] flex flex-col animate-fade-in overflow-y-auto">
-          <header className="sticky top-0 p-6 flex items-center justify-between bg-[#0a0a0b] border-b border-white/5">
+        <div className="fixed inset-0 z-[110] bg-black flex flex-col animate-fade-in overflow-y-auto">
+          <header className="sticky top-0 p-6 flex items-center justify-between bg-black border-b border-white/5">
             <h2 className="text-xl font-bold text-white flex items-center gap-2"><Truck className="text-[#25d366]" /> Entrega</h2>
             <button onClick={() => setShowDeliveryForm(false)} className="text-gray-500"><X size={28} /></button>
           </header>

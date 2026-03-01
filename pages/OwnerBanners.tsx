@@ -46,16 +46,28 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
     try {
       const bannerData = {
         id: editingBanner?.id || Math.random().toString(36).substr(2, 9),
-        businessId: business.id,
-        ...formData,
+        business_id: business.id,
+        title: formData.title,
+        image_url: formData.imageUrl,
+        link_url: formData.linkUrl,
+        position: formData.position,
         clicks: editingBanner?.clicks || 0
       };
       const { error } = await supabase.from('banners').upsert(bannerData);
       if (error) throw error;
 
+      const localBanner: Banner = {
+        id: bannerData.id,
+        title: bannerData.title,
+        imageUrl: bannerData.image_url,
+        linkUrl: bannerData.link_url,
+        position: bannerData.position,
+        clicks: bannerData.clicks
+      };
+
       let updatedBanners = editingBanner 
-        ? business.banners.map(b => b.id === editingBanner.id ? (bannerData as Banner) : b)
-        : [...business.banners, bannerData as Banner];
+        ? business.banners.map(b => b.id === editingBanner.id ? localBanner : b)
+        : [...business.banners, localBanner];
       
       onUpdate({ ...business, banners: updatedBanners });
       setIsModalOpen(false);
@@ -102,7 +114,7 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
   if (!isPro) {
     return (
       <div className="max-w-4xl mx-auto h-[80vh] flex items-center justify-center px-6">
-        <div className="relative bg-[#1a1a1c] border border-white/5 rounded-3xl p-12 text-center overflow-hidden shadow-2xl">
+        <div className="relative bg-black border border-white/5 rounded-3xl p-12 text-center overflow-hidden shadow-2xl">
           <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-500/20 blur-[100px] rounded-full" />
           <div className="relative z-10">
             <div className="w-24 h-24 bg-amber-500 text-black rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl">
@@ -131,7 +143,7 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
 
       <div className="space-y-6">
         {business.banners.map(banner => (
-          <div key={banner.id} className="bg-[#1a1a1c] border border-white/5 rounded-3xl p-6 flex flex-col md:flex-row items-center gap-8 group hover:border-amber-500/30 transition-all shadow-xl">
+          <div key={banner.id} className="bg-black border border-white/5 rounded-3xl p-6 flex flex-col md:flex-row items-center gap-8 group hover:border-amber-500/30 transition-all shadow-xl">
              <div className="w-full md:w-64 h-36 rounded-2xl overflow-hidden shrink-0">
                <OptimizedImage src={banner.imageUrl} containerClassName="w-full h-full" alt="Banner" />
              </div>
@@ -143,7 +155,7 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
                </div>
              </div>
              <div className="flex gap-3 w-full md:w-auto">
-                <button onClick={() => openEditModal(banner)} className="p-4 bg-gray-800 text-gray-400 rounded-2xl hover:text-white transition-all shadow-xl"><Edit2 size={20} /></button>
+                <button onClick={() => openEditModal(banner)} className="p-4 bg-black text-gray-400 rounded-2xl border border-gray-800 hover:text-white transition-all shadow-xl"><Edit2 size={20} /></button>
                 <button 
                   onClick={() => handleDelete(banner.id)} 
                   disabled={isDeleting === banner.id}
@@ -158,7 +170,7 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
 
       {isModalOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in">
-          <div className="bg-[#1a1a1c] border border-white/10 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl">
+          <div className="bg-black border border-white/10 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl">
             <div className="flex items-center justify-between p-8 border-b border-white/5">
               <h2 className="text-2xl font-black text-white uppercase tracking-tight">{editingBanner ? 'Editar' : 'Nuevo'} Banner</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white"><X size={28} /></button>
@@ -166,7 +178,7 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
             <form onSubmit={handleSave} className="p-8 space-y-6">
               <div className="space-y-3">
                 <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Imagen (Recomendado Horizontal)</label>
-                <div onClick={() => fileInputRef.current?.click()} className="relative w-full h-52 rounded-2xl overflow-hidden bg-black/40 border-2 border-dashed border-white/10 flex items-center justify-center group cursor-pointer hover:border-amber-500/50 transition-all">
+                <div onClick={() => fileInputRef.current?.click()} className="relative w-full h-52 rounded-2xl overflow-hidden bg-black border-2 border-dashed border-white/10 flex items-center justify-center group cursor-pointer hover:border-amber-500/50 transition-all">
                   {isUploading ? (
                     <Loader2 className="animate-spin text-amber-500" size={32} />
                   ) : formData.imageUrl ? (
@@ -185,11 +197,11 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
               <div className="space-y-4">
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Título</label>
-                  <input required type="text" className="w-full bg-[#242426] border border-white/5 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm font-bold uppercase" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
+                  <input required type="text" className="w-full bg-black border border-white/5 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm font-bold uppercase" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Posición</label>
-                  <select className="w-full bg-[#242426] border border-white/5 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm appearance-none" value={formData.position} onChange={e => setFormData({...formData, position: e.target.value as any})}>
+                  <select className="w-full bg-black border border-white/5 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm appearance-none" value={formData.position} onChange={e => setFormData({...formData, position: e.target.value as any})}>
                     <option value="header">Superior (Header)</option>
                     <option value="middle">Intermedio (Middle)</option>
                     <option value="footer">Inferior (Footer)</option>

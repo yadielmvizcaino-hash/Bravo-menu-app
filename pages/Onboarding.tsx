@@ -72,7 +72,7 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
       
       const { error: catError } = await supabase.from('categories').insert({
         id: Math.random().toString(36).substr(2, 9),
-        businessId: businessId,
+        business_id: businessId,
         name: 'General'
       });
 
@@ -99,7 +99,7 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] py-12 px-4">
+    <div className="min-h-screen bg-black py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-500 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-4 border border-amber-500/20">

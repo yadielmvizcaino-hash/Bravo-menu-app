@@ -108,7 +108,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
     if (!prod) return;
     const newVisibility = !prod.isVisible;
     try {
-      const { error } = await supabase.from('products').update({ isVisible: newVisibility }).eq('id', id);
+      const { error } = await supabase.from('products').update({ is_visible: newVisibility }).eq('id', id);
       if (!error) {
         onUpdate({ ...business, products: business.products.map(p => p.id === id ? { ...p, isVisible: newVisibility } : p) });
       }
@@ -170,8 +170,8 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {filteredProducts.map(product => (
-          <div key={product.id} className={`bg-[#1a1a1c] border ${product.isVisible ? 'border-gray-800' : 'border-red-500/20 opacity-75'} rounded-3xl overflow-hidden group flex h-40 shadow-xl transition-all`}>
-             <div className="relative w-40 shrink-0 bg-gray-900">
+          <div key={product.id} className={`bg-black border ${product.isVisible ? 'border-gray-800' : 'border-red-500/20 opacity-75'} rounded-3xl overflow-hidden group flex h-40 shadow-xl transition-all`}>
+             <div className="relative w-40 shrink-0 bg-black">
                <img src={product.imageUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={product.name} />
                {!product.isVisible && <div className="absolute inset-0 bg-black/60 flex items-center justify-center"><EyeOff size={24} className="text-white/50" /></div>}
              </div>
@@ -203,14 +203,14 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
 
       {isModalOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#1a1a1c] border border-gray-800 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl">
+          <div className="bg-black border border-gray-800 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl">
             <div className="flex items-center justify-between p-8 border-b border-gray-800">
               <h2 className="text-xl font-black text-white uppercase tracking-tight">{editingProduct ? 'Editar' : 'Nuevo'} Producto</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white transition-colors"><X size={24} /></button>
             </div>
             <form onSubmit={handleSave} className="p-8 space-y-5 max-h-[85vh] overflow-y-auto no-scrollbar">
               <div 
-                className="relative w-full h-48 rounded-2xl overflow-hidden bg-gray-800 border-2 border-dashed border-gray-700 flex items-center justify-center group cursor-pointer hover:border-amber-500/50" 
+                className="relative w-full h-48 rounded-2xl overflow-hidden bg-black border-2 border-dashed border-gray-700 flex items-center justify-center group cursor-pointer hover:border-amber-500/50" 
                 onClick={() => fileInputRef.current?.click()}
               >
                 {isUploading ? (
@@ -228,11 +228,11 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Nombre</label>
-                    <input required type="text" className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Ej: Pizza Margarita" />
+                    <input required type="text" className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Ej: Pizza Margarita" />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Precio (CUP)</label>
-                    <input required type="number" className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Ej: 850" />
+                    <input required type="number" className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Ej: 850" />
                   </div>
                 </div>
 
@@ -240,7 +240,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Categoría</label>
                   <select 
                     required 
-                    className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm appearance-none cursor-pointer"
+                    className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm appearance-none cursor-pointer"
                     value={formData.categoryId}
                     onChange={e => setFormData({...formData, categoryId: e.target.value})}
                   >
@@ -255,7 +255,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Descripción</label>
                   <textarea 
                     rows={3} 
-                    className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm resize-none"
+                    className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm resize-none"
                     value={formData.description}
                     onChange={e => setFormData({...formData, description: e.target.value})}
                     placeholder="Describe los detalles especiales..."

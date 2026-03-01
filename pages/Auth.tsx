@@ -53,7 +53,7 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
           <p className="text-gray-500 text-sm font-medium">Ingresa tus credenciales registradas.</p>
         </div>
 
-        <form onSubmit={handleLogin} className="bg-[#141416] border border-white/5 p-8 rounded-3xl shadow-2xl space-y-6">
+        <form onSubmit={handleLogin} className="bg-black border border-white/5 p-8 rounded-3xl shadow-2xl space-y-6">
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Teléfono / WhatsApp</label>
             <div className="relative">
@@ -63,7 +63,7 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
                 type="tel" 
                 placeholder="5XXXXXXX"
                 maxLength={8}
-                className="w-full bg-[#1a1a1c] border border-gray-800 rounded-xl py-4 pl-12 pr-4 text-white focus:border-amber-500/50 outline-none transition-all font-mono tracking-widest text-sm"
+                className="w-full bg-black border border-gray-800 rounded-xl py-4 pl-12 pr-4 text-white focus:border-amber-500/50 outline-none transition-all font-mono tracking-widest text-sm"
                 value={phone}
                 onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
               />
@@ -78,7 +78,7 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
                 required
                 type={showPassword ? "text" : "password"} 
                 placeholder="••••••••"
-                className="w-full bg-[#1a1a1c] border border-gray-800 rounded-xl py-4 pl-12 pr-12 text-white focus:border-amber-500/50 outline-none transition-all text-sm"
+                className="w-full bg-black border border-gray-800 rounded-xl py-4 pl-12 pr-12 text-white focus:border-amber-500/50 outline-none transition-all text-sm"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
               />

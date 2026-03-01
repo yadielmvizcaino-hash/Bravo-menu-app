@@ -5,7 +5,7 @@ import { Business, PlanType } from '../types';
 import { Link } from 'react-router-dom';
 
 const StatCard: React.FC<{ label: string, value: string | number, icon: React.ReactNode, color: string, trend?: string }> = ({ label, value, icon, color, trend }) => (
-  <div className="bg-[#1a1a1c] border border-gray-800 p-6 rounded-[2rem] flex items-center gap-6 shadow-xl hover:border-white/10 transition-colors">
+  <div className="bg-black border border-gray-800 p-6 rounded-[2rem] flex items-center gap-6 shadow-xl hover:border-white/10 transition-colors">
     <div className={`w-14 h-14 rounded-2xl ${color} flex items-center justify-center shrink-0`}>
       {icon}
     </div>
@@ -76,7 +76,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8">
+          <div className="bg-black border border-gray-800 rounded-3xl p-8">
             <h2 className="text-xl font-bold text-white mb-6">Accesos rápidos</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                {[
@@ -87,7 +87,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
                  { label: 'Clientes', icon: <Users size={20} />, to: '/admin/leads', color: 'bg-orange-500/10 text-orange-500' },
                  { label: isAdmin ? 'Súper Admin' : 'Plan', icon: isAdmin ? <Shield size={20} /> : <Settings size={20} />, to: isAdmin ? '/super-admin' : '/admin/pricing', color: 'bg-gray-500/10 text-gray-400' },
                ].map((item, idx) => (
-                 <Link key={idx} to={item.to} className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#242426] border border-transparent hover:border-white/10 hover:bg-[#2a2a2c] transition-all group">
+                 <Link key={idx} to={item.to} className="flex flex-col items-center justify-center p-6 rounded-2xl bg-black border border-transparent hover:border-white/10 hover:bg-[#2a2a2c] transition-all group">
                     <div className={`w-12 h-12 rounded-xl ${item.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                       {item.icon}
                     </div>
@@ -97,7 +97,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
             </div>
           </div>
 
-          <div className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8">
+          <div className="bg-black border border-gray-800 rounded-3xl p-8">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-white">Diseñador de QR</h2>
               <button className="text-amber-500 text-xs font-bold hover:underline">Personalizar</button>
@@ -111,7 +111,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
                  <button 
                    onClick={handleDownloadQR}
                    disabled={isDownloading}
-                   className="w-full bg-[#242426] text-white py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#2a2a2c] transition-all disabled:opacity-50"
+                   className="w-full bg-black text-white py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#2a2a2c] transition-all disabled:opacity-50"
                  >
                    {isDownloading ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />} 
                    Descargar Imagen QR
@@ -122,7 +122,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8 relative overflow-hidden">
+          <div className="bg-black border border-gray-800 rounded-3xl p-8 relative overflow-hidden">
             <div className="absolute top-4 right-4 text-amber-500">
                <Crown size={24} fill="currentColor" />
             </div>
@@ -135,7 +135,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
             </Link>
           </div>
 
-          <div className="bg-[#1a1a1c] border border-gray-800 rounded-3xl p-8">
+          <div className="bg-black border border-gray-800 rounded-3xl p-8">
              <h3 className="text-white font-bold text-lg mb-4">Reputación</h3>
              <div className="space-y-4">
                 <div className="flex items-center justify-between">

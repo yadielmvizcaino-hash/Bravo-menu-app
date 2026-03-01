@@ -35,7 +35,7 @@ const OwnerCategories: React.FC<{ business: Business, onUpdate: (b: Business) =>
     try {
       const categoryData = {
         id: editingCategory?.id || Math.random().toString(36).substr(2, 9),
-        businessId: business.id,
+        business_id: business.id,
         name: catName.trim()
       };
 
@@ -93,11 +93,11 @@ const OwnerCategories: React.FC<{ business: Business, onUpdate: (b: Business) =>
         </button>
       </div>
 
-      <div className="bg-[#1a1a1c] border border-gray-800 rounded-[2rem] overflow-hidden shadow-xl">
+      <div className="bg-black border border-gray-800 rounded-[2rem] overflow-hidden shadow-xl">
         <div className="p-6 md:p-8">
           <div className="space-y-3">
             {business.categories.map((cat, index) => (
-              <div key={cat.id} className="bg-[#242426] border border-gray-700 p-4 rounded-2xl flex items-center gap-4 group hover:border-amber-500/30 transition-all">
+              <div key={cat.id} className="bg-black border border-gray-700 p-4 rounded-2xl flex items-center gap-4 group hover:border-amber-500/30 transition-all">
                 <div className="text-gray-600 cursor-grab hover:text-gray-400 transition-colors">
                   <GripVertical size={20} />
                 </div>
@@ -113,7 +113,7 @@ const OwnerCategories: React.FC<{ business: Business, onUpdate: (b: Business) =>
                 <div className="flex gap-2">
                   <button 
                     onClick={() => openEditModal(cat)}
-                    className="p-2 bg-gray-800 text-gray-400 rounded-lg hover:text-white transition-colors"
+                    className="p-2 bg-black text-gray-400 rounded-lg border border-gray-800 hover:text-white transition-colors"
                   >
                     <Edit2 size={16} />
                   </button>
@@ -135,7 +135,7 @@ const OwnerCategories: React.FC<{ business: Business, onUpdate: (b: Business) =>
 
       {isModalOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#1a1a1c] border border-gray-800 rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl">
+          <div className="bg-black border border-gray-800 rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl">
             <div className="flex items-center justify-between p-6 border-b border-gray-800">
               <h2 className="text-xl font-bold text-white">{editingCategory ? 'Renombrar Categoría' : 'Nueva Categoría'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white transition-colors">
@@ -150,7 +150,7 @@ const OwnerCategories: React.FC<{ business: Business, onUpdate: (b: Business) =>
                   autoFocus
                   required
                   type="text" 
-                  className="w-full bg-[#242426] border border-gray-700 rounded-xl py-4 px-4 text-white focus:border-amber-500/50 outline-none"
+                  className="w-full bg-black border border-gray-700 rounded-xl py-4 px-4 text-white focus:border-amber-500/50 outline-none"
                   value={catName}
                   onChange={e => setCatName(e.target.value)}
                 />

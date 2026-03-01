@@ -312,7 +312,7 @@ const App: React.FC = () => {
         <Route path="/login" element={loggedInId && activeBusiness ? <Navigate to="/admin" replace /> : <PublicLayout loggedInBusinessId={loggedInId}><Auth onLogin={handleLogin} /></PublicLayout>} />
         <Route path="/admin/*" element={
           !activeBusiness && (loading || loggedInId) ? (
-            <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center text-amber-500 gap-4">
+            <div className="min-h-screen bg-black flex flex-col items-center justify-center text-amber-500 gap-4">
               <Loader2 className="animate-spin" size={48} />
               <span className="text-xs font-black uppercase tracking-widest animate-pulse">Cargando Panel...</span>
             </div>
@@ -377,7 +377,7 @@ const PublicHeader: React.FC<{ loggedInBusinessId: string | null }> = ({ loggedI
 };
 
 const PublicLayout: React.FC<{ children: React.ReactNode, loggedInBusinessId: string | null }> = ({ children, loggedInBusinessId }) => (
-  <div className="min-h-screen flex flex-col bg-[#0a0a0b]">
+  <div className="min-h-screen flex flex-col bg-black">
     <PublicHeader loggedInBusinessId={loggedInBusinessId} />
     <main className="flex-1">{children}</main>
   </div>
@@ -389,12 +389,12 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
   const isAdmin = business?.role === 'admin';
 
   return (
-    <div className="flex min-h-screen bg-[#0f0f11] overflow-x-hidden">
+    <div className="flex min-h-screen bg-black overflow-x-hidden">
       {isSidebarOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden" onClick={() => setIsSidebarOpen(false)} />}
-      <aside className={`w-64 bg-[#1a1a1c] border-r border-gray-800 fixed h-full flex flex-col z-50 transition-transform md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`w-64 bg-black border-r border-gray-800 fixed h-full flex flex-col z-50 transition-transform md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 flex flex-col h-full">
           <Link to="/" className="flex items-center gap-2 text-amber-500 font-bold text-xl mb-8">🍴 Bravo Menú</Link>
-          <div className="bg-[#242426] p-3 rounded-xl mb-6 flex items-center gap-3">
+          <div className="bg-black border border-gray-800 p-3 rounded-xl mb-6 flex items-center gap-3">
             <img src={business.logoUrl || 'https://via.placeholder.com/150'} alt="Logo" className="w-10 h-10 rounded-lg object-cover" />
             <div className="overflow-hidden">
               <h3 className="text-sm font-bold text-white truncate">{business.name}</h3>
@@ -415,7 +415,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
               { to: '/admin/leads', icon: <Users size={20} />, label: 'Leads' },
               { to: '/admin/pricing', icon: <Crown size={20} />, label: 'Estadísticas' },
             ].map(link => (
-              <Link key={link.to} to={link.to} className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-all mb-1 text-sm font-medium">
+              <Link key={link.to} to={link.to} className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-black hover:text-white transition-all mb-1 text-sm font-medium border border-transparent hover:border-white/5">
                 {link.icon} <span>{link.label}</span>
               </Link>
             ))}

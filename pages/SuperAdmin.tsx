@@ -227,11 +227,11 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
   }, [businesses, searchTerm]);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] text-gray-300 font-sans p-4 md:p-8 selection:bg-amber-500/30">
+    <div className="min-h-screen bg-black text-gray-300 font-sans p-4 md:p-8 selection:bg-amber-500/30">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header Compacto */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#141416] p-6 rounded-3xl border border-white/5 shadow-2xl">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-black p-6 rounded-3xl border border-white/5 shadow-2xl">
           <div className="flex items-center gap-4">
             <Link to="/admin" className="p-2.5 bg-white/5 rounded-xl hover:bg-white/10 transition-all text-gray-400 hover:text-white">
               <ArrowLeft size={18} />
@@ -267,21 +267,21 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
 
         {/* Estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-[#141416] p-5 rounded-2xl border border-white/5 flex items-center gap-5">
+          <div className="bg-black p-5 rounded-2xl border border-white/5 flex items-center gap-5">
             <div className="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500"><Users size={24} /></div>
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-0.5">Total Negocios</p>
               <h3 className="text-2xl font-black text-white">{stats.total}</h3>
             </div>
           </div>
-          <div className="bg-[#141416] p-5 rounded-2xl border border-amber-500/10 flex items-center gap-5">
+          <div className="bg-black p-5 rounded-2xl border border-amber-500/10 flex items-center gap-5">
             <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500"><Crown size={24} /></div>
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-amber-500 mb-0.5">Planes PRO</p>
               <h3 className="text-2xl font-black text-white">{stats.pro}</h3>
             </div>
           </div>
-          <div className="bg-[#141416] p-5 rounded-2xl border border-green-500/10 flex items-center gap-5">
+          <div className="bg-black p-5 rounded-2xl border border-green-500/10 flex items-center gap-5">
             <div className="w-12 h-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500"><Banknote size={24} /></div>
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-green-500 mb-0.5">Ingresos Mensuales</p>
@@ -291,7 +291,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
         </div>
         
         {/* Configuración de Pagos */}
-        <div className="bg-[#141416] p-6 rounded-3xl border border-white/5 shadow-2xl space-y-4">
+        <div className="bg-black p-6 rounded-3xl border border-white/5 shadow-2xl space-y-4">
           <div className="flex items-center gap-2 mb-2">
             <CreditCard className="text-amber-500" size={18} />
             <h2 className="text-sm font-black text-white uppercase tracking-tight">Configuración de Pagos</h2>
@@ -331,7 +331,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
         </div>
 
         {/* Tabla Principal */}
-        <div className="bg-[#141416] border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+        <div className="bg-black border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
           <div className="overflow-x-auto no-scrollbar">
             <table className="w-full text-left">
               <thead className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] bg-black/40 border-b border-white/5">
@@ -441,7 +441,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
       {/* Modal de Activación PRO */}
       {isProModalOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in">
-          <div className="bg-[#1a1a1c] border border-white/10 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl">
+          <div className="bg-black border border-white/10 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl">
             <div className="p-8 border-b border-white/5 flex items-center justify-between">
               <h2 className="text-lg font-black text-white uppercase tracking-tight">Activar Suscripción</h2>
               <button onClick={() => setIsProModalOpen(false)} className="text-gray-500 hover:text-white"><X size={20} /></button>

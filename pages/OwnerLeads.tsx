@@ -12,28 +12,28 @@ const OwnerLeads: React.FC<{ business: Business }> = ({ business }) => {
           <p className="text-gray-500 text-sm">Contactos captados a través de tu menú digital</p>
         </div>
         <div className="flex gap-3">
-          <button className="bg-[#1a1a1c] text-white border border-gray-800 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-gray-800 transition-all text-sm">
+          <button className="bg-black text-white border border-gray-800 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-gray-800 transition-all text-sm">
             <Download size={20} /> Exportar CSV
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div className="bg-[#1a1a1c] p-6 rounded-[2rem] border border-gray-800">
+        <div className="bg-black p-6 rounded-[2rem] border border-gray-800">
            <div className="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center mb-4">
               <Users size={24} />
            </div>
            <p className="text-gray-500 text-sm mb-1">Total de Leads</p>
            <h3 className="text-3xl font-bold text-white">{business.leads.length}</h3>
         </div>
-        <div className="bg-[#1a1a1c] p-6 rounded-[2rem] border border-gray-800">
+        <div className="bg-black p-6 rounded-[2rem] border border-gray-800">
            <div className="w-12 h-12 bg-green-500/10 text-green-500 rounded-2xl flex items-center justify-center mb-4">
               <QrCode size={24} />
            </div>
            <p className="text-gray-500 text-sm mb-1">Desde Código QR</p>
            <h3 className="text-3xl font-bold text-white">84%</h3>
         </div>
-        <div className="bg-[#1a1a1c] p-6 rounded-[2rem] border border-gray-800">
+        <div className="bg-black p-6 rounded-[2rem] border border-gray-800">
            <div className="w-12 h-12 bg-purple-500/10 text-purple-500 rounded-2xl flex items-center justify-center mb-4">
               <CalendarIcon size={24} />
            </div>
@@ -42,15 +42,15 @@ const OwnerLeads: React.FC<{ business: Business }> = ({ business }) => {
         </div>
       </div>
 
-      <div className="bg-[#1a1a1c] border border-gray-800 rounded-[2.5rem] p-8 shadow-2xl">
+      <div className="bg-black border border-gray-800 rounded-[2.5rem] p-8 shadow-2xl">
         <div className="flex flex-col md:flex-row gap-4 mb-10">
            <div className="flex-1 relative">
              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
-             <input type="text" placeholder="Buscar por nombre o teléfono..." className="w-full bg-[#242426] border border-gray-700 rounded-2xl py-4 pl-12 pr-4 text-white focus:ring-2 focus:ring-amber-500 transition-all outline-none text-sm" />
+             <input type="text" placeholder="Buscar por nombre o teléfono..." className="w-full bg-black border border-gray-700 rounded-2xl py-4 pl-12 pr-4 text-white focus:ring-2 focus:ring-amber-500 transition-all outline-none text-sm" />
            </div>
            <div className="flex gap-2">
               <button className="bg-amber-500 text-black px-8 py-4 rounded-2xl font-bold shadow-lg shadow-amber-500/10 text-xs">Todos</button>
-              <button className="bg-[#242426] text-gray-400 border border-gray-800 px-8 py-4 rounded-2xl font-bold hover:text-white transition-all text-xs">Solo QR</button>
+              <button className="bg-black text-gray-400 border border-gray-800 px-8 py-4 rounded-2xl font-bold hover:text-white transition-all text-xs">Solo QR</button>
            </div>
         </div>
 
