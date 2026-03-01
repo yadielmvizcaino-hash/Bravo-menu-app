@@ -5,6 +5,7 @@ import { Business, BusinessType, PlanType } from '../types';
 import { compressImage } from '../utils/image';
 import { uploadImage } from '../lib/supabase';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
+import OptimizedImage from '../components/OptimizedImage';
 
 interface DayConfig {
   open: boolean;
@@ -268,7 +269,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
                 ) : formData.logoUrl && (
                   <>
-                    <img src={formData.logoUrl} className="w-full h-full object-cover" alt="Logo" />
+                    <OptimizedImage src={formData.logoUrl} containerClassName="w-full h-full" alt="Logo" />
                     <button type="button" onClick={() => setFormData(p => ({...p, logoUrl: ''}))} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md z-20 hover:bg-red-600 transition-colors shadow-lg"><X size={14} /></button>
                   </>
                 )}
@@ -289,7 +290,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
                 ) : formData.coverPhotos?.[0] ? (
                   <>
-                    <img src={formData.coverPhotos[0]} className="w-full h-full object-cover" alt="Banner" />
+                    <OptimizedImage src={formData.coverPhotos[0]} containerClassName="w-full h-full" alt="Banner" />
                     <button type="button" onClick={() => removeCoverPhoto(0)} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md z-20 hover:bg-red-600 transition-colors shadow-lg"><X size={14} /></button>
                   </>
                 ) : (
@@ -315,7 +316,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               {(formData.coverPhotos || []).map((url, index) => (
                 index > 0 && (
                   <div key={index} className="relative aspect-video sm:aspect-square rounded-xl overflow-hidden group border border-gray-800">
-                    <img src={url} className="w-full h-full object-cover" alt={`Foto ${index + 1}`} />
+                    <OptimizedImage src={url} containerClassName="w-full h-full" alt={`Foto ${index + 1}`} />
                     <button 
                       type="button" 
                       onClick={() => removeCoverPhoto(index)} 

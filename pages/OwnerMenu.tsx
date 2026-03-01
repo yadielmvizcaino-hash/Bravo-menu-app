@@ -4,6 +4,7 @@ import { Plus, Search, Filter, Edit2, Trash2, X, Save, Upload, Image as ImageIco
 import { Business, PlanType, Product } from '../types';
 import { compressImage } from '../utils/image';
 import { supabase, uploadImage } from '../lib/supabase';
+import OptimizedImage from '../components/OptimizedImage';
 
 const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void }> = ({ business, onUpdate }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -172,7 +173,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
         {filteredProducts.map(product => (
           <div key={product.id} className={`bg-black border ${product.isVisible ? 'border-gray-800' : 'border-red-500/20 opacity-75'} rounded-3xl overflow-hidden group flex h-40 shadow-xl transition-all`}>
              <div className="relative w-40 shrink-0 bg-black">
-               <img src={product.imageUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={product.name} />
+               <OptimizedImage src={product.imageUrl} containerClassName="w-full h-full" className="group-hover:scale-105 transition-transform duration-700" alt={product.name} />
                {!product.isVisible && <div className="absolute inset-0 bg-black/60 flex items-center justify-center"><EyeOff size={24} className="text-white/50" /></div>}
              </div>
              <div className="p-6 flex-1 flex flex-col justify-between">
@@ -216,7 +217,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
                 {isUploading ? (
                   <Loader2 className="animate-spin text-amber-500" size={32} />
                 ) : (
-                  <img src={formData.imageUrl} className="w-full h-full object-cover" alt="Previsualización" />
+                  <OptimizedImage src={formData.imageUrl} containerClassName="w-full h-full" alt="Previsualización" />
                 )}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white font-bold text-xs uppercase transition-opacity">
                   Cambiar Imagen

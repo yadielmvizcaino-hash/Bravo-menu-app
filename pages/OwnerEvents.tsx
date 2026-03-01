@@ -5,6 +5,7 @@ import { Business, PlanType, Event } from '../types';
 import { Link } from 'react-router-dom';
 import { compressImage } from '../utils/image';
 import { supabase, uploadImage } from '../lib/supabase';
+import OptimizedImage from '../components/OptimizedImage';
 
 const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => void }> = ({ business, onUpdate }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -153,7 +154,7 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
          {business.events.map(event => (
            <div key={event.id} className="bg-black border border-gray-800 rounded-3xl overflow-hidden group hover:border-amber-500/30 transition-all shadow-2xl flex flex-col">
               <div className="relative h-64 bg-black">
-                 <img src={event.imageUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={event.title} />
+                 <OptimizedImage src={event.imageUrl} containerClassName="w-full h-full" className="group-hover:scale-105 transition-transform duration-700" alt={event.title} />
                  <div className="absolute top-6 right-6 flex gap-2">
                     <button onClick={() => openEditModal(event)} className="p-3 bg-black/60 backdrop-blur-md text-white rounded-xl hover:bg-amber-500 hover:text-black transition-all shadow-2xl"><Edit2 size={18} /></button>
                     <button 
@@ -198,7 +199,7 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
                   {isUploading ? (
                     <Loader2 className="animate-spin text-amber-500" size={32} />
                   ) : formData.imageUrl ? (
-                    <img src={formData.imageUrl} className="w-full h-full object-cover" alt="Preview" />
+                    <OptimizedImage src={formData.imageUrl} containerClassName="w-full h-full" alt="Preview" />
                   ) : (
                     <div className="text-center">
                       <Upload className="mx-auto text-gray-600 mb-2" size={32} />

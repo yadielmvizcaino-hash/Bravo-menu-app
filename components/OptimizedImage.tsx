@@ -1,8 +1,9 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   containerClassName?: string;
+  lowQualitySrc?: string;
   fetchPriority?: 'high' | 'low' | 'auto';
 }
 
@@ -11,6 +12,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   alt, 
   className, 
   containerClassName = "", 
+  lowQualitySrc,
   loading = "lazy",
   fetchPriority = "auto",
   ...props 
@@ -18,16 +20,36 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  // Resetear el estado cuando la fuente de la imagen cambia (ej. al actualizar foto de portada)
+  // Intentar generar una versión de baja calidad si es de Unsplash y no se proporcionó una
+  const placeholderSrc = useMemo(() => {
+    if (lowQualitySrc) return lowQualitySrc;
+    if (src && src.includes('unsplash.com')) {
+      // Si es Unsplash, podemos pedir una versión minúscula y borrosa
+      return `${src}${src.includes('?') ? '&' : '?' }w=50&q=30&blur=10`;
+    }
+    return null;
+  }, [src, lowQualitySrc]);
+
+  // Resetear el estado cuando la fuente de la imagen cambia
   useEffect(() => {
     setIsLoaded(false);
     setHasError(false);
   }, [src]);
 
   return (
-    <div className={`relative overflow-hidden bg-[#1a1a1c] ${containerClassName}`}>
-      {/* Shimmer Placeholder */}
-      {!isLoaded && !hasError && (
+    <div className={`relative overflow-hidden bg-black ${containerClassName}`}>
+      {/* Low Quality Placeholder / Blur-up */}
+      {placeholderSrc && !isLoaded && !hasError && (
+        <img
+          src={placeholderSrc}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover blur-lg scale-110 transition-opacity duration-500"
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Shimmer Placeholder (si no hay imagen de baja calidad) */}
+      {!isLoaded && !hasError && !placeholderSrc && (
         <div className="absolute inset-0 shimmer bg-white/5" />
       )}
       
@@ -46,8 +68,8 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         referrerPolicy="no-referrer"
         onLoad={() => setIsLoaded(true)}
         onError={() => setHasError(true)}
-        className={`w-full h-full object-cover transition-opacity duration-300 ease-in-out ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
+        className={`w-full h-full object-cover transition-all duration-700 ease-in-out ${
+          isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-105 blur-md'
         } ${className}`}
         {...props}
       />
