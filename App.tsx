@@ -139,7 +139,20 @@ const App: React.FC = () => {
       
       if (bizError) {
         console.error("Supabase Error in loadActiveBusiness:", bizError);
+        // If the business is not found, clear the session
+        if (bizError.code === 'PGRST116') {
+          setLoggedInId(null);
+          localStorage.removeItem('bravo_menu_biz_id');
+          setActiveBusiness(null);
+        }
         throw bizError;
+      }
+
+      if (!bizData) {
+        setLoggedInId(null);
+        localStorage.removeItem('bravo_menu_biz_id');
+        setActiveBusiness(null);
+        return;
       }
 
       if (bizData) {
