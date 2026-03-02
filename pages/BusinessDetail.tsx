@@ -365,113 +365,115 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           </div>
         )}
 
-        {/* Info Card con Redes Sociales y Horarios - REDISEÑADO COMPACTO */}
-        <div className="bg-[#141416] rounded-3xl border border-white/5 shadow-2xl overflow-hidden">
-          {/* Sección Superior: Ubicación y Botones */}
-          <div className="p-4 space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                <MapPin className="text-amber-500" size={16} />
+        {/* Info Card con Redes Sociales y Horarios - REDISEÑADO COMPACTO Y EFICIENTE */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Columna 1 & 2: Ubicación y Acciones */}
+          <div className="md:col-span-2 bg-[#141416] rounded-3xl border border-white/5 shadow-2xl p-5 flex flex-col justify-between space-y-6">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0">
+                <MapPin className="text-amber-500" size={20} />
               </div>
-              <div>
-                <h3 className="text-white text-base font-bold leading-tight">{business?.address}</h3>
-                <p className="text-gray-500 text-xs font-medium">{business?.municipality}, {business?.province}</p>
+              <div className="flex-1">
+                <h3 className="text-white text-lg font-bold leading-tight mb-1">{business?.address}</h3>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <p className="text-gray-500 text-xs font-medium">{business?.municipality}, {business?.province}</p>
+                  <div className="flex items-center gap-2">
+                    {business?.instagram && (
+                      <button onClick={() => window.open(business.instagram?.includes('http') ? business.instagram : `https://instagram.com/${business.instagram}`, '_blank')} className="text-gray-500 hover:text-[#e4405f] transition-colors">
+                        <Instagram size={14} />
+                      </button>
+                    )}
+                    {business?.facebook && (
+                      <button onClick={() => window.open(business.facebook?.includes('http') ? business.facebook : `https://facebook.com/${business.facebook}`, '_blank')} className="text-gray-500 hover:text-[#1877f2] transition-colors">
+                        <Facebook size={14} />
+                      </button>
+                    )}
+                    {business?.email && (
+                      <button onClick={() => window.open(`mailto:${business.email}`, '_blank')} className="text-gray-500 hover:text-amber-500 transition-colors">
+                        <Mail size={14} />
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
-            
-            <div className="flex flex-wrap items-center gap-2">
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               <button 
                 onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business?.address + ', ' + business?.municipality + ', ' + business?.province)}`, '_blank')}
-                className="flex items-center gap-2 bg-[#242426] text-amber-500 px-4 py-2 rounded-full border border-white/5 hover:bg-white hover:text-black transition-all text-xs font-bold"
+                className="flex items-center justify-center gap-2 bg-[#1a1a1c] text-white px-4 py-3 rounded-2xl border border-white/5 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest"
               >
-                <Navigation size={14} className="rotate-45" />
+                <Navigation size={14} className="rotate-45 text-amber-500" />
                 Llegar
               </button>
               
               <button 
                 onClick={() => window.open(`tel:${business?.phone}`, '_self')}
-                className="flex items-center gap-2 bg-[#242426] text-amber-500 px-4 py-2 rounded-full border border-white/5 hover:bg-white hover:text-black transition-all text-xs font-bold"
+                className="flex items-center justify-center gap-2 bg-[#1a1a1c] text-white px-4 py-3 rounded-2xl border border-white/5 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest"
               >
-                <Phone size={14} />
-                {business?.phone}
+                <Phone size={14} className="text-amber-500" />
+                Llamar
               </button>
               
               <button 
                 onClick={() => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank')}
-                className="flex items-center gap-2 bg-[#25d366] text-white px-4 py-2 rounded-full hover:bg-[#22c35e] transition-all text-xs font-bold shadow-lg shadow-[#25d366]/20"
+                className="col-span-2 sm:col-span-1 flex items-center justify-center gap-2 bg-[#25d366] text-white px-4 py-3 rounded-2xl hover:bg-[#22c35e] transition-all text-[11px] font-black uppercase tracking-widest shadow-lg shadow-[#25d366]/10"
               >
-                <MessageCircle size={14} />
+                <MessageCircle size={14} fill="currentColor" />
                 WhatsApp
               </button>
             </div>
-
-            {/* Redes Sociales Secundarias */}
-            {(business?.instagram || business?.facebook || business?.email) && (
-              <div className="flex items-center gap-2 pt-1">
-                {business?.instagram && (
-                  <button onClick={() => window.open(business.instagram?.includes('http') ? business.instagram : `https://instagram.com/${business.instagram}`, '_blank')} className="w-8 h-8 rounded-full bg-[#1a1a1c] border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#e4405f] transition-all">
-                    <Instagram size={16} />
-                  </button>
-                )}
-                {business?.facebook && (
-                  <button onClick={() => window.open(business.facebook?.includes('http') ? business.facebook : `https://facebook.com/${business.facebook}`, '_blank')} className="w-8 h-8 rounded-full bg-[#1a1a1c] border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#1877f2] transition-all">
-                    <Facebook size={16} />
-                  </button>
-                )}
-                {business?.email && (
-                  <button onClick={() => window.open(`mailto:${business.email}`, '_blank')} className="w-8 h-8 rounded-full bg-[#1a1a1c] border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-amber-500 hover:text-black transition-all">
-                    <Mail size={16} />
-                  </button>
-                )}
-              </div>
-            )}
           </div>
 
-          {/* Sección Inferior: Horarios - ESTILO IMAGEN COMPACTO */}
-          <div className="bg-black/20 border-t border-white/5">
+          {/* Columna 3: Horarios */}
+          <div className="bg-[#141416] rounded-3xl border border-white/5 shadow-2xl overflow-hidden flex flex-col">
             <button 
               onClick={() => setShowFullSchedule(!showFullSchedule)}
-              className="w-full p-4 flex items-center justify-between group"
+              className="w-full p-5 flex flex-col items-start gap-3 group text-left h-full justify-between"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
-                  <Clock className="text-amber-500" size={16} />
+              <div className="flex items-center justify-between w-full">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0">
+                  <Clock className="text-amber-500" size={20} />
                 </div>
+                <div className={`transition-transform duration-300 ${showFullSchedule ? 'rotate-180' : ''}`}>
+                  <ChevronDown size={20} className="text-gray-600 group-hover:text-white" />
+                </div>
+              </div>
+              
+              <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-white font-bold text-sm capitalize">{todayName}</span>
-                  <span className="text-gray-400 font-medium text-sm">
-                    {todaySchedule?.open ? `${todaySchedule.from} - ${todaySchedule.to}` : 'Cerrado'}
-                  </span>
+                  <span className="text-white font-black text-sm uppercase tracking-tight">{todayName}</span>
                   {isCurrentlyOpen ? (
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] ml-1" />
+                    <span className="px-2 py-0.5 rounded-md bg-green-500/10 text-green-500 text-[9px] font-black uppercase tracking-widest border border-green-500/20">Abierto</span>
                   ) : (
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)] ml-1" />
+                    <span className="px-2 py-0.5 rounded-md bg-red-500/10 text-red-500 text-[9px] font-black uppercase tracking-widest border border-red-500/20">Cerrado</span>
                   )}
                 </div>
+                <p className="text-gray-400 font-bold text-lg tracking-tight">
+                  {todaySchedule?.open ? `${todaySchedule.from} - ${todaySchedule.to}` : 'Cerrado hoy'}
+                </p>
               </div>
-              <div className={`transition-transform duration-300 ${showFullSchedule ? 'rotate-180' : ''}`}>
-                <ChevronDown size={18} className="text-gray-500 group-hover:text-white" />
-              </div>
+              
+              <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] group-hover:text-amber-500 transition-colors">
+                {showFullSchedule ? 'Ocultar horarios' : 'Ver horario completo'}
+              </p>
             </button>
 
-            <div className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${showFullSchedule ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
-              <div className="px-4 pb-4 space-y-0.5">
+            <div className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden bg-black/20 ${showFullSchedule ? 'max-h-[500px] opacity-100 border-t border-white/5' : 'max-h-0 opacity-0'}`}>
+              <div className="p-4 space-y-1">
                 {sortedSchedule.map((item) => {
                   const isToday = item.day === todayName;
                   return (
                     <div 
                       key={item.day} 
-                      className={`flex justify-between items-center px-3 py-1.5 rounded-xl transition-colors ${isToday ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-transparent'}`}
+                      className={`flex justify-between items-center px-3 py-2 rounded-xl transition-colors ${isToday ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-transparent'}`}
                     >
-                      <span className={`text-xs font-bold capitalize ${isToday ? 'text-amber-500' : 'text-gray-400'}`}>
+                      <span className={`text-[10px] font-black uppercase tracking-widest ${isToday ? 'text-amber-500' : 'text-gray-500'}`}>
                         {item.day}
                       </span>
-                      <div className="flex items-center gap-2">
-                        {!item.open && <span className="w-1 h-1 rounded-full bg-red-500/50" />}
-                        <span className={`text-xs font-bold ${item.open ? 'text-white' : 'text-red-500/50'}`}>
-                          {item.open ? `${item.from} - ${item.to}` : 'Cerrado'}
-                        </span>
-                      </div>
+                      <span className={`text-[10px] font-bold ${item.open ? 'text-white' : 'text-red-500/50'}`}>
+                        {item.open ? `${item.from} - ${item.to}` : 'Cerrado'}
+                      </span>
                     </div>
                   );
                 })}
