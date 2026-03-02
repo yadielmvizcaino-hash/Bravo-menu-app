@@ -326,28 +326,133 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
       </div>
 
       {/* Business Info Section - Overlapping for better aesthetics */}
-      <div className="relative z-10 -mt-10 md:-mt-16 px-6 max-w-5xl mx-auto flex items-end gap-4 md:gap-6">
-        <OptimizedImage 
-          src={business?.logoUrl || 'https://via.placeholder.com/150'} 
-          containerClassName="w-20 h-20 md:w-32 md:h-32 rounded-3xl bg-[#141416] p-1 border-2 border-white/10 shadow-2xl shrink-0" 
-          className="rounded-2xl" 
-          alt="Logo" 
-          loading="eager"
-          fetchPriority="high"
-        />
-        <div className="flex-1 pb-1 md:pb-2">
-          <div className="flex flex-wrap items-center gap-2 mb-1.5">
-             <span className="bg-amber-500 text-black text-[10px] md:text-[12px] font-bold px-2 py-0.5 rounded flex items-center gap-1 uppercase tracking-tighter">
-               <Crown size={10} className="md:w-3 md:h-3" fill="currentColor" /> {business?.plan}
-             </span>
-             <span className="text-amber-500 text-[10px] md:text-[12px] font-medium uppercase tracking-wider bg-black/50 backdrop-blur-md px-2 py-0.5 rounded border border-white/10">{business?.type}</span>
-          </div>
-          <h1 className="text-lg md:text-4xl font-bold text-white tracking-tight mb-1 leading-tight">{business?.name}</h1>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-0.5 text-amber-500">
-              {[1, 2, 3, 4, 5].map(s => <Star key={s} size={12} className="md:w-3.5 md:h-3.5" fill={s <= Math.round(business?.averageRating || 0) ? "currentColor" : "none"} />)}
+      <div className="relative z-10 -mt-10 md:-mt-16 px-6 max-w-5xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end gap-6">
+          <div className="flex items-end gap-4 md:gap-6 flex-1">
+            <OptimizedImage 
+              src={business?.logoUrl || 'https://via.placeholder.com/150'} 
+              containerClassName="w-20 h-20 md:w-32 md:h-32 rounded-3xl bg-[#141416] p-1 border-2 border-white/10 shadow-2xl shrink-0" 
+              className="rounded-2xl" 
+              alt="Logo" 
+              loading="eager"
+              fetchPriority="high"
+            />
+            <div className="flex-1 pb-1 md:pb-2">
+              <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                 <span className="bg-amber-500 text-black text-[10px] md:text-[12px] font-bold px-2 py-0.5 rounded flex items-center gap-1 uppercase tracking-tighter">
+                   <Crown size={10} className="md:w-3 md:h-3" fill="currentColor" /> {business?.plan}
+                 </span>
+                 <span className="text-amber-500 text-[10px] md:text-[12px] font-medium uppercase tracking-wider bg-black/50 backdrop-blur-md px-2 py-0.5 rounded border border-white/10">{business?.type}</span>
+              </div>
+              <h1 className="text-lg md:text-4xl font-bold text-white tracking-tight mb-1 leading-tight">{business?.name}</h1>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-0.5 text-amber-500">
+                  {[1, 2, 3, 4, 5].map(s => <Star key={s} size={12} className="md:w-3.5 md:h-3.5" fill={s <= Math.round(business?.averageRating || 0) ? "currentColor" : "none"} />)}
+                </div>
+                <span className="text-white/50 text-[10px] md:text-xs font-bold">({business?.ratingsCount || 0})</span>
+              </div>
             </div>
-            <span className="text-white/50 text-[10px] md:text-xs font-bold">({business?.ratingsCount || 0})</span>
+          </div>
+
+          {/* Info Card (Desktop) */}
+          <div className="hidden md:block w-full md:w-[380px] shrink-0 translate-y-12">
+            <div className="bg-[#141416]/90 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+              <div className="p-5 space-y-5">
+                {/* Ubicación y Redes */}
+                <div className="flex flex-col">
+                  <h3 className="text-white text-base font-bold leading-tight mb-1">{business?.address}</h3>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <p className="text-gray-500 text-[11px] font-medium">{business?.municipality}, {business?.province}</p>
+                    <div className="flex items-center gap-4">
+                      {business?.instagram && (
+                        <button onClick={() => window.open(business.instagram?.includes('http') ? business.instagram : `https://instagram.com/${business.instagram}`, '_blank')} className="text-gray-500 hover:text-[#e4405f] transition-colors" title="Instagram">
+                          <Instagram size={16} />
+                        </button>
+                      )}
+                      {business?.facebook && (
+                        <button onClick={() => window.open(business.facebook?.includes('http') ? business.facebook : `https://facebook.com/${business.facebook}`, '_blank')} className="text-gray-500 hover:text-[#1877f2] transition-colors" title="Facebook">
+                          <Facebook size={16} />
+                        </button>
+                      )}
+                      {business?.email && (
+                        <button onClick={() => window.open(`mailto:${business.email}`, '_blank')} className="text-gray-500 hover:text-amber-500 transition-colors" title="Email">
+                          <Mail size={16} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Botones de Acción */}
+                <div className="grid grid-cols-3 gap-2">
+                  <button 
+                    onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business?.address + ', ' + business?.municipality + ', ' + business?.province)}`, '_blank')}
+                    className="flex items-center justify-center bg-[#1a1a1c] text-white px-3 py-2.5 rounded-xl border border-white/5 hover:bg-white hover:text-black transition-all text-[10px] font-black uppercase tracking-widest"
+                  >
+                    Llegar
+                  </button>
+                  <button 
+                    onClick={() => window.open(`tel:${business?.phone}`, '_self')}
+                    className="flex items-center justify-center bg-[#1a1a1c] text-white px-3 py-2.5 rounded-xl border border-white/5 hover:bg-white hover:text-black transition-all text-[10px] font-black uppercase tracking-widest"
+                  >
+                    Llamar
+                  </button>
+                  <button 
+                    onClick={() => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank')}
+                    className="flex items-center justify-center bg-[#25d366] text-white px-3 py-2.5 rounded-xl hover:bg-[#22c35e] transition-all text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#25d366]/10"
+                  >
+                    WhatsApp
+                  </button>
+                </div>
+              </div>
+
+              {/* Horario */}
+              <div className="bg-black/40 border-t border-white/5">
+                <button 
+                  onClick={() => setShowFullSchedule(!showFullSchedule)}
+                  className="w-full p-4 flex items-center justify-between group"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-bold text-xs capitalize">{todayName}</span>
+                    <span className="text-gray-400 font-medium text-xs">
+                      {todaySchedule?.open ? `${todaySchedule.from} - ${todaySchedule.to}` : 'Cerrado'}
+                    </span>
+                    {isCurrentlyOpen ? (
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] ml-1" />
+                    ) : (
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)] ml-1" />
+                    )}
+                  </div>
+                  <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest group-hover:text-white transition-colors">
+                    {showFullSchedule ? 'Ocultar' : 'Horarios'}
+                  </span>
+                </button>
+
+                <div className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${showFullSchedule ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                  <div className="px-4 pb-4 space-y-0.5">
+                    {sortedSchedule.map((item) => {
+                      const isToday = item.day === todayName;
+                      return (
+                        <div 
+                          key={item.day} 
+                          className={`flex justify-between items-center px-3 py-1.5 rounded-xl transition-colors ${isToday ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-transparent'}`}
+                        >
+                          <span className={`text-[11px] font-bold capitalize ${isToday ? 'text-amber-500' : 'text-gray-400'}`}>
+                            {item.day}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            {!item.open && <span className="w-1 h-1 rounded-full bg-red-500/50" />}
+                            <span className={`text-[11px] font-bold ${item.open ? 'text-white' : 'text-red-500/50'}`}>
+                              {item.open ? `${item.from} - ${item.to}` : 'Cerrado'}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -373,8 +478,8 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           </div>
         )}
 
-        {/* Info Card Unificada y Compacta */}
-        <div className="bg-[#141416] rounded-3xl border border-white/5 shadow-2xl overflow-hidden">
+        {/* Info Card Unificada y Compacta (Mobile) */}
+        <div className="md:hidden bg-[#141416] rounded-3xl border border-white/5 shadow-2xl overflow-hidden">
           <div className="p-5 space-y-6">
             {/* Fila 1: Ubicación y Redes */}
             <div className="flex flex-col">
