@@ -345,7 +345,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                  </span>
                  <span className="text-white/90 text-[9px] md:text-[10px] font-black uppercase tracking-widest bg-white/10 backdrop-blur-xl px-2.5 py-0.5 rounded-lg border border-white/10">{business?.type}</span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-black text-white tracking-tighter mb-1.5 leading-tight drop-shadow-2xl">{business?.name}</h1>
+              <h1 className="text-xl md:text-3xl font-black text-white tracking-tighter mb-1.5 leading-tight drop-shadow-2xl">{business?.name}</h1>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5 text-amber-500">
                   {[1, 2, 3, 4, 5].map(s => <Star key={s} size={16} fill={s <= Math.round(business?.averageRating || 0) ? "currentColor" : "none"} />)}
