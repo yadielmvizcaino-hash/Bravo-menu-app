@@ -375,20 +375,23 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
               <h3 className="text-white text-lg font-bold leading-tight mb-1">{business?.address}</h3>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <p className="text-gray-500 text-xs font-medium">{business?.municipality}, {business?.province}</p>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   {business?.instagram && (
-                    <button onClick={() => window.open(business.instagram?.includes('http') ? business.instagram : `https://instagram.com/${business.instagram}`, '_blank')} className="text-gray-500 hover:text-[#e4405f] transition-colors text-[10px] font-bold uppercase tracking-widest">
-                      Instagram
+                    <button onClick={() => window.open(business.instagram?.includes('http') ? business.instagram : `https://instagram.com/${business.instagram}`, '_blank')} className="flex items-center gap-1.5 text-gray-500 hover:text-[#e4405f] transition-colors text-[10px] font-bold uppercase tracking-widest">
+                      <Instagram size={14} />
+                      <span>Instagram</span>
                     </button>
                   )}
                   {business?.facebook && (
-                    <button onClick={() => window.open(business.facebook?.includes('http') ? business.facebook : `https://facebook.com/${business.facebook}`, '_blank')} className="text-gray-500 hover:text-[#1877f2] transition-colors text-[10px] font-bold uppercase tracking-widest">
-                      Facebook
+                    <button onClick={() => window.open(business.facebook?.includes('http') ? business.facebook : `https://facebook.com/${business.facebook}`, '_blank')} className="flex items-center gap-1.5 text-gray-500 hover:text-[#1877f2] transition-colors text-[10px] font-bold uppercase tracking-widest">
+                      <Facebook size={14} />
+                      <span>Facebook</span>
                     </button>
                   )}
                   {business?.email && (
-                    <button onClick={() => window.open(`mailto:${business.email}`, '_blank')} className="text-gray-500 hover:text-amber-500 transition-colors text-[10px] font-bold uppercase tracking-widest">
-                      Email
+                    <button onClick={() => window.open(`mailto:${business.email}`, '_blank')} className="flex items-center gap-1.5 text-gray-500 hover:text-amber-500 transition-colors text-[10px] font-bold uppercase tracking-widest">
+                      <Mail size={14} />
+                      <span>Email</span>
                     </button>
                   )}
                 </div>
