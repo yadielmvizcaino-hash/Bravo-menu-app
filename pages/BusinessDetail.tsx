@@ -371,31 +371,26 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
         <div className="bg-[#141416] rounded-3xl border border-white/5 shadow-2xl overflow-hidden">
           <div className="p-5 space-y-6">
             {/* Fila 1: Ubicación y Redes */}
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-2xl bg-amber-500/10 flex items-center justify-center shrink-0">
-                <MapPin className="text-amber-500" size={20} />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-white text-lg font-bold leading-tight mb-1">{business?.address}</h3>
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <p className="text-gray-500 text-xs font-medium">{business?.municipality}, {business?.province}</p>
-                  <div className="flex items-center gap-2">
-                    {business?.instagram && (
-                      <button onClick={() => window.open(business.instagram?.includes('http') ? business.instagram : `https://instagram.com/${business.instagram}`, '_blank')} className="text-gray-500 hover:text-[#e4405f] transition-colors">
-                        <Instagram size={14} />
-                      </button>
-                    )}
-                    {business?.facebook && (
-                      <button onClick={() => window.open(business.facebook?.includes('http') ? business.facebook : `https://facebook.com/${business.facebook}`, '_blank')} className="text-gray-500 hover:text-[#1877f2] transition-colors">
-                        <Facebook size={14} />
-                      </button>
-                    )}
-                    {business?.email && (
-                      <button onClick={() => window.open(`mailto:${business.email}`, '_blank')} className="text-gray-500 hover:text-amber-500 transition-colors">
-                        <Mail size={14} />
-                      </button>
-                    )}
-                  </div>
+            <div className="flex flex-col">
+              <h3 className="text-white text-lg font-bold leading-tight mb-1">{business?.address}</h3>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <p className="text-gray-500 text-xs font-medium">{business?.municipality}, {business?.province}</p>
+                <div className="flex items-center gap-3">
+                  {business?.instagram && (
+                    <button onClick={() => window.open(business.instagram?.includes('http') ? business.instagram : `https://instagram.com/${business.instagram}`, '_blank')} className="text-gray-500 hover:text-[#e4405f] transition-colors text-[10px] font-bold uppercase tracking-widest">
+                      Instagram
+                    </button>
+                  )}
+                  {business?.facebook && (
+                    <button onClick={() => window.open(business.facebook?.includes('http') ? business.facebook : `https://facebook.com/${business.facebook}`, '_blank')} className="text-gray-500 hover:text-[#1877f2] transition-colors text-[10px] font-bold uppercase tracking-widest">
+                      Facebook
+                    </button>
+                  )}
+                  {business?.email && (
+                    <button onClick={() => window.open(`mailto:${business.email}`, '_blank')} className="text-gray-500 hover:text-amber-500 transition-colors text-[10px] font-bold uppercase tracking-widest">
+                      Email
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -404,25 +399,22 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             <div className="grid grid-cols-3 gap-2">
               <button 
                 onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business?.address + ', ' + business?.municipality + ', ' + business?.province)}`, '_blank')}
-                className="flex items-center justify-center gap-2 bg-[#1a1a1c] text-white px-4 py-3 rounded-2xl border border-white/5 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest"
+                className="flex items-center justify-center bg-[#1a1a1c] text-white px-4 py-3 rounded-2xl border border-white/5 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest"
               >
-                <Navigation size={14} className="rotate-45 text-amber-500" />
                 Llegar
               </button>
               
               <button 
                 onClick={() => window.open(`tel:${business?.phone}`, '_self')}
-                className="flex items-center justify-center gap-2 bg-[#1a1a1c] text-white px-4 py-3 rounded-2xl border border-white/5 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest"
+                className="flex items-center justify-center bg-[#1a1a1c] text-white px-4 py-3 rounded-2xl border border-white/5 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest"
               >
-                <Phone size={14} className="text-amber-500" />
                 Llamar
               </button>
               
               <button 
                 onClick={() => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank')}
-                className="flex items-center justify-center gap-2 bg-[#25d366] text-white px-4 py-3 rounded-2xl hover:bg-[#22c35e] transition-all text-[11px] font-black uppercase tracking-widest shadow-lg shadow-[#25d366]/10"
+                className="flex items-center justify-center bg-[#25d366] text-white px-4 py-3 rounded-2xl hover:bg-[#22c35e] transition-all text-[11px] font-black uppercase tracking-widest shadow-lg shadow-[#25d366]/10"
               >
-                <MessageCircle size={14} fill="currentColor" />
                 WhatsApp
               </button>
             </div>
@@ -434,25 +426,20 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
               onClick={() => setShowFullSchedule(!showFullSchedule)}
               className="w-full p-4 flex items-center justify-between group"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
-                  <Clock className="text-amber-500" size={16} />
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-white font-bold text-sm capitalize">{todayName}</span>
-                  <span className="text-gray-400 font-medium text-sm">
-                    {todaySchedule?.open ? `${todaySchedule.from} - ${todaySchedule.to}` : 'Cerrado'}
-                  </span>
-                  {isCurrentlyOpen ? (
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] ml-1" />
-                  ) : (
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)] ml-1" />
-                  )}
-                </div>
+              <div className="flex items-center gap-2">
+                <span className="text-white font-bold text-sm capitalize">{todayName}</span>
+                <span className="text-gray-400 font-medium text-sm">
+                  {todaySchedule?.open ? `${todaySchedule.from} - ${todaySchedule.to}` : 'Cerrado'}
+                </span>
+                {isCurrentlyOpen ? (
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] ml-1" />
+                ) : (
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)] ml-1" />
+                )}
               </div>
-              <div className={`transition-transform duration-300 ${showFullSchedule ? 'rotate-180' : ''}`}>
-                <ChevronDown size={18} className="text-gray-500 group-hover:text-white" />
-              </div>
+              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest group-hover:text-white transition-colors">
+                {showFullSchedule ? 'Ocultar' : 'Horarios'}
+              </span>
             </button>
 
             <div className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${showFullSchedule ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
