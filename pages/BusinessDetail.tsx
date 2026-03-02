@@ -53,6 +53,12 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
     const fetchFullData = async () => {
       if (!id) return;
       
+      // Incrementar visita de forma asíncrona
+      supabase.rpc('increment_business_visit', { target_business_id: id })
+        .then(({ error }) => {
+          if (error) console.warn("Error incrementando visita:", error);
+        });
+
       const needsData = !businessFromProps || !businessFromProps.products || businessFromProps.products.length === 0;
       
       if (needsData) {

@@ -1,17 +1,10 @@
 
-import React from 'react';
-import { Eye, Users, Package, Download, Crown, Info, ChevronRight, TrendingUp, Calendar, Zap, Layers, Image as ImageIcon, Settings, Shield, Star, Loader2, MousePointer2 } from 'lucide-react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { Eye, Users, Package, Download, Crown, Info, ChevronRight, TrendingUp, Calendar, Zap, Layers, Image as ImageIcon, Settings, Shield, Star, Loader2, MousePointer2, QrCode } from 'lucide-react';
 import { Business, PlanType } from '../types';
 import { Link } from 'react-router-dom';
 import { AreaChart, Area, ResponsiveContainer, YAxis, XAxis, Tooltip } from 'recharts';
-
-// Datos simulados para los gráficos de tendencia
-const generateTrendData = (base: number) => {
-  return Array.from({ length: 7 }, (_, i) => ({
-    name: `Día ${i + 1}`,
-    value: Math.floor(base * (0.8 + Math.random() * 0.4))
-  }));
-};
+import { supabase } from '../lib/supabase';
 
 const StatCard: React.FC<{ 
   label: string, 
@@ -31,7 +24,7 @@ const StatCard: React.FC<{
           <span className="text-green-500 text-xs font-black flex items-center gap-0.5">
             <TrendingUp size={12} /> {trend}
           </span>
-          <span className="text-[9px] text-gray-600 font-bold uppercase tracking-tighter">Últimos 7 días</span>
+          <span className="text-[9px] text-gray-600 font-bold uppercase tracking-tighter">Tendencia</span>
         </div>
       )}
     </div>
@@ -41,7 +34,7 @@ const StatCard: React.FC<{
       <h3 className="text-3xl font-black text-white leading-none tracking-tighter">{value}</h3>
     </div>
 
-    {data && (
+    {data && data.length > 0 && (
       <div className="h-12 w-full mt-2 opacity-50 group-hover:opacity-100 transition-opacity">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data}>
@@ -70,11 +63,53 @@ const StatCard: React.FC<{
 const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
   const isPro = business.plan === PlanType.PRO;
   const isAdmin = business.role === 'admin';
-  const [isDownloading, setIsDownloading] = React.useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [visitsHistory, setVisitsHistory] = useState<{ name: string, value: number }[]>([]);
+  const [totalVisits, setTotalVisits] = useState(business.stats.visits);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
 
-  // Datos para los gráficos
-  const visitsData = React.useMemo(() => generateTrendData(business.stats.visits / 7), [business.stats.visits]);
-  const leadsData = React.useMemo(() => generateTrendData(business.leads.length / 7), [business.leads.length]);
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        // Obtener historial de visitas de los últimos 7 días
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        const dateStr = sevenDaysAgo.toISOString().split('T')[0];
+
+        const { data, error } = await supabase
+          .from('business_visits')
+          .select('visit_date, visit_count')
+          .eq('business_id', business.id)
+          .gte('visit_date', dateStr)
+          .order('visit_date', { ascending: true });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const history = data.map(d => ({
+            name: d.visit_date.split('-')[2], // Solo el día
+            value: d.visit_count
+          }));
+          setVisitsHistory(history);
+          
+          // Calcular total real de visitas (suma de todo el historial o usar el contador del negocio)
+          // Por ahora sumamos lo que tenemos en el historial para mostrar algo real
+          const sum = data.reduce((acc, curr) => acc + curr.visit_count, 0);
+          setTotalVisits(sum);
+        } else {
+          // Si no hay datos, mostrar ceros o datos de ejemplo si se prefiere
+          setVisitsHistory([]);
+          setTotalVisits(0);
+        }
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+      } finally {
+        setIsLoadingStats(false);
+      }
+    };
+
+    fetchStats();
+  }, [business.id]);
 
   // Generamos la URL pública precisa basada en la ubicación actual
   const businessUrl = `${window.location.href.split('#')[0]}#/negocio/${business.id}`;
@@ -116,14 +151,14 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
       </div>
 
       {/* Grid de Estadísticas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-12">
         <StatCard 
-          label="Visitas" 
-          value={business.stats.visits} 
+          label="Visitas Reales" 
+          value={isLoadingStats ? '...' : totalVisits} 
           icon={<Eye size={22} />} 
           color="bg-blue-500/10 text-blue-500" 
-          trend="+12%" 
-          data={visitsData}
+          trend={visitsHistory.length > 0 ? "Activo" : "Sin datos"} 
+          data={visitsHistory}
         />
         <StatCard 
           label="Calificación" 
@@ -131,14 +166,6 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
           icon={<Star size={22} />} 
           color="bg-amber-500/10 text-amber-500" 
           trend={business.ratingsCount ? `${business.ratingsCount} votos` : 'Sin votos'} 
-        />
-        <StatCard 
-          label="Clientes (Leads)" 
-          value={business.leads.length} 
-          icon={<Users size={22} />} 
-          color="bg-green-500/10 text-green-500" 
-          trend="+5%" 
-          data={leadsData}
         />
         <StatCard 
           label="Productos" 
@@ -164,7 +191,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
                  { label: 'Categorías', icon: <Layers size={20} />, to: '/admin/categories', color: 'bg-blue-500/10 text-blue-500' },
                  { label: 'Banners', icon: <ImageIcon size={20} />, to: '/admin/banners', color: 'bg-purple-500/10 text-purple-500' },
                  { label: 'Eventos', icon: <Calendar size={20} />, to: '/admin/events', color: 'bg-green-500/10 text-green-500' },
-                 { label: 'Clientes', icon: <Users size={20} />, to: '/admin/leads', color: 'bg-orange-500/10 text-orange-500' },
+                 { label: 'QR Menú', icon: <QrCode size={20} />, to: '#', color: 'bg-orange-500/10 text-orange-500' },
                  { label: isAdmin ? 'Súper Admin' : 'Configuración', icon: isAdmin ? <Shield size={20} /> : <Settings size={20} />, to: isAdmin ? '/super-admin' : '/admin/pricing', color: 'bg-gray-500/10 text-gray-400' },
                ].map((item, idx) => (
                  <Link key={idx} to={item.to} className="flex flex-col items-center justify-center p-6 rounded-3xl bg-black border border-white/5 hover:border-amber-500/30 hover:bg-amber-500/5 transition-all group relative overflow-hidden">
