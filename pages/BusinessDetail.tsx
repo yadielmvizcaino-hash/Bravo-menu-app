@@ -313,7 +313,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
       )}
 
       {/* Hero Header */}
-      <div className="relative h-[22vh] md:h-[55vh] w-full overflow-hidden">
+      <div className="relative h-[22vh] md:h-[32vh] w-full overflow-hidden">
         <OptimizedImage 
           src={business?.coverPhotos?.[0] || 'https://images.unsplash.com/photo-1551269901-5c5e14c25df7?auto=format&fit=crop&q=80&w=1200'} 
           containerClassName="w-full h-full"
@@ -326,26 +326,26 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
       </div>
 
       {/* Business Info Section - Integrated Desktop Layout */}
-      <div className="relative z-10 -mt-12 md:-mt-24 px-6 max-w-7xl mx-auto">
+      <div className="relative z-10 -mt-12 md:-mt-10 px-6 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 md:gap-12">
           {/* Left Side: Logo & Name */}
-          <div className="flex items-end gap-4 md:gap-10 flex-1">
+          <div className="flex items-end gap-4 md:gap-6 flex-1">
             <OptimizedImage 
               src={business?.logoUrl || 'https://via.placeholder.com/150'} 
-              containerClassName="w-24 h-24 md:w-48 md:h-48 rounded-[2.5rem] md:rounded-[3.5rem] bg-[#0a0a0b] p-1.5 border-4 border-[#0a0a0b] shadow-2xl shrink-0" 
-              className="rounded-[2rem] md:rounded-[3rem]" 
+              containerClassName="w-24 h-24 md:w-28 md:h-28 rounded-[2rem] bg-[#0a0a0b] p-1.5 border-4 border-[#0a0a0b] shadow-2xl shrink-0" 
+              className="rounded-[1.5rem]" 
               alt="Logo" 
               loading="eager"
               fetchPriority="high"
             />
-            <div className="flex-1 pb-2 md:pb-8">
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                 <span className="bg-amber-500 text-black text-[10px] md:text-[12px] font-black px-3 py-1 rounded-lg flex items-center gap-1.5 uppercase tracking-wider shadow-lg shadow-amber-500/20">
-                   <Crown size={12} fill="currentColor" /> {business?.plan}
+            <div className="flex-1 pb-2 md:pb-3">
+              <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                 <span className="bg-amber-500 text-black text-[9px] md:text-[10px] font-black px-2.5 py-0.5 rounded-lg flex items-center gap-1.5 uppercase tracking-wider shadow-lg shadow-amber-500/20">
+                   <Crown size={10} fill="currentColor" /> {business?.plan}
                  </span>
-                 <span className="text-white/90 text-[10px] md:text-[12px] font-black uppercase tracking-widest bg-white/10 backdrop-blur-xl px-3 py-1 rounded-lg border border-white/10">{business?.type}</span>
+                 <span className="text-white/90 text-[9px] md:text-[10px] font-black uppercase tracking-widest bg-white/10 backdrop-blur-xl px-2.5 py-0.5 rounded-lg border border-white/10">{business?.type}</span>
               </div>
-              <h1 className="text-3xl md:text-7xl font-black text-white tracking-tighter mb-3 leading-[0.9] drop-shadow-2xl">{business?.name}</h1>
+              <h1 className="text-2xl md:text-3xl font-black text-white tracking-tighter mb-1.5 leading-tight drop-shadow-2xl">{business?.name}</h1>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5 text-amber-500">
                   {[1, 2, 3, 4, 5].map(s => <Star key={s} size={16} fill={s <= Math.round(business?.averageRating || 0) ? "currentColor" : "none"} />)}
@@ -384,24 +384,24 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <button 
                 onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business?.address + ', ' + business?.municipality + ', ' + business?.province)}`, '_blank')}
-                className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-6 py-3.5 rounded-2xl border border-white/10 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest shadow-xl"
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white hover:text-black transition-all text-[10px] font-black uppercase tracking-widest shadow-xl"
               >
-                <MapPin size={14} /> Llegar
+                <MapPin size={12} /> Llegar
               </button>
               <button 
                 onClick={() => window.open(`tel:${business?.phone}`, '_self')}
-                className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-6 py-3.5 rounded-2xl border border-white/10 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest shadow-xl"
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white hover:text-black transition-all text-[10px] font-black uppercase tracking-widest shadow-xl"
               >
-                <Phone size={14} /> Llamar
+                <Phone size={12} /> Llamar
               </button>
               <button 
                 onClick={() => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank')}
-                className="flex items-center gap-2 bg-[#25d366] text-white px-6 py-3.5 rounded-2xl hover:bg-[#22c35e] transition-all text-[11px] font-black uppercase tracking-widest shadow-2xl shadow-[#25d366]/20"
+                className="flex items-center gap-2 bg-[#25d366] text-white px-4 py-2.5 rounded-xl hover:bg-[#22c35e] transition-all text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-[#25d366]/20"
               >
-                <MessageCircle size={14} /> WhatsApp
+                <MessageCircle size={12} /> WhatsApp
               </button>
             </div>
 
@@ -409,16 +409,16 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             <div className="relative group">
               <button 
                 onClick={() => setShowFullSchedule(!showFullSchedule)}
-                className="flex items-center gap-4 bg-black/40 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/5 hover:border-white/20 transition-all"
+                className="flex items-center gap-3 bg-black/40 backdrop-blur-xl px-4 py-2 rounded-xl border border-white/5 hover:border-white/20 transition-all"
               >
-                <div className={`w-2.5 h-2.5 rounded-full ${isCurrentlyOpen ? 'bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.6)]'}`} />
+                <div className={`w-2 h-2 rounded-full ${isCurrentlyOpen ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.6)]'}`} />
                 <div className="flex flex-col items-start">
-                  <span className="text-white font-black text-[10px] uppercase tracking-widest">{isCurrentlyOpen ? 'Abierto' : 'Cerrado'}</span>
-                  <span className="text-white/50 font-bold text-[9px] uppercase tracking-tighter">
+                  <span className="text-white font-black text-[9px] uppercase tracking-widest">{isCurrentlyOpen ? 'Abierto' : 'Cerrado'}</span>
+                  <span className="text-white/50 font-bold text-[8px] uppercase tracking-tighter">
                     {todaySchedule?.open ? `${todaySchedule.from} - ${todaySchedule.to}` : 'Hoy cerrado'}
                   </span>
                 </div>
-                <ChevronDown size={16} className={`text-white/30 transition-transform duration-300 ${showFullSchedule ? 'rotate-180' : ''}`} />
+                <ChevronDown size={14} className={`text-white/30 transition-transform duration-300 ${showFullSchedule ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Dropdown Schedule */}
@@ -568,8 +568,8 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
         {/* Tabs Principales */}
         <div className="bg-[#141416] p-1.5 rounded-2xl border border-white/5 flex gap-1.5 shadow-xl sticky top-20 z-50">
           {['menu', 'eventos', 'fotos'].map((t) => (
-            <button key={t} onClick={() => setActiveTab(t as any)} className={`flex-1 py-3.5 rounded-xl text-[12px] font-bold uppercase tracking-widest flex items-center justify-center gap-2.5 transition-all ${activeTab === t ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-gray-500 hover:text-white'}`}>
-              {t === 'menu' ? <LayoutGrid size={16} /> : t === 'eventos' ? <Calendar size={16} /> : <Camera size={16} />} {t}
+            <button key={t} onClick={() => setActiveTab(t as any)} className={`flex-1 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${activeTab === t ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-gray-500 hover:text-white'}`}>
+              {t === 'menu' ? <LayoutGrid size={14} /> : t === 'eventos' ? <Calendar size={14} /> : <Camera size={14} />} {t}
             </button>
           ))}
         </div>
@@ -580,7 +580,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 -mx-6 px-6">
               <button 
                 onClick={() => setSelectedCategory('Todo')} 
-                className={`shrink-0 px-6 py-2.5 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all border ${selectedCategory === 'Todo' ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
+                className={`shrink-0 px-4 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all border ${selectedCategory === 'Todo' ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
               >
                 Todo
               </button>
@@ -588,7 +588,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                 <button 
                   key={cat.id} 
                   onClick={() => setSelectedCategory(cat.name)} 
-                  className={`shrink-0 px-6 py-2.5 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all border ${selectedCategory === cat.name ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
+                  className={`shrink-0 px-4 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all border ${selectedCategory === cat.name ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
                 >
                   {cat.name}
                 </button>
@@ -602,11 +602,11 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                     <OptimizedImage src={prod.imageUrl} containerClassName="w-full h-full" className="transition-transform duration-700 group-hover:scale-110" alt={prod.name} />
                   </div>
                   <div className="p-4 flex flex-col flex-1">
-                    <h3 className="text-white font-bold text-sm mb-1 uppercase tracking-tight truncate">{prod.name}</h3>
-                    <p className="text-gray-500 text-[10px] leading-relaxed mb-4 line-clamp-2">{prod.description || 'Sin descripción.'}</p>
+                    <h3 className="text-white font-bold text-xs mb-1 uppercase tracking-tight truncate">{prod.name}</h3>
+                    <p className="text-gray-500 text-[9px] leading-relaxed mb-4 line-clamp-2">{prod.description || 'Sin descripción.'}</p>
                     <div className="flex items-center justify-between mt-auto pt-2 border-t border-white/5">
-                      <span className="text-amber-500 font-bold text-lg">${prod.price}</span>
-                      <button onClick={() => addToCart(prod)} className="w-10 h-10 bg-amber-500 text-black rounded-full flex items-center justify-center hover:bg-white transition-all shadow-xl active:scale-90"><Plus size={20} strokeWidth={3} /></button>
+                      <span className="text-amber-500 font-bold text-base">${prod.price}</span>
+                      <button onClick={() => addToCart(prod)} className="w-8 h-8 bg-amber-500 text-black rounded-full flex items-center justify-center hover:bg-white transition-all shadow-xl active:scale-90"><Plus size={16} strokeWidth={3} /></button>
                     </div>
                   </div>
                 </div>
