@@ -7,7 +7,6 @@ import Home from './pages/Home.tsx';
 import BusinessDetail from './pages/BusinessDetail.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import OwnerMenu from './pages/OwnerMenu.tsx';
-import OwnerCategories from './pages/OwnerCategories.tsx';
 import OwnerLeads from './pages/OwnerLeads.tsx';
 import OwnerPricing from './pages/OwnerPricing.tsx';
 import OwnerBanners from './pages/OwnerBanners.tsx';
@@ -323,7 +322,6 @@ const App: React.FC = () => {
               <Routes>
                 <Route index element={<Dashboard business={activeBusiness} />} />
                 <Route path="menu" element={<OwnerMenu business={activeBusiness} onUpdate={updateActiveBusiness} />} />
-                <Route path="categories" element={<OwnerCategories business={activeBusiness} onUpdate={updateActiveBusiness} />} />
                 <Route path="banners" element={<OwnerBanners business={activeBusiness} onUpdate={updateActiveBusiness} />} />
                 <Route path="events" element={<OwnerEvents business={activeBusiness} onUpdate={updateActiveBusiness} />} />
                 <Route path="leads" element={<OwnerLeads business={activeBusiness} />} />
@@ -409,7 +407,6 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
               { to: '/admin', icon: <LayoutGrid size={20} />, label: 'Dashboard' },
               { to: '/admin/settings', icon: <Settings size={20} />, label: 'Mi Perfil' },
               { to: '/admin/menu', icon: <Package size={20} />, label: 'Productos' },
-              { to: '/admin/categories', icon: <Layers size={20} />, label: 'Categorías' },
               { to: '/admin/banners', icon: <ImageIcon size={20} />, label: 'Banners' },
               { to: '/admin/events', icon: <Calendar size={20} />, label: 'Eventos' },
               { to: '/admin/leads', icon: <Users size={20} />, label: 'Leads' },

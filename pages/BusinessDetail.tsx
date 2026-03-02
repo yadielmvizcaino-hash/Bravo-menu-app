@@ -313,7 +313,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
       )}
 
       {/* Hero Header */}
-      <div className="relative h-[22vh] md:h-[45vh] w-full overflow-hidden">
+      <div className="relative h-[22vh] md:h-[55vh] w-full overflow-hidden">
         <OptimizedImage 
           src={business?.coverPhotos?.[0] || 'https://images.unsplash.com/photo-1551269901-5c5e14c25df7?auto=format&fit=crop&q=80&w=1200'} 
           containerClassName="w-full h-full"
@@ -326,110 +326,116 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
       </div>
 
       {/* Business Info Section - Integrated Desktop Layout */}
-      <div className="relative z-10 -mt-10 md:-mt-20 px-6 max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <div className="flex items-end gap-4 md:gap-8 flex-1">
+      <div className="relative z-10 -mt-12 md:-mt-24 px-6 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 md:gap-12">
+          {/* Left Side: Logo & Name */}
+          <div className="flex items-end gap-4 md:gap-10 flex-1">
             <OptimizedImage 
               src={business?.logoUrl || 'https://via.placeholder.com/150'} 
-              containerClassName="w-20 h-20 md:w-40 md:h-40 rounded-[2.5rem] bg-[#141416] p-1.5 border-4 border-[#0a0a0b] shadow-2xl shrink-0" 
-              className="rounded-[2rem]" 
+              containerClassName="w-24 h-24 md:w-48 md:h-48 rounded-[2.5rem] md:rounded-[3.5rem] bg-[#0a0a0b] p-1.5 border-4 border-[#0a0a0b] shadow-2xl shrink-0" 
+              className="rounded-[2rem] md:rounded-[3rem]" 
               alt="Logo" 
               loading="eager"
               fetchPriority="high"
             />
-            <div className="flex-1 pb-2 md:pb-6">
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                 <span className="bg-amber-500 text-black text-[10px] md:text-[11px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1 uppercase tracking-wider">
-                   <Crown size={10} fill="currentColor" /> {business?.plan}
+            <div className="flex-1 pb-2 md:pb-8">
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                 <span className="bg-amber-500 text-black text-[10px] md:text-[12px] font-black px-3 py-1 rounded-lg flex items-center gap-1.5 uppercase tracking-wider shadow-lg shadow-amber-500/20">
+                   <Crown size={12} fill="currentColor" /> {business?.plan}
                  </span>
-                 <span className="text-white/70 text-[10px] md:text-[11px] font-black uppercase tracking-widest bg-white/5 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10">{business?.type}</span>
+                 <span className="text-white/90 text-[10px] md:text-[12px] font-black uppercase tracking-widest bg-white/10 backdrop-blur-xl px-3 py-1 rounded-lg border border-white/10">{business?.type}</span>
               </div>
-              <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter mb-2 leading-none">{business?.name}</h1>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1 text-amber-500">
-                  {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} fill={s <= Math.round(business?.averageRating || 0) ? "currentColor" : "none"} />)}
+              <h1 className="text-3xl md:text-7xl font-black text-white tracking-tighter mb-3 leading-[0.9] drop-shadow-2xl">{business?.name}</h1>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5 text-amber-500">
+                  {[1, 2, 3, 4, 5].map(s => <Star key={s} size={16} fill={s <= Math.round(business?.averageRating || 0) ? "currentColor" : "none"} />)}
                 </div>
-                <span className="text-white/40 text-xs font-black uppercase tracking-widest">({business?.ratingsCount || 0} reseñas)</span>
+                <span className="text-white/50 text-xs font-black uppercase tracking-widest bg-black/20 backdrop-blur-sm px-2 py-1 rounded-md">({business?.ratingsCount || 0} reseñas)</span>
               </div>
             </div>
           </div>
 
-          {/* Info Card (Desktop) - Refined & Integrated */}
-          <div className="hidden md:block w-[340px] shrink-0 mb-2">
-            <div className="bg-[#141416] rounded-[2rem] border border-white/5 shadow-2xl overflow-hidden">
-              <div className="p-6 space-y-6">
-                <div className="space-y-1">
-                  <h3 className="text-white text-sm font-black uppercase tracking-tight leading-tight">{business?.address}</h3>
-                  <div className="flex items-center justify-between">
-                    <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest">{business?.municipality}, {business?.province}</p>
-                    <div className="flex items-center gap-3">
-                      {business?.instagram && (
-                        <button onClick={() => window.open(business.instagram?.includes('http') ? business.instagram : `https://instagram.com/${business.instagram}`, '_blank')} className="text-gray-500 hover:text-white transition-colors">
-                          <Instagram size={14} />
-                        </button>
-                      )}
-                      {business?.facebook && (
-                        <button onClick={() => window.open(business.facebook?.includes('http') ? business.facebook : `https://facebook.com/${business.facebook}`, '_blank')} className="text-gray-500 hover:text-white transition-colors">
-                          <Facebook size={14} />
-                        </button>
-                      )}
-                      {business?.email && (
-                        <button onClick={() => window.open(`mailto:${business.email}`, '_blank')} className="text-gray-500 hover:text-white transition-colors">
-                          <Mail size={14} />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { label: 'Llegar', icon: <MapPin size={12} />, onClick: () => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business?.address + ', ' + business?.municipality + ', ' + business?.province)}`, '_blank') },
-                    { label: 'Llamar', icon: <Phone size={12} />, onClick: () => window.open(`tel:${business?.phone}`, '_self') },
-                    { label: 'WhatsApp', icon: <MessageCircle size={12} />, onClick: () => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank'), color: 'bg-[#25d366] text-white border-none' }
-                  ].map((btn, i) => (
-                    <button 
-                      key={i}
-                      onClick={btn.onClick}
-                      className={`flex flex-col items-center justify-center gap-1.5 py-3 rounded-2xl border border-white/5 text-[9px] font-black uppercase tracking-widest transition-all hover:bg-white hover:text-black ${btn.color || 'bg-white/5 text-white'}`}
-                    >
-                      {btn.label}
+          {/* Right Side: Info (Desktop - Integrated into Hero) */}
+          <div className="hidden md:flex flex-col items-end gap-6 pb-8 shrink-0">
+            {/* Address & Socials */}
+            <div className="text-right space-y-2">
+              <h3 className="text-white text-lg font-black uppercase tracking-tight leading-tight drop-shadow-lg">{business?.address}</h3>
+              <div className="flex items-center justify-end gap-4">
+                <p className="text-white/60 text-xs font-black uppercase tracking-widest">{business?.municipality}, {business?.province}</p>
+                <div className="h-4 w-[1px] bg-white/20" />
+                <div className="flex items-center gap-4">
+                  {business?.instagram && (
+                    <button onClick={() => window.open(business.instagram?.includes('http') ? business.instagram : `https://instagram.com/${business.instagram}`, '_blank')} className="text-white/60 hover:text-white transition-all hover:scale-110">
+                      <Instagram size={18} />
                     </button>
-                  ))}
+                  )}
+                  {business?.facebook && (
+                    <button onClick={() => window.open(business.facebook?.includes('http') ? business.facebook : `https://facebook.com/${business.facebook}`, '_blank')} className="text-white/60 hover:text-white transition-all hover:scale-110">
+                      <Facebook size={18} />
+                    </button>
+                  )}
+                  {business?.email && (
+                    <button onClick={() => window.open(`mailto:${business.email}`, '_blank')} className="text-white/60 hover:text-white transition-all hover:scale-110">
+                      <Mail size={18} />
+                    </button>
+                  )}
                 </div>
               </div>
+            </div>
 
-              <div className="bg-black/40 border-t border-white/5">
-                <button 
-                  onClick={() => setShowFullSchedule(!showFullSchedule)}
-                  className="w-full p-5 flex items-center justify-between group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${isCurrentlyOpen ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]'}`} />
-                    <div className="flex flex-col items-start">
-                      <span className="text-white font-black text-[10px] uppercase tracking-widest">{isCurrentlyOpen ? 'Abierto ahora' : 'Cerrado'}</span>
-                      <span className="text-gray-500 font-bold text-[9px] uppercase tracking-tighter">
-                        {todaySchedule?.open ? `${todaySchedule.from} - ${todaySchedule.to}` : 'Hoy cerrado'}
-                      </span>
-                    </div>
-                  </div>
-                  <ChevronDown size={14} className={`text-gray-500 transition-transform duration-300 ${showFullSchedule ? 'rotate-180' : ''}`} />
-                </button>
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business?.address + ', ' + business?.municipality + ', ' + business?.province)}`, '_blank')}
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-6 py-3.5 rounded-2xl border border-white/10 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest shadow-xl"
+              >
+                <MapPin size={14} /> Llegar
+              </button>
+              <button 
+                onClick={() => window.open(`tel:${business?.phone}`, '_self')}
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-6 py-3.5 rounded-2xl border border-white/10 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest shadow-xl"
+              >
+                <Phone size={14} /> Llamar
+              </button>
+              <button 
+                onClick={() => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank')}
+                className="flex items-center gap-2 bg-[#25d366] text-white px-6 py-3.5 rounded-2xl hover:bg-[#22c35e] transition-all text-[11px] font-black uppercase tracking-widest shadow-2xl shadow-[#25d366]/20"
+              >
+                <MessageCircle size={14} /> WhatsApp
+              </button>
+            </div>
 
-                <div className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${showFullSchedule ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                  <div className="px-5 pb-5 space-y-1">
-                    {sortedSchedule.map((item) => {
-                      const isToday = item.day === todayName;
-                      return (
-                        <div key={item.day} className={`flex justify-between items-center px-3 py-2 rounded-xl ${isToday ? 'bg-white/5 border border-white/10' : ''}`}>
-                          <span className={`text-[10px] font-black uppercase tracking-widest ${isToday ? 'text-amber-500' : 'text-gray-500'}`}>{item.day}</span>
-                          <span className={`text-[10px] font-bold ${item.open ? 'text-white' : 'text-red-500/40'}`}>
-                            {item.open ? `${item.from} - ${item.to}` : 'Cerrado'}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
+            {/* Schedule - Minimalist for Hero */}
+            <div className="relative group">
+              <button 
+                onClick={() => setShowFullSchedule(!showFullSchedule)}
+                className="flex items-center gap-4 bg-black/40 backdrop-blur-xl px-6 py-3 rounded-2xl border border-white/5 hover:border-white/20 transition-all"
+              >
+                <div className={`w-2.5 h-2.5 rounded-full ${isCurrentlyOpen ? 'bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.6)]'}`} />
+                <div className="flex flex-col items-start">
+                  <span className="text-white font-black text-[10px] uppercase tracking-widest">{isCurrentlyOpen ? 'Abierto' : 'Cerrado'}</span>
+                  <span className="text-white/50 font-bold text-[9px] uppercase tracking-tighter">
+                    {todaySchedule?.open ? `${todaySchedule.from} - ${todaySchedule.to}` : 'Hoy cerrado'}
+                  </span>
+                </div>
+                <ChevronDown size={16} className={`text-white/30 transition-transform duration-300 ${showFullSchedule ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Dropdown Schedule */}
+              <div className={`absolute bottom-full right-0 mb-4 w-64 bg-[#141416]/95 backdrop-blur-2xl rounded-3xl border border-white/10 shadow-2xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${showFullSchedule ? 'max-h-[500px] opacity-100 translate-y-0' : 'max-h-0 opacity-0 translate-y-4'}`}>
+                <div className="p-5 space-y-1.5">
+                  <h4 className="text-white/30 text-[9px] font-black uppercase tracking-[0.2em] mb-3 px-2">Horarios Semanales</h4>
+                  {sortedSchedule.map((item) => {
+                    const isToday = item.day === todayName;
+                    return (
+                      <div key={item.day} className={`flex justify-between items-center px-4 py-2.5 rounded-xl transition-all ${isToday ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' : 'hover:bg-white/5'}`}>
+                        <span className={`text-[10px] font-black uppercase tracking-widest ${isToday ? 'text-black' : 'text-white/60'}`}>{item.day}</span>
+                        <span className={`text-[10px] font-bold ${isToday ? 'text-black' : item.open ? 'text-white' : 'text-red-500/40'}`}>
+                          {item.open ? `${item.from} - ${item.to}` : 'Cerrado'}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -437,7 +443,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 space-y-12 mt-12">
+      <div className="max-w-7xl mx-auto px-6 space-y-12 mt-12">
         {banners.length > 0 && (
           <div className="relative h-40 md:h-52 rounded-3xl overflow-hidden group shadow-2xl border border-white/5 animate-fade-in">
             {banners.map((banner, index) => (

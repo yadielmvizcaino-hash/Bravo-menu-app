@@ -188,7 +188,6 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
                {[
                  { label: 'Productos', icon: <Package size={20} />, to: '/admin/menu', color: 'bg-amber-500/10 text-amber-500' },
-                 { label: 'Categorías', icon: <Layers size={20} />, to: '/admin/categories', color: 'bg-blue-500/10 text-blue-500' },
                  { label: 'Banners', icon: <ImageIcon size={20} />, to: '/admin/banners', color: 'bg-purple-500/10 text-purple-500' },
                  { label: 'Eventos', icon: <Calendar size={20} />, to: '/admin/events', color: 'bg-green-500/10 text-green-500' },
                  { label: 'QR Menú', icon: <QrCode size={20} />, to: '#', color: 'bg-orange-500/10 text-orange-500' },
