@@ -14,43 +14,36 @@ const StatCard: React.FC<{
   trend?: string,
   data?: any[]
 }> = ({ label, value, icon, color, trend, data }) => (
-  <div className="bg-[#0a0a0b] border border-white/5 p-5 rounded-[2rem] flex flex-col gap-4 shadow-2xl hover:border-white/10 transition-all group">
+  <div className="bg-[#0a0a0b] border border-white/5 p-4 rounded-2xl flex flex-col gap-3 shadow-xl hover:border-white/10 transition-all group">
     <div className="flex items-center justify-between">
-      <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-500`}>
-        {icon}
+      <div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-500`}>
+        {React.cloneElement(icon as React.ReactElement, { size: 18 })}
       </div>
       {trend && (
         <div className="flex flex-col items-end">
-          <span className="text-green-500 text-xs font-black flex items-center gap-0.5">
-            <TrendingUp size={12} /> {trend}
+          <span className="text-green-500 text-[10px] font-black flex items-center gap-0.5">
+            <TrendingUp size={10} /> {trend}
           </span>
-          <span className="text-[9px] text-gray-600 font-bold uppercase tracking-tighter">Tendencia</span>
         </div>
       )}
     </div>
     
-    <div className="flex-1">
-      <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">{label}</p>
-      <h3 className="text-3xl font-black text-white leading-none tracking-tighter">{value}</h3>
+    <div>
+      <p className="text-gray-500 text-[9px] font-black uppercase tracking-[0.15em] mb-0.5">{label}</p>
+      <h3 className="text-2xl font-black text-white leading-none tracking-tighter">{value}</h3>
     </div>
 
     {data && data.length > 0 && (
-      <div className="h-12 w-full mt-2 opacity-50 group-hover:opacity-100 transition-opacity">
+      <div className="h-8 w-full mt-1 opacity-40 group-hover:opacity-100 transition-opacity">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data}>
-            <defs>
-              <linearGradient id={`gradient-${label}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="currentColor" stopOpacity={0.3}/>
-                <stop offset="95%" stopColor="currentColor" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
             <Area 
               type="monotone" 
               dataKey="value" 
               stroke="currentColor" 
-              fillOpacity={1} 
-              fill={`url(#gradient-${label})`} 
-              strokeWidth={2}
+              fillOpacity={0.1} 
+              fill="currentColor" 
+              strokeWidth={1.5}
               className={color.split(' ')[1]}
             />
           </AreaChart>
@@ -138,24 +131,24 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
 
   return (
     <div className="max-w-7xl mx-auto pb-10 px-4 md:px-0">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tighter">Hola, {business.name} 👋</h1>
-          <p className="text-gray-500 text-sm font-medium max-w-md">Gestiona tu negocio y analiza el impacto de tu menú digital en tiempo real.</p>
+          <h1 className="text-2xl md:text-3xl font-black text-white mb-1 tracking-tighter">Hola, {business.name} 👋</h1>
+          <p className="text-gray-500 text-xs font-medium">Panel de control y estadísticas en tiempo real.</p>
         </div>
-        <div className="flex items-center gap-3 w-full md:w-auto">
-           <button className="flex-1 md:flex-none bg-white/5 border border-white/10 text-white px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white hover:text-black transition-all">
-             <Calendar size={14} /> Historial completo
+        <div className="flex items-center gap-2 w-full md:w-auto">
+           <button className="flex-1 md:flex-none bg-white/5 border border-white/10 text-white px-4 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white hover:text-black transition-all">
+             <Calendar size={12} /> Historial
            </button>
         </div>
       </div>
 
       {/* Grid de Estadísticas */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <StatCard 
           label="Visitas Reales" 
           value={isLoadingStats ? '...' : totalVisits} 
-          icon={<Eye size={22} />} 
+          icon={<Eye />} 
           color="bg-blue-500/10 text-blue-500" 
           trend={visitsHistory.length > 0 ? "Activo" : "Sin datos"} 
           data={visitsHistory}
@@ -163,131 +156,123 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
         <StatCard 
           label="Calificación" 
           value={business.averageRating?.toFixed(1) || '0.0'} 
-          icon={<Star size={22} />} 
+          icon={<Star />} 
           color="bg-amber-500/10 text-amber-500" 
           trend={business.ratingsCount ? `${business.ratingsCount} votos` : 'Sin votos'} 
         />
         <StatCard 
           label="Productos" 
           value={business.products.length} 
-          icon={<Package size={22} />} 
+          icon={<Package />} 
           color="bg-purple-500/10 text-purple-500" 
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-        <div className="lg:col-span-2 space-y-8">
-          {/* Accesos Rápidos Rediseñados */}
-          <div className="bg-[#0a0a0b] border border-white/5 rounded-[2.5rem] p-6 md:p-8 shadow-2xl">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-xl font-black text-white uppercase tracking-tight">Accesos rápidos</h2>
-              <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                <Zap size={16} className="text-amber-500" />
-              </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+        <div className="lg:col-span-2 space-y-6">
+          {/* Accesos Rápidos Rediseñados - Compactos */}
+          <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 shadow-xl">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-sm font-black text-white uppercase tracking-tight">Accesos rápidos</h2>
+              <Zap size={14} className="text-amber-500" />
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                {[
-                 { label: 'Productos', icon: <Package size={20} />, to: '/admin/menu', color: 'bg-amber-500/10 text-amber-500' },
-                 { label: 'Banners', icon: <ImageIcon size={20} />, to: '/admin/banners', color: 'bg-purple-500/10 text-purple-500' },
-                 { label: 'Eventos', icon: <Calendar size={20} />, to: '/admin/events', color: 'bg-green-500/10 text-green-500' },
-                 { label: 'QR Menú', icon: <QrCode size={20} />, to: '#', color: 'bg-orange-500/10 text-orange-500' },
-                 { label: isAdmin ? 'Súper Admin' : 'Configuración', icon: isAdmin ? <Shield size={20} /> : <Settings size={20} />, to: isAdmin ? '/super-admin' : '/admin/pricing', color: 'bg-gray-500/10 text-gray-400' },
+                 { label: 'Productos', icon: <Package size={18} />, to: '/admin/menu', color: 'bg-amber-500/10 text-amber-500' },
+                 { label: 'Banners', icon: <ImageIcon size={18} />, to: '/admin/banners', color: 'bg-purple-500/10 text-purple-500' },
+                 { label: 'Eventos', icon: <Calendar size={18} />, to: '/admin/events', color: 'bg-green-500/10 text-green-500' },
+                 { label: 'QR Menú', icon: <QrCode size={18} />, to: '#', color: 'bg-orange-500/10 text-orange-500' },
+                 { label: isAdmin ? 'Súper Admin' : 'Configuración', icon: isAdmin ? <Shield size={18} /> : <Settings size={18} />, to: isAdmin ? '/super-admin' : '/admin/pricing', color: 'bg-gray-500/10 text-gray-400' },
                ].map((item, idx) => (
-                 <Link key={idx} to={item.to} className="flex flex-col items-center justify-center p-6 rounded-3xl bg-black border border-white/5 hover:border-amber-500/30 hover:bg-amber-500/5 transition-all group relative overflow-hidden">
-                    <div className={`w-12 h-12 rounded-2xl ${item.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500`}>
+                 <Link key={idx} to={item.to} className="flex items-center gap-3 p-3 rounded-2xl bg-black border border-white/5 hover:border-amber-500/30 hover:bg-amber-500/5 transition-all group">
+                    <div className={`w-10 h-10 rounded-xl ${item.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-500`}>
                       {item.icon}
                     </div>
-                    <span className="text-white font-black text-[10px] uppercase tracking-[0.2em] text-center">{item.label}</span>
-                    <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ChevronRight size={12} className="text-amber-500" />
-                    </div>
+                    <span className="text-white font-black text-[9px] uppercase tracking-widest">{item.label}</span>
                  </Link>
                ))}
             </div>
           </div>
 
-          {/* Diseñador de QR */}
-          <div className="bg-[#0a0a0b] border border-white/5 rounded-[2.5rem] p-6 md:p-8 shadow-2xl">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-xl font-black text-white uppercase tracking-tight">Diseñador de QR</h2>
-              <button className="text-amber-500 text-[10px] font-black uppercase tracking-widest hover:underline">Personalizar</button>
+          {/* Diseñador de QR - Compacto */}
+          <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 shadow-xl">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-sm font-black text-white uppercase tracking-tight">Diseñador de QR</h2>
             </div>
-            <div className="flex flex-col sm:flex-row items-center gap-10">
-              <div className="bg-white p-6 rounded-[2rem] shrink-0 shadow-2xl shadow-white/5">
-                <img src={qrImageUrl} className="w-32 h-32" alt="QR" />
+            <div className="flex items-center gap-6">
+              <div className="bg-white p-3 rounded-2xl shrink-0">
+                <img src={qrImageUrl} className="w-20 h-20" alt="QR" />
               </div>
-              <div className="flex-1 space-y-6 text-center sm:text-left">
-                 <p className="text-gray-500 text-sm leading-relaxed font-medium">Este es tu acceso directo al menú. Puedes descargarlo e imprimirlo para tus mesas o pegarlo en la entrada.</p>
+              <div className="flex-1 space-y-4">
+                 <p className="text-gray-500 text-[11px] leading-relaxed font-medium">Tu acceso directo al menú. Descárgalo e imprímelo para tus mesas.</p>
                  <button 
                    onClick={handleDownloadQR}
                    disabled={isDownloading}
-                   className="w-full bg-white text-black py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-amber-500 transition-all disabled:opacity-50 shadow-xl"
+                   className="w-full bg-white text-black py-2.5 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-amber-500 transition-all disabled:opacity-50"
                  >
-                   {isDownloading ? <Loader2 className="animate-spin" size={18} /> : <Download size={18} />} 
-                   Descargar Imagen QR
+                   {isDownloading ? <Loader2 className="animate-spin" size={14} /> : <Download size={14} />} 
+                   Descargar QR
                  </button>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="space-y-8">
-          {/* Tarjeta de Plan */}
-          <div className="bg-[#0a0a0b] border border-white/5 rounded-[2.5rem] p-8 relative overflow-hidden shadow-2xl">
-            <div className="absolute -top-6 -right-6 w-24 h-24 bg-amber-500/10 rounded-full blur-3xl" />
-            <div className="flex items-center justify-between mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
-                <Crown size={24} fill="currentColor" />
+        <div className="space-y-6">
+          {/* Tarjeta de Plan - Compacta */}
+          <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 relative overflow-hidden shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                <Crown size={20} fill="currentColor" />
               </div>
-              <span className="bg-amber-500 text-black text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
+              <span className="bg-amber-500 text-black text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">
                 {isPro ? 'PRO' : 'Gratis'}
               </span>
             </div>
-            <h3 className="text-white font-black text-xl mb-2 tracking-tight">Tu Suscripción</h3>
-            <p className="text-gray-500 text-xs font-medium mb-8 leading-relaxed">
-              {isPro ? 'Tienes acceso total a todas las funciones premium y soporte prioritario.' : 'Estás usando el plan básico. Actualiza para desbloquear banners y más.'}
+            <h3 className="text-white font-black text-base mb-1 tracking-tight">Suscripción</h3>
+            <p className="text-gray-500 text-[10px] font-medium mb-6 leading-relaxed">
+              {isPro ? 'Acceso total a funciones premium.' : 'Plan básico. Actualiza para más.'}
             </p>
-            <Link to="/admin/pricing" className="block w-full text-center bg-white text-black py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-amber-500 transition-all shadow-xl">
-              {isPro ? 'Gestionar Plan' : 'Mejorar a PRO'}
+            <Link to="/admin/pricing" className="block w-full text-center bg-white text-black py-3 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-amber-500 transition-all">
+              {isPro ? 'Gestionar' : 'Mejorar'}
             </Link>
           </div>
 
-          {/* Tarjeta de Reputación */}
-          <div className="bg-[#0a0a0b] border border-white/5 rounded-[2.5rem] p-8 shadow-2xl">
-             <div className="flex items-center justify-between mb-8">
-               <h3 className="text-white font-black text-lg uppercase tracking-tight">Reputación</h3>
-               <Star size={20} className="text-amber-500" />
+          {/* Tarjeta de Reputación - Compacta */}
+          <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 shadow-xl">
+             <div className="flex items-center justify-between mb-6">
+               <h3 className="text-sm font-black text-white uppercase tracking-tight">Reputación</h3>
+               <Star size={16} className="text-amber-500" />
              </div>
-             <div className="space-y-6">
+             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-500 text-[10px] font-black uppercase tracking-widest">Promedio</span>
+                  <span className="text-gray-500 text-[9px] font-black uppercase tracking-widest">Promedio</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-black text-3xl tracking-tighter">{business.averageRating?.toFixed(1) || '0.0'}</span>
+                    <span className="text-white font-black text-2xl tracking-tighter">{business.averageRating?.toFixed(1) || '0.0'}</span>
                     <div className="flex flex-col">
                       <div className="flex items-center gap-0.5 text-amber-500">
-                        {[1, 2, 3, 4, 5].map(s => <Star key={s} size={10} fill={s <= Math.round(business.averageRating || 0) ? "currentColor" : "none"} />)}
+                        {[1, 2, 3, 4, 5].map(s => <Star key={s} size={8} fill={s <= Math.round(business.averageRating || 0) ? "currentColor" : "none"} />)}
                       </div>
-                      <span className="text-[9px] text-gray-600 font-bold uppercase tracking-tighter">Puntuación</span>
                     </div>
                   </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest">
                     <span className="text-gray-500">Satisfacción</span>
                     <span className="text-white">{Math.round((business.averageRating || 0) * 20)}%</span>
                   </div>
-                  <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-amber-500 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(245,158,11,0.3)]" 
+                      className="h-full bg-amber-500 rounded-full transition-all duration-1000" 
                       style={{ width: `${(business.averageRating || 0) * 20}%` }} 
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                  <span className="text-gray-500 text-[10px] font-black uppercase tracking-widest">Total votos</span>
-                  <span className="text-white font-black">{business.ratingsCount || 0}</span>
+                <div className="flex items-center justify-between pt-3 border-t border-white/5">
+                  <span className="text-gray-500 text-[9px] font-black uppercase tracking-widest">Total votos</span>
+                  <span className="text-white font-black text-xs">{business.ratingsCount || 0}</span>
                 </div>
              </div>
           </div>

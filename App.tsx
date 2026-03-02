@@ -7,7 +7,6 @@ import Home from './pages/Home.tsx';
 import BusinessDetail from './pages/BusinessDetail.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import OwnerMenu from './pages/OwnerMenu.tsx';
-import OwnerLeads from './pages/OwnerLeads.tsx';
 import OwnerPricing from './pages/OwnerPricing.tsx';
 import OwnerBanners from './pages/OwnerBanners.tsx';
 import OwnerEvents from './pages/OwnerEvents.tsx';
@@ -324,7 +323,6 @@ const App: React.FC = () => {
                 <Route path="menu" element={<OwnerMenu business={activeBusiness} onUpdate={updateActiveBusiness} />} />
                 <Route path="banners" element={<OwnerBanners business={activeBusiness} onUpdate={updateActiveBusiness} />} />
                 <Route path="events" element={<OwnerEvents business={activeBusiness} onUpdate={updateActiveBusiness} />} />
-                <Route path="leads" element={<OwnerLeads business={activeBusiness} />} />
                 <Route path="pricing" element={<OwnerPricing business={activeBusiness} />} />
                 <Route path="settings" element={<OwnerSettings business={activeBusiness} onUpdate={updateActiveBusiness} onDelete={() => deleteBusiness(activeBusiness.id)} />} />
               </Routes>
@@ -409,7 +407,6 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
               { to: '/admin/menu', icon: <Package size={20} />, label: 'Productos' },
               { to: '/admin/banners', icon: <ImageIcon size={20} />, label: 'Banners' },
               { to: '/admin/events', icon: <Calendar size={20} />, label: 'Eventos' },
-              { to: '/admin/leads', icon: <Users size={20} />, label: 'Leads' },
               { to: '/admin/pricing', icon: <Crown size={20} />, label: 'Estadísticas' },
             ].map(link => (
               <Link key={link.to} to={link.to} className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-black hover:text-white transition-all mb-1 text-sm font-medium border border-transparent hover:border-white/5">
