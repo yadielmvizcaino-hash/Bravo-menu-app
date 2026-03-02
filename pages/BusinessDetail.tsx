@@ -307,7 +307,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
       )}
 
       {/* Hero Header */}
-      <div className="relative h-[20vh] md:h-[45vh] w-full overflow-hidden">
+      <div className="relative h-[22vh] md:h-[45vh] w-full overflow-hidden">
         <OptimizedImage 
           src={business?.coverPhotos?.[0] || 'https://images.unsplash.com/photo-1551269901-5c5e14c25df7?auto=format&fit=crop&q=80&w=1200'} 
           containerClassName="w-full h-full"
@@ -316,30 +316,32 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           loading="eager"
           fetchPriority="high"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b] via-black/40 to-black/10" />
-        <div className="absolute bottom-8 left-0 right-0 px-6 max-w-5xl mx-auto flex items-end gap-6">
-          <OptimizedImage 
-            src={business?.logoUrl || 'https://via.placeholder.com/150'} 
-            containerClassName="w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-[#141416] p-1 border-2 border-white/10 shadow-2xl" 
-            className="rounded-2xl" 
-            alt="Logo" 
-            loading="eager"
-            fetchPriority="high"
-          />
-          <div className="flex-1 mb-2">
-            <div className="flex items-center gap-2 mb-2">
-               <span className="bg-amber-500 text-black text-[12px] font-bold px-2 py-0.5 rounded flex items-center gap-1 uppercase tracking-tighter">
-                 <Crown size={12} fill="currentColor" /> {business?.plan}
-               </span>
-               <span className="text-amber-500 text-[12px] font-medium uppercase tracking-wider bg-black/50 backdrop-blur-md px-2 py-0.5 rounded border border-white/10">{business?.type}</span>
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+      </div>
+
+      {/* Business Info Section - Overlapping for better aesthetics */}
+      <div className="relative z-10 -mt-10 md:-mt-16 px-6 max-w-5xl mx-auto flex items-end gap-4 md:gap-6">
+        <OptimizedImage 
+          src={business?.logoUrl || 'https://via.placeholder.com/150'} 
+          containerClassName="w-20 h-20 md:w-32 md:h-32 rounded-3xl bg-[#141416] p-1 border-2 border-white/10 shadow-2xl shrink-0" 
+          className="rounded-2xl" 
+          alt="Logo" 
+          loading="eager"
+          fetchPriority="high"
+        />
+        <div className="flex-1 pb-1 md:pb-2">
+          <div className="flex flex-wrap items-center gap-2 mb-1.5">
+             <span className="bg-amber-500 text-black text-[10px] md:text-[12px] font-bold px-2 py-0.5 rounded flex items-center gap-1 uppercase tracking-tighter">
+               <Crown size={10} className="md:w-3 md:h-3" fill="currentColor" /> {business?.plan}
+             </span>
+             <span className="text-amber-500 text-[10px] md:text-[12px] font-medium uppercase tracking-wider bg-black/50 backdrop-blur-md px-2 py-0.5 rounded border border-white/10">{business?.type}</span>
+          </div>
+          <h1 className="text-lg md:text-4xl font-bold text-white tracking-tight mb-1 leading-tight">{business?.name}</h1>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-0.5 text-amber-500">
+              {[1, 2, 3, 4, 5].map(s => <Star key={s} size={12} className="md:w-3.5 md:h-3.5" fill={s <= Math.round(business?.averageRating || 0) ? "currentColor" : "none"} />)}
             </div>
-            <h1 className="text-xl md:text-4xl font-bold text-white tracking-tight mb-1">{business?.name}</h1>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 text-amber-500">
-                {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} fill={s <= Math.round(business?.averageRating || 0) ? "currentColor" : "none"} />)}
-              </div>
-              <span className="text-white/50 text-xs font-bold">({business?.ratingsCount || 0})</span>
-            </div>
+            <span className="text-white/50 text-[10px] md:text-xs font-bold">({business?.ratingsCount || 0})</span>
           </div>
         </div>
       </div>
