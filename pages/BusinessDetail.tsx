@@ -124,10 +124,16 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
     }
   };
 
-  const banners = useMemo(() => {
-    if (business?.plan !== PlanType.PRO) return [];
-    return business?.banners || [];
+  const isProActive = useMemo(() => {
+    if (business?.plan !== PlanType.PRO) return false;
+    if (!business?.planExpiresAt) return false;
+    return new Date(business.planExpiresAt) > new Date();
   }, [business]);
+
+  const banners = useMemo(() => {
+    if (!isProActive) return [];
+    return business?.banners || [];
+  }, [business, isProActive]);
 
   useEffect(() => {
     if (banners.length <= 1) return;
@@ -138,8 +144,18 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
   }, [banners]);
 
   const categories = useMemo(() => business?.categories || [], [business]);
-  const products = useMemo(() => (business?.products || []).filter(p => p.isVisible !== false), [business]);
-  const events = useMemo(() => (business?.events || []), [business]);
+  const products = useMemo(() => {
+    const allProducts = (business?.products || []).filter(p => p.isVisible !== false);
+    if (!isProActive) {
+      return allProducts.slice(0, 10);
+    }
+    return allProducts;
+  }, [business, isProActive]);
+
+  const events = useMemo(() => {
+    if (!isProActive) return [];
+    return (business?.events || []);
+  }, [business, isProActive]);
 
   const filteredProducts = useMemo(() => {
     if (!business) return [];
@@ -182,7 +198,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
 
   const handleWhatsAppOrder = () => {
     if (cart.length === 0) return;
-    const canOrder = business?.plan === PlanType.PRO && business?.deliveryEnabled;
+    const canOrder = isProActive && business?.deliveryEnabled;
     if (!canOrder) return;
 
     if (!showDeliveryForm) {
@@ -692,7 +708,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                 <span className="text-amber-500 text-2xl">${cartTotal}</span>
               </div>
               
-              {business?.plan === PlanType.PRO && business?.deliveryEnabled ? (
+              {isProActive && business?.deliveryEnabled ? (
                 <button 
                   onClick={handleWhatsAppOrder} 
                   className="w-full bg-[#25d366] text-white py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 shadow-2xl transition-all hover:bg-[#20bd5a]"
@@ -705,7 +721,9 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                     <Info size={20} />
                   </div>
                   <p className="text-amber-500/90 text-sm font-medium leading-relaxed">
-                    Esta lista es <span className="font-semibold underline">solo de referencia</span> para mostrar al camarero y agilizar tu pedido en mesa.
+                    {!isProActive && business?.plan === PlanType.PRO 
+                      ? "El servicio de pedidos a domicilio está temporalmente desactivado por vencimiento de plan."
+                      : "Esta lista es solo de referencia para mostrar al camarero y agilizar tu pedido en mesa."}
                   </p>
                 </div>
               )}

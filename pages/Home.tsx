@@ -39,9 +39,17 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
     return matchesSearch && matchesProvince && matchesMunicipality && matchesType;
   });
 
+  const isProActive = (b: Business) => {
+    if (b.plan !== PlanType.PRO) return false;
+    if (!b.planExpiresAt) return false;
+    return new Date(b.planExpiresAt) > new Date();
+  };
+
   const sortedBusinesses = [...filteredBusinesses].sort((a, b) => {
-    if (a.plan === PlanType.PRO && b.plan !== PlanType.PRO) return -1;
-    if (a.plan !== PlanType.PRO && b.plan === PlanType.PRO) return 1;
+    const aPro = isProActive(a);
+    const bPro = isProActive(b);
+    if (aPro && !bPro) return -1;
+    if (!aPro && bPro) return 1;
     return 0;
   });
 
@@ -171,7 +179,7 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
                     className="group-hover:scale-110 transition-transform duration-1000"
                   />
                   <div className="absolute top-5 left-5 flex flex-col gap-2">
-                    {business.plan === PlanType.PRO && (
+                    {isProActive(business) && (
                       <span className="bg-amber-500 text-black font-extrabold text-[10px] px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-2xl uppercase tracking-wider">
                         <Crown size={12} fill="currentColor" /> Recomendado
                       </span>

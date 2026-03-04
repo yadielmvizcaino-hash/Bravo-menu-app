@@ -43,29 +43,8 @@ const App: React.FC = () => {
   const loading = loadingBusinesses || (!!loggedInId && loadingActive);
   const error = businessesError?.message || activeError?.message || null;
 
-  // Background check for expired plans
-  useEffect(() => {
-    if (businesses.length > 0) {
-      const now = new Date();
-      const expiredIds = businesses
-        .filter(b => b.plan === PlanType.PRO && b.planExpiresAt && new Date(b.planExpiresAt) < now)
-        .map(b => b.id);
-
-      if (expiredIds.length > 0) {
-        supabase
-          .from('businesses')
-          .update({ plan: PlanType.FREE, planExpiresAt: null, plan_expires_at: null })
-          .in('id', expiredIds)
-          .then(() => {
-            queryClient.invalidateQueries({ queryKey: ['businesses'] });
-            if (loggedInId && expiredIds.includes(loggedInId)) {
-              queryClient.invalidateQueries({ queryKey: ['business', loggedInId] });
-            }
-          });
-      }
-    }
-  }, [businesses, loggedInId, queryClient]);
-
+  // Background check for expired plans removed to allow Dashboard to handle it with a popup
+  
   const handleOnboardingComplete = async (businessId: string) => {
     localStorage.setItem('bravo_menu_biz_id', businessId);
     setLoggedInId(businessId);
@@ -188,7 +167,7 @@ const App: React.FC = () => {
           ) : (
             <AdminLayout business={activeBusiness} onLogout={handleLogout}>
               <Routes>
-                <Route index element={<Dashboard business={activeBusiness} />} />
+                <Route index element={<Dashboard business={activeBusiness} onUpdate={updateActiveBusiness} />} />
                 <Route path="menu" element={<OwnerMenu business={activeBusiness} onUpdate={updateActiveBusiness} />} />
                 <Route path="banners" element={<OwnerBanners business={activeBusiness} onUpdate={updateActiveBusiness} />} />
                 <Route path="events" element={<OwnerEvents business={activeBusiness} onUpdate={updateActiveBusiness} />} />

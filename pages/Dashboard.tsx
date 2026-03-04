@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { Eye, Users, Package, Download, Crown, Info, ChevronRight, TrendingUp, Calendar, Zap, Layers, Image as ImageIcon, Settings, Shield, Star, Loader2, MousePointer2, QrCode } from 'lucide-react';
+import { Eye, Users, Package, Download, Crown, Info, ChevronRight, TrendingUp, Calendar, Zap, Layers, Image as ImageIcon, Settings, Shield, Star, Loader2, MousePointer2, QrCode, AlertCircle } from 'lucide-react';
 import { Business, PlanType } from '../types';
 import { Link } from 'react-router-dom';
 import { AreaChart, Area, ResponsiveContainer, YAxis, XAxis, Tooltip } from 'recharts';
@@ -53,13 +53,48 @@ const StatCard: React.FC<{
   </div>
 );
 
-const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
+const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) => void }> = ({ business, onUpdate }) => {
   const isPro = business.plan === PlanType.PRO;
   const isAdmin = business.role === 'admin';
   const [isDownloading, setIsDownloading] = useState(false);
   const [visitsHistory, setVisitsHistory] = useState<{ name: string, value: number }[]>([]);
   const [totalVisits, setTotalVisits] = useState(business.stats.visits);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
+
+  const isExpiredPro = useMemo(() => {
+    if (business.plan !== PlanType.PRO) return false;
+    if (!business.planExpiresAt) return false;
+    return new Date(business.planExpiresAt) < new Date();
+  }, [business]);
+
+  const [showExpiredPopup, setShowExpiredPopup] = useState(isExpiredPro);
+  const [isDowngrading, setIsDowngrading] = useState(false);
+
+  const handleContinueFree = async () => {
+    setIsDowngrading(true);
+    try {
+      const updatedBusiness = {
+        ...business,
+        plan: PlanType.FREE,
+        planExpiresAt: null
+      };
+
+      const { error } = await supabase
+        .from('businesses')
+        .update({ plan: PlanType.FREE, plan_expires_at: null })
+        .eq('id', business.id);
+
+      if (error) throw error;
+
+      if (onUpdate) onUpdate(updatedBusiness);
+      setShowExpiredPopup(false);
+    } catch (err) {
+      console.error("Error downgrading plan:", err);
+      alert("Error al actualizar el plan. Inténtalo de nuevo.");
+    } finally {
+      setIsDowngrading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -131,6 +166,49 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
 
   return (
     <div className="max-w-7xl mx-auto pb-10 px-4 md:px-0">
+      {/* Modal de Plan Vencido */}
+      {showExpiredPopup && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in">
+          <div className="bg-[#0a0a0b] border border-white/10 rounded-[2.5rem] w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="p-8 text-center space-y-6">
+              <div className="w-20 h-20 bg-amber-500/10 rounded-[2rem] flex items-center justify-center mx-auto text-amber-500">
+                <AlertCircle size={40} />
+              </div>
+              
+              <div className="space-y-2">
+                <h2 className="text-2xl font-extrabold text-white uppercase tracking-tight">Tu Plan PRO ha vencido</h2>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  Las funciones premium (banners, eventos, envíos y menú ilimitado) han sido desactivadas.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 pt-4">
+                <Link 
+                  to="/admin/pricing" 
+                  onClick={() => setShowExpiredPopup(false)}
+                  className="w-full bg-amber-500 text-black py-4 rounded-2xl font-extrabold uppercase text-[11px] tracking-[0.2em] shadow-xl flex items-center justify-center gap-2 hover:bg-amber-400 transition-all active:scale-95"
+                >
+                  <Zap size={16} fill="currentColor" />
+                  Reactivar Plan PRO
+                </Link>
+                
+                <button 
+                  onClick={handleContinueFree}
+                  disabled={isDowngrading}
+                  className="w-full bg-white/5 text-gray-400 py-4 rounded-2xl font-extrabold uppercase text-[11px] tracking-[0.2em] hover:bg-white/10 hover:text-white transition-all disabled:opacity-50"
+                >
+                  {isDowngrading ? <Loader2 className="animate-spin mx-auto" size={18} /> : "Continuar con Plan Gratis"}
+                </button>
+              </div>
+              
+              <p className="text-[10px] text-gray-600 font-medium uppercase tracking-widest">
+                * El plan gratis limita tu menú a los primeros 10 productos.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-white mb-1 tracking-tighter">Hola, {business.name} 👋</h1>
