@@ -31,9 +31,9 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
          <div className="w-24 h-24 bg-amber-500/10 text-amber-500 rounded-3xl flex items-center justify-center mb-6 border border-amber-500/20 shadow-2xl">
            <CalendarIcon size={48} />
          </div>
-         <h1 className="text-4xl font-black text-white mb-4 uppercase tracking-tight">Gestor de Eventos</h1>
+         <h1 className="text-4xl font-extrabold text-white mb-4 uppercase tracking-tight">Gestor de Eventos</h1>
          <p className="text-gray-500 max-w-lg mb-10 text-lg leading-relaxed">Organiza noches temáticas y promociones especiales. Función exclusiva del Plan PRO.</p>
-         <Link to="/admin/pricing" className="bg-amber-500 text-black px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/10">Actualizar a PRO</Link>
+         <Link to="/admin/pricing" className="bg-amber-500 text-black px-12 py-5 rounded-2xl font-extrabold uppercase tracking-widest hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/10">Actualizar a PRO</Link>
       </div>
     );
   }
@@ -139,12 +139,12 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-3xl font-black text-white mb-2 uppercase tracking-tight">Eventos</h1>
+          <h1 className="text-3xl font-extrabold text-white mb-2 uppercase tracking-tight">Eventos</h1>
           <p className="text-gray-500 font-medium">{business.events.length} eventos programados</p>
         </div>
         <button 
           onClick={openCreateModal}
-          className="bg-amber-500 text-black px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/10"
+          className="bg-amber-500 text-black px-8 py-4 rounded-2xl font-extrabold text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/10"
         >
           <Plus size={20} strokeWidth={3} /> Nuevo evento
         </button>
@@ -167,15 +167,15 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
                  </div>
               </div>
               <div className="p-8 flex flex-col flex-1">
-                 <h3 className="text-xl font-black text-white mb-4 uppercase tracking-tight leading-tight">{event.title}</h3>
-                 <div className="flex flex-wrap gap-5 text-gray-500 text-[10px] font-black uppercase tracking-widest mb-6">
+                 <h3 className="text-xl font-extrabold text-white mb-4 uppercase tracking-tight leading-tight">{event.title}</h3>
+                 <div className="flex flex-wrap gap-5 text-gray-500 text-[10px] font-extrabold uppercase tracking-widest mb-6">
                     <span className="flex items-center gap-2"><CalendarIcon size={16} className="text-amber-500" /> {new Date(event.dateTime).toLocaleDateString()}</span>
                     <span className="flex items-center gap-2"><Clock size={16} className="text-amber-500" /> {new Date(event.dateTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
                     <span className="flex items-center gap-2"><Users size={16} className="text-amber-500" /> {event.interestedCount} interesados</span>
                  </div>
                  <p className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed font-light">{event.description}</p>
                  <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
-                    <span className="text-amber-500 font-black text-lg tracking-tight">{event.price ? `$${event.price} CUP` : 'Entrada Libre'}</span>
+                    <span className="text-amber-500 font-extrabold text-lg tracking-tight">{event.price ? `$${event.price} CUP` : 'Entrada Libre'}</span>
                  </div>
               </div>
            </div>
@@ -186,12 +186,12 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in">
           <div className="bg-black border border-gray-800 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl">
             <div className="flex items-center justify-between p-8 border-b border-gray-800">
-              <h2 className="text-xl font-black text-white uppercase tracking-tight">{editingEvent ? 'Editar' : 'Nuevo'} Evento</h2>
+              <h2 className="text-xl font-extrabold text-white uppercase tracking-tight">{editingEvent ? 'Editar' : 'Nuevo'} Evento</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white transition-colors"><X size={24} /></button>
             </div>
             <form onSubmit={handleSave} className="p-8 space-y-5 max-h-[80vh] overflow-y-auto no-scrollbar">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Flyer / Cartel</label>
+                <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-1">Flyer / Cartel</label>
                 <div 
                   onClick={() => fileInputRef.current?.click()}
                   className="relative w-full h-52 rounded-2xl overflow-hidden bg-black border-2 border-dashed border-gray-700 flex items-center justify-center group cursor-pointer hover:border-amber-500/50 transition-all"
@@ -203,34 +203,34 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
                   ) : (
                     <div className="text-center">
                       <Upload className="mx-auto text-gray-600 mb-2" size={32} />
-                      <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Sube la foto del evento</p>
+                      <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-widest">Sube la foto del evento</p>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-black uppercase">Cambiar</div>
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-extrabold uppercase">Cambiar</div>
                 </div>
                 <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*" />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5 md:col-span-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Nombre</label>
+                  <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-1">Nombre</label>
                   <input required type="text" className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Fecha y Hora</label>
+                  <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-1">Fecha y Hora</label>
                   <input required type="datetime-local" className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm" value={formData.dateTime} onChange={e => setFormData({...formData, dateTime: e.target.value})} />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Precio (CUP)</label>
+                  <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-1">Precio (CUP)</label>
                   <input type="number" className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="0 (Libre)" />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Descripción</label>
+                <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-1">Descripción</label>
                 <textarea required rows={4} className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none resize-none text-sm" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
               </div>
               <div className="pt-4">
-                <button type="submit" disabled={isSaving || isUploading} className="w-full bg-amber-500 text-black font-black py-5 rounded-2xl hover:bg-amber-400 transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-xs uppercase tracking-widest">
+                <button type="submit" disabled={isSaving || isUploading} className="w-full bg-amber-500 text-black font-extrabold py-5 rounded-2xl hover:bg-amber-400 transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-xs uppercase tracking-widest">
                   {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />} Guardar Evento
                 </button>
               </div>

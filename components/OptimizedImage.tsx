@@ -61,7 +61,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
       {/* Error Fallback */}
       {hasError && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-900 text-gray-700 p-4 text-center">
-          <span className="text-[10px] font-bold uppercase tracking-widest">Error de imagen</span>
+          <span className="text-[10px] font-semibold uppercase tracking-widest">Error de imagen</span>
         </div>
       )}
 
@@ -82,7 +82,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         />
       ) : !hasError && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-900 text-gray-700 p-4 text-center">
-          <span className="text-[10px] font-bold uppercase tracking-widest">Sin imagen</span>
+          <span className="text-[10px] font-semibold uppercase tracking-widest">Sin imagen</span>
         </div>
       )}
     </div>

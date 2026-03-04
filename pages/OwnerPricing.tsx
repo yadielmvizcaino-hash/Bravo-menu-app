@@ -48,20 +48,20 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
               <div className="w-16 h-16 bg-amber-500 text-black rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <CreditCard size={32} />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">💎 Actualizar a PRO</h2>
+              <h2 className="text-2xl font-semibold text-white mb-2">💎 Actualizar a PRO</h2>
               <p className="text-gray-400">Sigue los pasos para activar todas las funciones premium.</p>
             </div>
 
             <div className="bg-black p-6 rounded-2xl border border-amber-500/30 mb-8 text-center">
-               <p className="text-xs text-amber-500 font-bold uppercase tracking-widest mb-2">Precio del Plan PRO</p>
+               <p className="text-xs text-amber-500 font-semibold uppercase tracking-widest mb-2">Precio del Plan PRO</p>
                <div className="flex flex-col items-center justify-center gap-1">
-                  <span className="text-3xl font-bold text-white">500 CUP</span>
+                  <span className="text-3xl font-semibold text-white">500 CUP</span>
                   <span className="text-gray-500 text-xs font-medium uppercase tracking-widest">por cada mes de servicio</span>
                </div>
             </div>
 
             <div className="space-y-6 mb-8">
-               <h3 className="text-white font-bold flex items-center gap-2">
+               <h3 className="text-white font-semibold flex items-center gap-2">
                  <CheckCircle2 size={18} className="text-green-500" /> Instrucciones de pago:
                </h3>
                {isLoadingSettings ? (
@@ -79,7 +79,7 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
 
             <button 
               onClick={() => setShowPaymentModal(false)}
-              className="w-full bg-amber-500 text-black font-bold py-4 rounded-xl hover:bg-amber-400"
+              className="w-full bg-amber-500 text-black font-semibold py-4 rounded-xl hover:bg-amber-400"
             >
               Entendido, ya realicé el pago
             </button>
@@ -88,7 +88,7 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
       )}
 
       <div className="mb-10">
-        <h1 className="text-3xl font-bold text-white mb-2">Mi Plan</h1>
+        <h1 className="text-3xl font-semibold text-white mb-2">Mi Plan</h1>
       </div>
 
       <div className="bg-black border border-gray-800 rounded-3xl p-8 mb-12 flex items-center justify-between">
@@ -98,8 +98,8 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xl font-bold text-white">{isPro ? 'Plan PRO' : 'Plan Gratis'}</span>
-                <span className="bg-green-500/10 text-green-500 text-[10px] font-bold px-2 py-0.5 rounded">Activo</span>
+                <span className="text-xl font-semibold text-white">{isPro ? 'Plan PRO' : 'Plan Gratis'}</span>
+                <span className="bg-green-500/10 text-green-500 text-[10px] font-semibold px-2 py-0.5 rounded">Activo</span>
               </div>
               <p className="text-gray-500 text-sm">Válido hasta: {isPro ? '15 de marzo, 2026' : 'Indefinido'}</p>
             </div>
@@ -111,9 +111,9 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div className={`bg-black border rounded-3xl p-8 flex flex-col ${!isPro ? 'border-amber-500/50 ring-2 ring-amber-500/10' : 'border-gray-800'}`}>
-           <h3 className="text-xl font-bold text-white mb-2">Plan Gratis</h3>
+           <h3 className="text-xl font-semibold text-white mb-2">Plan Gratis</h3>
            <p className="text-gray-500 mb-6">Básico para presencia digital</p>
-           <div className="text-4xl font-bold text-white mb-10">$0 <span className="text-lg font-normal text-gray-500">CUP/mes</span></div>
+           <div className="text-4xl font-semibold text-white mb-10">$0 <span className="text-lg font-normal text-gray-500">CUP/mes</span></div>
            
            <ul className="space-y-4 mb-10 flex-1">
              <li className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-green-500" /> Perfil básico</li>
@@ -125,17 +125,17 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
            </ul>
            
            {!isPro ? (
-             <div className="text-center py-4 text-amber-500 font-bold">Tu plan actual</div>
+             <div className="text-center py-4 text-amber-500 font-semibold">Tu plan actual</div>
            ) : (
-             <button className="bg-black text-white py-4 rounded-xl font-bold opacity-50 cursor-not-allowed">Plan actual</button>
+             <button className="bg-black text-white py-4 rounded-xl font-semibold opacity-50 cursor-not-allowed">Plan actual</button>
            )}
         </div>
 
         <div className={`bg-black border rounded-3xl p-8 flex flex-col relative overflow-hidden ${isPro ? 'border-amber-500/50 ring-2 ring-amber-500/10' : 'border-gray-800'}`}>
-           <div className="absolute top-4 right-[-40px] bg-amber-500 text-black font-bold text-[10px] px-12 py-1 rotate-45 uppercase tracking-tighter">Súper Popular</div>
-           <h3 className="text-xl font-bold text-white mb-2">Plan PRO</h3>
+           <div className="absolute top-4 right-[-40px] bg-amber-500 text-black font-semibold text-[10px] px-12 py-1 rotate-45 uppercase tracking-tighter">Súper Popular</div>
+           <h3 className="text-xl font-semibold text-white mb-2">Plan PRO</h3>
            <p className="text-gray-500 mb-6">Para negocios premium</p>
-           <div className="text-4xl font-bold text-amber-500 mb-10">$500 <span className="text-lg font-normal text-gray-500">CUP/mes</span></div>
+           <div className="text-4xl font-semibold text-amber-500 mb-10">$500 <span className="text-lg font-normal text-gray-500">CUP/mes</span></div>
            
            <ul className="space-y-4 mb-10 flex-1">
              <li className="flex items-center gap-3 text-gray-300"><Check size={18} className="text-amber-500" /> Productos ILIMITADOS</li>
@@ -147,9 +147,9 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
            </ul>
            
            {!isPro ? (
-             <button onClick={() => setShowPaymentModal(true)} className="bg-amber-500 text-black py-4 rounded-xl font-bold hover:bg-amber-400 transition-all scale-100 hover:scale-[1.02]">Actualizar a PRO</button>
+             <button onClick={() => setShowPaymentModal(true)} className="bg-amber-500 text-black py-4 rounded-xl font-semibold hover:bg-amber-400 transition-all scale-100 hover:scale-[1.02]">Actualizar a PRO</button>
            ) : (
-             <div className="text-center py-4 text-amber-500 font-bold flex items-center justify-center gap-2">
+             <div className="text-center py-4 text-amber-500 font-semibold flex items-center justify-center gap-2">
                <ShieldCheck size={20} /> Plan PRO Activo
              </div>
            )}

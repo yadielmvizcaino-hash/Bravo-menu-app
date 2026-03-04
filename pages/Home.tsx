@@ -57,7 +57,7 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
             <div className="h-[1px] w-12 bg-amber-500/50" />
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-black text-white mb-4 tracking-tight uppercase">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight uppercase">
             Bravo <span className="text-amber-500">Menú</span>
           </h1>
           
@@ -119,7 +119,7 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
                 <button
                   key={filter.label}
                   onClick={() => setSelectedType(filter.type as any)}
-                  className={`px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border ${
+                  className={`px-5 py-3 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 border ${
                     selectedType === filter.type 
                     ? 'bg-amber-500 text-black border-amber-500 shadow-lg' 
                     : 'bg-white/5 text-gray-500 border-white/10 hover:border-gray-500'
@@ -134,7 +134,7 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
       </header>
 
       <section className="max-w-7xl mx-auto px-6 py-10">
-        <div className="flex items-center gap-3 mb-10 text-amber-500 font-black text-[10px] uppercase tracking-[0.4em]">
+        <div className="flex items-center gap-3 mb-10 text-amber-500 font-extrabold text-[10px] uppercase tracking-[0.4em]">
           <Utensils size={14} /> 
           <span>Lugares Disponibles ({sortedBusinesses.length})</span>
         </div>
@@ -172,17 +172,17 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
                   />
                   <div className="absolute top-5 left-5 flex flex-col gap-2">
                     {business.plan === PlanType.PRO && (
-                      <span className="bg-amber-500 text-black font-black text-[10px] px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-2xl uppercase tracking-wider">
+                      <span className="bg-amber-500 text-black font-extrabold text-[10px] px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-2xl uppercase tracking-wider">
                         <Crown size={12} fill="currentColor" /> Recomendado
                       </span>
                     )}
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1c] via-transparent to-transparent" />
                   <div className="absolute bottom-5 left-6 right-6">
-                    <h3 className="text-lg md:text-xl font-black text-white mb-0 leading-tight uppercase tracking-tight">{business.name}</h3>
+                    <h3 className="text-lg md:text-xl font-extrabold text-white mb-0 leading-tight uppercase tracking-tight">{business.name}</h3>
                     <div className="flex items-center gap-1 mt-1">
                       <Star size={12} className="text-amber-500 fill-amber-500" />
-                      <span className="text-white text-[10px] font-bold">
+                      <span className="text-white text-[10px] font-semibold">
                         {(business.averageRating ?? (business as any).average_rating ?? 0).toFixed(1)} ({(business.ratingsCount ?? (business as any).ratings_count ?? 0)})
                       </span>
                     </div>
@@ -193,11 +193,11 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
                     {business.description || 'Explora nuestro menú digital.'}
                   </p>
                   <div className="flex items-center justify-between mt-auto border-t border-white/5 pt-5">
-                    <div className="flex items-center gap-2 text-gray-500 text-[10px] font-black uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-gray-500 text-[10px] font-extrabold uppercase tracking-widest">
                       <MapPin size={14} className="text-amber-500" />
                       {business.municipality || (business as any).municipality}
                     </div>
-                    <button className="text-amber-500 text-[10px] font-black flex items-center gap-2 hover:translate-x-1 transition-all uppercase tracking-[0.2em]">
+                    <button className="text-amber-500 text-[10px] font-extrabold flex items-center gap-2 hover:translate-x-1 transition-all uppercase tracking-[0.2em]">
                       Ver Menú <ChevronRight size={14} />
                     </button>
                   </div>
@@ -210,7 +210,7 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
             <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10 text-gray-500">
               <Search size={32} />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2 uppercase tracking-widest">Sin establecimientos</h3>
+            <h3 className="text-xl font-semibold text-white mb-2 uppercase tracking-widest">Sin establecimientos</h3>
             <p className="text-gray-500 text-sm font-light">Parece que no hay negocios registrados que coincidan con estos filtros.</p>
           </div>
         )}

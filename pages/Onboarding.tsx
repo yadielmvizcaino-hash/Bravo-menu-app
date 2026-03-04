@@ -102,10 +102,10 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
     <div className="min-h-screen bg-black py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-500 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-4 border border-amber-500/20">
+          <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-500 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-4 border border-amber-500/20">
             <Zap size={14} fill="currentColor" /> Empieza hoy mismo
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">Crea tu menú digital</h1>
+          <h1 className="text-4xl md:text-5xl font-semibold text-white mb-4 tracking-tight">Crea tu menú digital</h1>
           <p className="text-gray-500 max-w-xl mx-auto font-medium">Registra tu negocio para acceder a tu panel de administración.</p>
         </div>
 
@@ -113,12 +113,12 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="bg-[#141416] border border-white/5 p-8 rounded-3xl shadow-2xl space-y-6">
               <div className="space-y-4">
-                <h3 className="text-white font-bold flex items-center gap-2 text-lg">
+                <h3 className="text-white font-semibold flex items-center gap-2 text-lg">
                   <Store size={20} className="text-amber-500" /> Información Básica
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Nombre del Negocio</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest ml-1">Nombre del Negocio</label>
                     <input 
                       required
                       type="text" 
@@ -129,7 +129,7 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Tipo de Negocio</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest ml-1">Tipo de Negocio</label>
                     <select 
                       className="w-full bg-[#1a1a1c] border border-gray-800 rounded-xl py-3 px-4 text-white focus:border-amber-500/50 outline-none appearance-none cursor-pointer text-sm"
                       value={formData.type}
@@ -142,12 +142,12 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
               </div>
 
               <div className="space-y-4 pt-4 border-t border-white/5">
-                <h3 className="text-white font-bold flex items-center gap-2 text-lg">
+                <h3 className="text-white font-semibold flex items-center gap-2 text-lg">
                   <MapPin size={20} className="text-amber-500" /> Ubicación
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Provincia</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest ml-1">Provincia</label>
                     <select 
                       required
                       className="w-full bg-[#1a1a1c] border border-gray-800 rounded-xl py-3 px-4 text-white focus:border-amber-500/50 outline-none cursor-pointer text-sm"
@@ -159,7 +159,7 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
                     </select>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Municipio (Localidad)</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest ml-1">Municipio (Localidad)</label>
                     <select 
                       required
                       disabled={!formData.province}
@@ -177,12 +177,12 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
               </div>
 
               <div className="space-y-4 pt-4 border-t border-white/5">
-                <h3 className="text-white font-bold flex items-center gap-2 text-lg">
+                <h3 className="text-white font-semibold flex items-center gap-2 text-lg">
                   <Lock size={20} className="text-amber-500" /> Seguridad y Contacto
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Teléfono (Usuario)</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest ml-1">Teléfono (Usuario)</label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">+53</span>
                       <input 
@@ -197,7 +197,7 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Contraseña</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-widest ml-1">Contraseña</label>
                     <div className="relative">
                       <input 
                         required
@@ -222,7 +222,7 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
               <button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="w-full bg-amber-500 text-black py-4 rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/10 disabled:opacity-50 mt-4 text-xs"
+                className="w-full bg-amber-500 text-black py-4 rounded-2xl font-extrabold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/10 disabled:opacity-50 mt-4 text-xs"
               >
                 {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : <PlusCircle size={20} />}
                 {statusText}
@@ -233,9 +233,9 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
 
           <div className="space-y-6">
             <div className="bg-[#1a1a1c] border border-white/5 p-6 rounded-3xl">
-              <h4 className="text-white font-bold text-sm uppercase mb-4">Plan Inicial</h4>
+              <h4 className="text-white font-semibold text-sm uppercase mb-4">Plan Inicial</h4>
               <div className="flex items-center gap-3 text-amber-500 mb-6">
-                <Check size={20} /> <span className="font-bold text-xl">GRATIS</span>
+                <Check size={20} /> <span className="font-semibold text-xl">GRATIS</span>
               </div>
               <ul className="space-y-3">
                 {freeFeatures.map((f, i) => (

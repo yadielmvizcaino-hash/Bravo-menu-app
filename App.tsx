@@ -1,7 +1,8 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { HashRouter, Routes, Route, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { LayoutGrid, Users, User, BarChart3, Package, Layers, Image as ImageIcon, Calendar, LogOut, Crown, Search, Menu as MenuIcon, Share2, X, Loader2, AlertCircle, PlusCircle, LogIn, Store, ChevronRight, Settings, ArrowLeft, Shield, Camera, Palette } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 
 import Home from './pages/Home.tsx';
 import BusinessDetail from './pages/BusinessDetail.tsx';
@@ -17,235 +18,79 @@ import Auth from './pages/Auth.tsx';
 
 import { supabase } from './lib/supabase.ts';
 import { Business, PlanType } from './types.ts';
+import { useBusinesses, useBusiness } from './hooks/useBusinesses.ts';
 
 const App: React.FC = () => {
-  const [businesses, setBusinesses] = useState<Business[]>([]);
-  const [activeBusiness, setActiveBusiness] = useState<Business | null>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [loggedInId, setLoggedInId] = useState<string | null>(localStorage.getItem('bravo_menu_biz_id'));
 
-  const checkAndDowngradeExpiredPlans = async (data: any[]) => {
-    const now = new Date();
-    const expiredIds = data
-      .filter(b => {
-        const plan = b.plan;
-        const expiry = b.planExpiresAt || b.plan_expires_at;
-        return plan === PlanType.PRO && expiry && new Date(expiry) < now;
-      })
-      .map(b => b.id);
+  // Fetch all businesses for the main list
+  const { 
+    data: businesses = [], 
+    isLoading: loadingBusinesses, 
+    error: businessesError,
+    refetch: refetchBusinesses
+  } = useBusinesses();
 
-    if (expiredIds.length > 0) {
-      try {
-        await supabase
+  // Fetch active business details if logged in
+  const {
+    data: activeBusiness,
+    isLoading: loadingActive,
+    error: activeError,
+    refetch: refetchActive
+  } = useBusiness(loggedInId || undefined);
+
+  const loading = loadingBusinesses || (!!loggedInId && loadingActive);
+  const error = businessesError?.message || activeError?.message || null;
+
+  // Background check for expired plans
+  useEffect(() => {
+    if (businesses.length > 0) {
+      const now = new Date();
+      const expiredIds = businesses
+        .filter(b => b.plan === PlanType.PRO && b.planExpiresAt && new Date(b.planExpiresAt) < now)
+        .map(b => b.id);
+
+      if (expiredIds.length > 0) {
+        supabase
           .from('businesses')
           .update({ plan: PlanType.FREE, planExpiresAt: null, plan_expires_at: null })
-          .in('id', expiredIds);
-        
-        return data.map(b => 
-          expiredIds.includes(b.id) 
-            ? { ...b, plan: PlanType.FREE, planExpiresAt: null, plan_expires_at: null } 
-            : b
-        );
-      } catch (err) {
-        console.error("Error degradando planes:", err);
-        return data;
+          .in('id', expiredIds)
+          .then(() => {
+            queryClient.invalidateQueries({ queryKey: ['businesses'] });
+            if (loggedInId && expiredIds.includes(loggedInId)) {
+              queryClient.invalidateQueries({ queryKey: ['business', loggedInId] });
+            }
+          });
       }
     }
-    return data;
-  };
-
-  const fetchInitialData = useCallback(async () => {
-    try {
-      // Solo traemos negocios visibles para la página principal
-      const { data, error } = await supabase
-        .from('businesses')
-        .select('*')
-        .eq('is_visible', true);
-      
-      if (error) throw error;
-      
-      if (data) {
-        const formatData = (bizList: any[]) => bizList.map(biz => ({
-          ...biz,
-          isVisible: biz.isVisible ?? biz.is_visible ?? true,
-          logoUrl: biz.logoUrl ?? biz.logo_url,
-          coverPhotos: biz.coverPhotos ?? biz.cover_photos ?? [],
-          averageRating: biz.averageRating ?? biz.average_rating ?? 0,
-          ratingsCount: biz.ratingsCount ?? biz.ratings_count ?? 0,
-          planExpiresAt: biz.planExpiresAt ?? biz.plan_expires_at,
-          cuisineTypes: biz.cuisineTypes ?? biz.cuisine_types ?? [],
-          deliveryEnabled: biz.deliveryEnabled ?? biz.delivery_enabled ?? false,
-          deliveryPriceInside: biz.deliveryPriceInside ?? biz.delivery_price_inside ?? 0,
-          deliveryPriceOutside: biz.deliveryPriceOutside ?? biz.delivery_price_outside ?? 0,
-          role: biz.role || 'user',
-          
-          products: (biz.products || []).map((p: any) => ({
-            id: p.id,
-            name: p.name,
-            description: p.description,
-            price: p.price,
-            categoryId: p.categoryId ?? p.category_id,
-            imageUrl: p.imageUrl ?? p.image_url,
-            isVisible: p.isVisible ?? p.is_visible ?? true,
-            isHighlighted: p.isHighlighted ?? p.is_highlighted ?? false
-          })),
-          categories: biz.categories || [],
-          events: (biz.events || []).map((e: any) => ({
-            ...e,
-            dateTime: e.dateTime ?? e.date_time,
-            imageUrl: e.imageUrl ?? e.image_url,
-            interestedCount: e.interestedCount ?? e.interested_count ?? 0
-          })),
-          banners: (biz.banners || []).map((b: any) => ({
-            ...b,
-            imageUrl: b.imageUrl ?? b.image_url,
-            linkUrl: b.linkUrl ?? b.link_url
-          })),
-          leads: biz.leads || [],
-          stats: biz.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
-        } as Business));
-
-        // Set initial data immediately to show businesses fast
-        const initialFormatted = formatData(data);
-        setBusinesses(initialFormatted);
-        setLoading(false); // Stop loading as soon as we have data
-
-        // Perform background check for expired plans without blocking UI
-        checkAndDowngradeExpiredPlans(data).then(cleanedData => {
-          if (cleanedData) {
-            const finalFormatted = formatData(cleanedData);
-            setBusinesses(finalFormatted);
-          }
-        });
-      } else {
-        setLoading(false);
-      }
-    } catch (e) {
-      console.error("Fetch error:", e);
-      setLoading(false);
-    }
-  }, []);
-
-  const loadActiveBusiness = useCallback(async (id: string) => {
-    setLoading(true);
-    try {
-      const { data: bizData, error: bizError } = await supabase
-        .from('businesses')
-        .select('*, products(*), categories(*), events(*), banners(*)')
-        .eq('id', id)
-        .single();
-      
-      if (bizError) {
-        console.error("Supabase Error in loadActiveBusiness:", bizError);
-        // If the business is not found, clear the session
-        if (bizError.code === 'PGRST116') {
-          setLoggedInId(null);
-          localStorage.removeItem('bravo_menu_biz_id');
-          setActiveBusiness(null);
-        }
-        throw bizError;
-      }
-
-      if (!bizData) {
-        setLoggedInId(null);
-        localStorage.removeItem('bravo_menu_biz_id');
-        setActiveBusiness(null);
-        return;
-      }
-
-      if (bizData) {
-        const now = new Date();
-        const expiry = bizData.planExpiresAt || bizData.plan_expires_at;
-        if (bizData.plan === PlanType.PRO && expiry && new Date(expiry) < now) {
-          await supabase.from('businesses').update({ plan: PlanType.FREE, planExpiresAt: null, plan_expires_at: null }).eq('id', id);
-          bizData.plan = PlanType.FREE;
-          bizData.planExpiresAt = null;
-        }
-
-        setActiveBusiness({
-          ...bizData,
-          isVisible: bizData.isVisible ?? bizData.is_visible ?? true,
-          logoUrl: bizData.logoUrl ?? bizData.logo_url,
-          coverPhotos: bizData.coverPhotos ?? bizData.cover_photos ?? [],
-          averageRating: bizData.averageRating ?? bizData.average_rating ?? 0,
-          ratingsCount: bizData.ratingsCount ?? bizData.ratings_count ?? 0,
-          planExpiresAt: bizData.planExpiresAt ?? bizData.plan_expires_at,
-          cuisineTypes: bizData.cuisineTypes ?? bizData.cuisine_types ?? [],
-          deliveryEnabled: bizData.deliveryEnabled ?? bizData.delivery_enabled ?? false,
-          deliveryPriceInside: bizData.deliveryPriceInside ?? bizData.delivery_price_inside ?? 0,
-          deliveryPriceOutside: bizData.deliveryPriceOutside ?? bizData.delivery_price_outside ?? 0,
-          role: bizData.role || 'user',
-          products: (bizData.products || []).map((p: any) => ({
-            id: p.id,
-            name: p.name,
-            description: p.description,
-            price: p.price,
-            categoryId: p.categoryId ?? p.category_id,
-            imageUrl: p.imageUrl ?? p.image_url,
-            isVisible: p.isVisible ?? p.is_visible ?? true,
-            isHighlighted: p.isHighlighted ?? p.is_highlighted ?? false
-          })),
-          categories: bizData.categories || [],
-          events: (bizData.events || []).map((e: any) => ({
-            ...e,
-            dateTime: e.dateTime ?? e.date_time,
-            imageUrl: e.imageUrl ?? e.image_url,
-            interestedCount: e.interestedCount ?? e.interested_count ?? 0
-          })),
-          banners: (bizData.banners || []).map((b: any) => ({
-            ...b,
-            imageUrl: b.imageUrl ?? b.image_url,
-            linkUrl: b.linkUrl ?? b.link_url
-          })),
-          leads: [], 
-          stats: bizData.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
-        } as Business);
-      }
-    } catch (e: any) {
-      console.error("Load active error:", e);
-      if (e.code === 'PGRST116') {
-         setLoggedInId(null);
-         localStorage.removeItem('bravo_menu_biz_id');
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchInitialData();
-  }, [fetchInitialData]);
-
-  useEffect(() => {
-    if (loggedInId) loadActiveBusiness(loggedInId);
-    else {
-      setActiveBusiness(null);
-      setLoading(false);
-    }
-  }, [loggedInId, loadActiveBusiness]);
+  }, [businesses, loggedInId, queryClient]);
 
   const handleOnboardingComplete = async (businessId: string) => {
     localStorage.setItem('bravo_menu_biz_id', businessId);
     setLoggedInId(businessId);
-    await fetchInitialData();
+    queryClient.invalidateQueries({ queryKey: ['businesses'] });
   };
 
   const handleLogin = (id: string) => {
     localStorage.setItem('bravo_menu_biz_id', id);
     setLoggedInId(id);
+    queryClient.invalidateQueries({ queryKey: ['business', id] });
   };
 
   const handleLogout = () => {
     localStorage.removeItem('bravo_menu_biz_id');
     setLoggedInId(null);
-    setActiveBusiness(null);
+    queryClient.setQueryData(['business', loggedInId], null);
   };
 
   const updateActiveBusiness = async (updated: Business) => {
-    setActiveBusiness(updated);
-    setBusinesses(prev => prev.map(b => b.id === updated.id ? updated : b));
+    // Optimistic update
+    queryClient.setQueryData(['business', updated.id], updated);
+    queryClient.setQueryData(['businesses'], (prev: Business[] | undefined) => 
+      prev?.map(b => b.id === updated.id ? updated : b)
+    );
     
-    // Preparar objeto para Supabase (snake_case) de forma explícita
     const dbData: any = {
       id: updated.id,
       name: updated.name,
@@ -280,26 +125,50 @@ const App: React.FC = () => {
       if (error) throw error;
     } catch (err) {
       console.error("Error upserting business:", err);
+      queryClient.invalidateQueries({ queryKey: ['business', updated.id] });
+      queryClient.invalidateQueries({ queryKey: ['businesses'] });
     }
   };
 
   const deleteBusiness = async (id: string) => {
     try {
-      // 1. Delete related records first to avoid foreign key constraints
       await supabase.from('products').delete().eq('businessId', id);
       await supabase.from('categories').delete().eq('businessId', id);
       await supabase.from('events').delete().eq('businessId', id);
       await supabase.from('banners').delete().eq('businessId', id);
       
-      // 2. Delete the business itself
       const { error } = await supabase.from('businesses').delete().eq('id', id);
       if (error) throw error;
+      
       handleLogout();
+      queryClient.invalidateQueries({ queryKey: ['businesses'] });
     } catch (err) {
       console.error("Error deleting business:", err);
       throw err;
     }
   };
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center p-6 text-center">
+        <div className="max-w-md space-y-6">
+          <div className="w-20 h-20 bg-red-500/10 rounded-[2.5rem] flex items-center justify-center mx-auto">
+            <AlertCircle className="text-red-500" size={40} />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-extrabold text-white uppercase tracking-tight">Error de Conexión</h1>
+            <p className="text-gray-400 text-sm leading-relaxed">{error}</p>
+          </div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="bg-white text-black px-8 py-4 rounded-2xl font-extrabold text-xs uppercase tracking-widest hover:bg-gray-200 transition-all"
+          >
+            Reintentar Conexión
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
@@ -312,7 +181,7 @@ const App: React.FC = () => {
           !activeBusiness && (loading || loggedInId) ? (
             <div className="min-h-screen bg-black flex flex-col items-center justify-center text-amber-500 gap-4">
               <Loader2 className="animate-spin" size={48} />
-              <span className="text-xs font-black uppercase tracking-widest animate-pulse">Cargando Panel...</span>
+              <span className="text-xs font-extrabold uppercase tracking-widest animate-pulse">Cargando Panel...</span>
             </div>
           ) : !activeBusiness ? (
             <Navigate to="/login" replace />
@@ -329,7 +198,7 @@ const App: React.FC = () => {
             </AdminLayout>
           )
         } />
-        <Route path="/super-admin" element={<SuperAdmin businesses={businesses} onRefresh={fetchInitialData} />} />
+        <Route path="/super-admin" element={<SuperAdmin businesses={businesses} onRefresh={refetchBusinesses} />} />
       </Routes>
     </HashRouter>
   );
@@ -389,14 +258,14 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
       {isSidebarOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden" onClick={() => setIsSidebarOpen(false)} />}
       <aside className={`w-64 bg-black border-r border-gray-800 fixed h-full flex flex-col z-50 transition-transform md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 flex flex-col h-full">
-          <Link to="/" className="flex items-center gap-2 text-amber-500 font-bold text-xl mb-8">🍴 Bravo Menú</Link>
+          <Link to="/" className="flex items-center gap-2 text-amber-500 font-semibold text-xl mb-8">🍴 Bravo Menú</Link>
           <div className="bg-black border border-gray-800 p-3 rounded-xl mb-6 flex items-center gap-3">
             <img src={business.logoUrl || 'https://via.placeholder.com/150'} alt="Logo" className="w-10 h-10 rounded-lg object-cover" />
             <div className="overflow-hidden">
-              <h3 className="text-sm font-bold text-white truncate">{business.name}</h3>
+              <h3 className="text-sm font-semibold text-white truncate">{business.name}</h3>
               <div className="flex gap-1 flex-wrap">
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isPro ? 'bg-amber-500 text-black' : 'bg-gray-700 text-gray-300'}`}>{isPro ? '⭐ PRO' : '✨ GRATIS'}</span>
-                {isAdmin && <span className="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Admin</span>}
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isPro ? 'bg-amber-500 text-black' : 'bg-gray-700 text-gray-300'}`}>{isPro ? '⭐ PRO' : '✨ GRATIS'}</span>
+                {isAdmin && <span className="bg-blue-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-tighter">Admin</span>}
               </div>
             </div>
           </div>
@@ -434,7 +303,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
           </div>
           <div className="flex items-center gap-4">
              {isAdmin && (
-               <Link to="/super-admin" className="bg-white text-black px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 hover:bg-gray-200 transition-colors">
+               <Link to="/super-admin" className="bg-white text-black px-4 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 hover:bg-gray-200 transition-colors">
                  <Shield size={14} /> Administrar
                </Link>
              )}
@@ -442,7 +311,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
                 <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500">
                   <User size={16} />
                 </div>
-                <span className="text-xs font-bold text-white hidden sm:block">Dueño</span>
+                <span className="text-xs font-semibold text-white hidden sm:block">Dueño</span>
              </div>
           </div>
         </header>

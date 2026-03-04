@@ -120,9 +120,9 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
             <div className="w-24 h-24 bg-amber-500 text-black rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl">
               <Crown size={48} fill="currentColor" />
             </div>
-            <h1 className="text-4xl font-black text-white mb-4 tracking-tight uppercase">Publicidad PRO</h1>
+            <h1 className="text-4xl font-extrabold text-white mb-4 tracking-tight uppercase">Publicidad PRO</h1>
             <p className="text-gray-400 text-lg max-w-sm mx-auto mb-10 leading-relaxed">Destaca ofertas y novedades con banners visuales en el menú. Función exclusiva del Plan PRO.</p>
-            <Link to="/admin/pricing" className="inline-flex items-center gap-3 bg-amber-500 text-black px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-amber-400 transition-all shadow-xl">Actualizar a PRO <ChevronRight size={20} /></Link>
+            <Link to="/admin/pricing" className="inline-flex items-center gap-3 bg-amber-500 text-black px-10 py-5 rounded-2xl font-extrabold text-sm uppercase tracking-widest hover:bg-amber-400 transition-all shadow-xl">Actualizar a PRO <ChevronRight size={20} /></Link>
           </div>
         </div>
       </div>
@@ -133,10 +133,10 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
     <div className="max-w-5xl mx-auto pb-10">
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
         <div>
-          <h1 className="text-4xl font-black text-white mb-2 tracking-tight uppercase">Publicidad</h1>
+          <h1 className="text-4xl font-extrabold text-white mb-2 tracking-tight uppercase">Publicidad</h1>
           <p className="text-gray-500 font-medium">{business.banners.length} banners activos</p>
         </div>
-        <button onClick={openCreateModal} className="w-full md:w-auto bg-amber-500 text-black px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl hover:bg-amber-400 transition-all">
+        <button onClick={openCreateModal} className="w-full md:w-auto bg-amber-500 text-black px-10 py-4 rounded-2xl font-extrabold text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl hover:bg-amber-400 transition-all">
           <Plus size={20} strokeWidth={3} /> Añadir Banner
         </button>
       </div>
@@ -148,8 +148,8 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
                <OptimizedImage src={banner.imageUrl} containerClassName="w-full h-full" alt="Banner" />
              </div>
              <div className="flex-1 w-full overflow-hidden">
-               <h3 className="text-white font-bold text-lg mb-2 uppercase tracking-tight truncate">{banner.title || 'Oferta'}</h3>
-               <div className="flex flex-wrap gap-4 text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">
+               <h3 className="text-white font-semibold text-lg mb-2 uppercase tracking-tight truncate">{banner.title || 'Oferta'}</h3>
+               <div className="flex flex-wrap gap-4 text-gray-500 text-[10px] font-extrabold uppercase tracking-[0.2em]">
                  <span className="bg-amber-500/10 text-amber-500 px-3 py-1 rounded-lg border border-amber-500/20">{banner.position}</span>
                  <span className="flex items-center gap-2"><Eye size={14} /> {banner.clicks} clics</span>
                </div>
@@ -172,12 +172,12 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in">
           <div className="bg-black border border-white/10 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl">
             <div className="flex items-center justify-between p-8 border-b border-white/5">
-              <h2 className="text-2xl font-black text-white uppercase tracking-tight">{editingBanner ? 'Editar' : 'Nuevo'} Banner</h2>
+              <h2 className="text-2xl font-extrabold text-white uppercase tracking-tight">{editingBanner ? 'Editar' : 'Nuevo'} Banner</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white"><X size={28} /></button>
             </div>
             <form onSubmit={handleSave} className="p-8 space-y-6">
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Imagen (Recomendado Horizontal)</label>
+                <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-1">Imagen (Recomendado Horizontal)</label>
                 <div onClick={() => fileInputRef.current?.click()} className="relative w-full h-52 rounded-2xl overflow-hidden bg-black border-2 border-dashed border-white/10 flex items-center justify-center group cursor-pointer hover:border-amber-500/50 transition-all">
                   {isUploading ? (
                     <Loader2 className="animate-spin text-amber-500" size={32} />
@@ -186,21 +186,21 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
                   ) : (
                     <div className="text-center">
                       <Upload className="mx-auto text-gray-700 mb-3" size={40} />
-                      <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Subir Imagen</p>
+                      <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-widest">Subir Imagen</p>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-black uppercase tracking-widest">Cambiar</div>
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-extrabold uppercase tracking-widest">Cambiar</div>
                 </div>
                 <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*" />
               </div>
 
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Título</label>
-                  <input required type="text" className="w-full bg-black border border-white/5 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm font-bold uppercase" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
+                  <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-1">Título</label>
+                  <input required type="text" className="w-full bg-black border border-white/5 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm font-semibold uppercase" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Posición</label>
+                  <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-1">Posición</label>
                   <select className="w-full bg-black border border-white/5 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none text-sm appearance-none" value={formData.position} onChange={e => setFormData({...formData, position: e.target.value as any})}>
                     <option value="header">Superior (Header)</option>
                     <option value="middle">Intermedio (Middle)</option>
@@ -209,7 +209,7 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
                 </div>
               </div>
 
-              <button type="submit" disabled={isSaving || isUploading} className="w-full bg-amber-500 text-black font-black py-5 rounded-2xl hover:bg-amber-400 transition-all shadow-2xl disabled:opacity-50 text-xs uppercase tracking-widest">
+              <button type="submit" disabled={isSaving || isUploading} className="w-full bg-amber-500 text-black font-extrabold py-5 rounded-2xl hover:bg-amber-400 transition-all shadow-2xl disabled:opacity-50 text-xs uppercase tracking-widest">
                 {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />} Publicar Banner
               </button>
             </form>

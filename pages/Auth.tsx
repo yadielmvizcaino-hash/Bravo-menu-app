@@ -46,16 +46,16 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-500 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-4 border border-amber-500/20">
+          <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-500 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-4 border border-amber-500/20">
             <Zap size={14} fill="currentColor" /> Acceso para Dueños
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Gestiona tu Menú</h1>
+          <h1 className="text-3xl font-semibold text-white mb-2 tracking-tight">Gestiona tu Menú</h1>
           <p className="text-gray-500 text-sm font-medium">Ingresa tus credenciales registradas.</p>
         </div>
 
         <form onSubmit={handleLogin} className="bg-black border border-white/5 p-8 rounded-3xl shadow-2xl space-y-6">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Teléfono / WhatsApp</label>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Teléfono / WhatsApp</label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">+53</span>
               <input 
@@ -71,7 +71,7 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Contraseña</label>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Contraseña</label>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600" size={18} />
               <input 
@@ -95,14 +95,14 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl flex items-start gap-3 text-red-500 text-xs animate-fade-in">
               <AlertCircle size={16} className="shrink-0" />
-              <p className="font-bold">{error}</p>
+              <p className="font-semibold">{error}</p>
             </div>
           )}
 
           <button 
             type="submit" 
             disabled={loading || phone.length < 8 || !password}
-            className="w-full bg-amber-500 text-black py-4 rounded-2xl font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/20 disabled:opacity-50 group"
+            className="w-full bg-amber-500 text-black py-4 rounded-2xl font-semibold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/20 disabled:opacity-50 group"
           >
             {loading ? <Loader2 className="animate-spin" /> : <><LogIn size={18} /> Entrar a mi menú <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>}
           </button>
@@ -111,7 +111,7 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
             <p className="text-gray-500 text-xs mb-4">¿Aún no tienes un menú digital?</p>
             <Link 
               to="/crear-negocio" 
-              className="inline-flex items-center gap-2 text-amber-500 font-bold text-xs uppercase tracking-widest hover:underline"
+              className="inline-flex items-center gap-2 text-amber-500 font-semibold text-xs uppercase tracking-widest hover:underline"
             >
               <PlusCircle size={14} /> Crear mi perfil ahora
             </Link>

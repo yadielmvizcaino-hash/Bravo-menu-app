@@ -10,10 +10,13 @@ import {
 import { Business, PlanType } from '../types.ts';
 import { supabase } from '../lib/supabase.ts';
 import { Link } from 'react-router-dom';
+import { useAllBusinesses } from '../hooks/useBusinesses.ts';
+import { useQueryClient } from '@tanstack/react-query';
 
 const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> = ({ businesses: initialBusinesses, onRefresh }) => {
-  const [businesses, setBusinesses] = useState<Business[]>(initialBusinesses || []);
-  const [loading, setLoading] = useState(!initialBusinesses || initialBusinesses.length === 0);
+  const queryClient = useQueryClient();
+  const { data: businesses = [], isLoading: loading, refetch: refetchBusinesses } = useAllBusinesses();
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [isActionLoading, setIsActionLoading] = useState<string | null>(null);
 
@@ -29,13 +32,8 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
   });
   const [isSettingsSaving, setIsSettingsSaving] = useState(false);
 
-  const fetchBusinesses = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.from('businesses').select('*').order('created_at', { ascending: false });
-      if (error) throw error;
-      
-      // Fetch system settings
+  useEffect(() => {
+    const fetchSettings = async () => {
       const { data: settingsData } = await supabase.from('system_settings').select('*').eq('id', 'main').single();
       if (settingsData) {
         setSystemSettings({
@@ -43,39 +41,17 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
           payment_phone: settingsData.payment_phone
         });
       }
-
-      const formatted = (data || []).map(b => ({
-        ...b,
-        isVisible: b.isVisible ?? b.is_visible ?? true,
-        logoUrl: b.logoUrl ?? b.logo_url,
-        coverPhotos: b.coverPhotos ?? b.cover_photos ?? [],
-        planExpiresAt: b.planExpiresAt ?? b.plan_expires_at,
-        stats: b.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
-      }));
-      setBusinesses(formatted);
-      if (onRefresh) onRefresh();
-    } catch (err) {
-      console.error("Error fetching businesses:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!initialBusinesses || initialBusinesses.length === 0) {
-      fetchBusinesses();
-    } else {
-      setBusinesses(initialBusinesses);
-      setLoading(false);
-    }
-  }, [initialBusinesses]);
+    };
+    fetchSettings();
+  }, []);
 
   const toggleVisibility = async (id: string, currentStatus: boolean) => {
     setIsActionLoading(id);
     try {
       const { error } = await supabase.from('businesses').update({ is_visible: !currentStatus }).eq('id', id);
       if (error) throw error;
-      setBusinesses(prev => prev.map(b => b.id === id ? { ...b, isVisible: !currentStatus } : b));
+      queryClient.invalidateQueries({ queryKey: ['all-businesses'] });
+      queryClient.invalidateQueries({ queryKey: ['businesses'] });
     } catch (err) {
       alert("Error al cambiar visibilidad");
     } finally {
@@ -112,11 +88,8 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
 
       if (error) throw error;
       
-      setBusinesses(prev => prev.map(b => 
-        b.id === selectedBizId 
-          ? { ...b, plan: PlanType.PRO, planExpiresAt: expiresAt.toISOString() } 
-          : b
-      ));
+      queryClient.invalidateQueries({ queryKey: ['all-businesses'] });
+      queryClient.invalidateQueries({ queryKey: ['businesses'] });
       
       setIsProModalOpen(false);
     } catch (err) {
@@ -140,10 +113,8 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
 
       if (error) throw error;
       
-      // Actualización inmediata del estado local
-      setBusinesses(prev => prev.map(b => 
-        b.id === id ? { ...b, plan: PlanType.FREE, planExpiresAt: null } : b
-      ));
+      queryClient.invalidateQueries({ queryKey: ['all-businesses'] });
+      queryClient.invalidateQueries({ queryKey: ['businesses'] });
     } catch (err) {
       console.error("Error degradando plan:", err);
       alert("Error al degradar plan");
@@ -166,7 +137,8 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
       const { error } = await supabase.from('businesses').delete().eq('id', id);
       if (error) throw error;
       
-      setBusinesses(prev => prev.filter(b => b.id !== id));
+      queryClient.invalidateQueries({ queryKey: ['all-businesses'] });
+      queryClient.invalidateQueries({ queryKey: ['businesses'] });
       alert("Establecimiento eliminado correctamente.");
     } catch (err) {
       console.error("Error deleting business:", err);
@@ -239,9 +211,9 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
             <div>
               <div className="flex items-center gap-2">
                 <Shield className="text-amber-500" size={20} />
-                <h1 className="text-xl font-black text-white uppercase tracking-tight">Panel Maestro</h1>
+                <h1 className="text-xl font-extrabold text-white uppercase tracking-tight">Panel Maestro</h1>
               </div>
-              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Infraestructura Bravo Menú</p>
+              <p className="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest">Infraestructura Bravo Menú</p>
             </div>
           </div>
           <div className="flex items-center gap-2 w-full md:w-auto">
@@ -256,7 +228,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
                 />
              </div>
              <button 
-               onClick={fetchBusinesses} 
+               onClick={() => refetchBusinesses()} 
                className="p-2.5 bg-amber-500 text-black rounded-xl hover:bg-amber-400 transition-all disabled:opacity-50"
                disabled={loading}
              >
@@ -270,22 +242,22 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
           <div className="bg-black p-5 rounded-2xl border border-white/5 flex items-center gap-5">
             <div className="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500"><Users size={24} /></div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-0.5">Total Negocios</p>
-              <h3 className="text-2xl font-black text-white">{stats.total}</h3>
+              <p className="text-[10px] font-extrabold uppercase tracking-widest text-gray-500 mb-0.5">Total Negocios</p>
+              <h3 className="text-2xl font-extrabold text-white">{stats.total}</h3>
             </div>
           </div>
           <div className="bg-black p-5 rounded-2xl border border-amber-500/10 flex items-center gap-5">
             <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500"><Crown size={24} /></div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-amber-500 mb-0.5">Planes PRO</p>
-              <h3 className="text-2xl font-black text-white">{stats.pro}</h3>
+              <p className="text-[10px] font-extrabold uppercase tracking-widest text-amber-500 mb-0.5">Planes PRO</p>
+              <h3 className="text-2xl font-extrabold text-white">{stats.pro}</h3>
             </div>
           </div>
           <div className="bg-black p-5 rounded-2xl border border-green-500/10 flex items-center gap-5">
             <div className="w-12 h-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500"><Banknote size={24} /></div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-green-500 mb-0.5">Ingresos Mensuales</p>
-              <h3 className="text-2xl font-black text-white">${stats.income.toLocaleString()} <span className="text-xs text-gray-500 font-medium">CUP</span></h3>
+              <p className="text-[10px] font-extrabold uppercase tracking-widest text-green-500 mb-0.5">Ingresos Mensuales</p>
+              <h3 className="text-2xl font-extrabold text-white">${stats.income.toLocaleString()} <span className="text-xs text-gray-500 font-medium">CUP</span></h3>
             </div>
           </div>
         </div>
@@ -294,11 +266,11 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
         <div className="bg-black p-6 rounded-3xl border border-white/5 shadow-2xl space-y-4">
           <div className="flex items-center gap-2 mb-2">
             <CreditCard className="text-amber-500" size={18} />
-            <h2 className="text-sm font-black text-white uppercase tracking-tight">Configuración de Pagos</h2>
+            <h2 className="text-sm font-extrabold text-white uppercase tracking-tight">Configuración de Pagos</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Número de Tarjeta</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Número de Tarjeta</label>
               <input 
                 type="text" 
                 className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-white outline-none focus:border-amber-500/50 transition-all"
@@ -308,7 +280,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Teléfono de Comprobación</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Teléfono de Comprobación</label>
               <input 
                 type="text" 
                 className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-white outline-none focus:border-amber-500/50 transition-all"
@@ -322,7 +294,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
             <button 
               onClick={handleSaveSettings}
               disabled={isSettingsSaving}
-              className="bg-amber-500 text-black px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-amber-400 transition-all flex items-center gap-2 disabled:opacity-50"
+              className="bg-amber-500 text-black px-6 py-2.5 rounded-xl font-extrabold text-[10px] uppercase tracking-widest hover:bg-amber-400 transition-all flex items-center gap-2 disabled:opacity-50"
             >
               {isSettingsSaving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
               Guardar Configuración
@@ -334,7 +306,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
         <div className="bg-black border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
           <div className="overflow-x-auto no-scrollbar">
             <table className="w-full text-left">
-              <thead className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] bg-black/40 border-b border-white/5">
+              <thead className="text-gray-500 text-[10px] font-extrabold uppercase tracking-[0.2em] bg-black/40 border-b border-white/5">
                 <tr>
                   <th className="px-6 py-5">Establecimiento</th>
                   <th className="px-6 py-5">Plan Actual</th>
@@ -354,7 +326,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
                         <div className="flex items-center gap-4">
                           <img src={biz.logoUrl || 'https://via.placeholder.com/150'} className="w-10 h-10 rounded-xl object-cover border border-white/5 shadow-inner" alt="logo" />
                           <div>
-                            <p className="font-black text-white text-sm tracking-tight leading-tight uppercase">{biz.name}</p>
+                            <p className="font-extrabold text-white text-sm tracking-tight leading-tight uppercase">{biz.name}</p>
                             <p className="text-[10px] text-gray-500 font-mono mt-0.5">+{biz.phone}</p>
                           </div>
                         </div>
@@ -362,18 +334,18 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                            <span className={`w-1.5 h-1.5 rounded-full ${isVisible ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500'}`} />
-                           <span className={`text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider ${biz.plan === PlanType.PRO ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' : 'bg-gray-800 text-gray-500'}`}>
+                           <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg uppercase tracking-wider ${biz.plan === PlanType.PRO ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' : 'bg-gray-800 text-gray-500'}`}>
                              {biz.plan}
                            </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         {biz.plan === PlanType.PRO && time ? (
-                          <div className={`flex items-center gap-1.5 text-[11px] font-black uppercase ${time.color}`}>
+                          <div className={`flex items-center gap-1.5 text-[11px] font-extrabold uppercase ${time.color}`}>
                             <Clock size={12} /> {time.text}
                           </div>
                         ) : (
-                          <span className="text-gray-700 text-[10px] font-black tracking-widest">---</span>
+                          <span className="text-gray-700 text-[10px] font-extrabold tracking-widest">---</span>
                         )}
                       </td>
                       <td className="px-6 py-4">
@@ -390,7 +362,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
                             <button 
                               onClick={() => handleOpenProModal(biz.id)}
                               disabled={isBizActionLoading}
-                              className="px-4 py-2 bg-amber-500 text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-400 transition-all hover:scale-105 active:scale-95 disabled:opacity-30 flex items-center gap-2"
+                              className="px-4 py-2 bg-amber-500 text-black rounded-xl text-[10px] font-extrabold uppercase tracking-widest hover:bg-amber-400 transition-all hover:scale-105 active:scale-95 disabled:opacity-30 flex items-center gap-2"
                             >
                               <Zap size={12} fill="currentColor" />
                               Activar PRO
@@ -432,7 +404,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
               <div className="w-16 h-16 bg-white/5 rounded-3xl flex items-center justify-center mx-auto border border-white/5">
                 <AlertCircle size={32} className="text-gray-700" />
               </div>
-              <p className="text-gray-600 text-[10px] font-black uppercase tracking-[0.3em]">No se encontraron establecimientos</p>
+              <p className="text-gray-600 text-[10px] font-extrabold uppercase tracking-[0.3em]">No se encontraron establecimientos</p>
             </div>
           )}
         </div>
@@ -443,13 +415,13 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in">
           <div className="bg-black border border-white/10 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl">
             <div className="p-8 border-b border-white/5 flex items-center justify-between">
-              <h2 className="text-lg font-black text-white uppercase tracking-tight">Activar Suscripción</h2>
+              <h2 className="text-lg font-extrabold text-white uppercase tracking-tight">Activar Suscripción</h2>
               <button onClick={() => setIsProModalOpen(false)} className="text-gray-500 hover:text-white"><X size={20} /></button>
             </div>
             
             <div className="p-8 space-y-6">
               <div className="space-y-4">
-                <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest text-center">Selecciona periodo de validez</p>
+                <p className="text-[10px] font-extrabold text-amber-500 uppercase tracking-widest text-center">Selecciona periodo de validez</p>
                 
                 <div className="grid grid-cols-2 gap-2">
                   {[
@@ -461,7 +433,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
                     <button 
                       key={p.d}
                       onClick={() => setProDays(p.d)}
-                      className={`py-3.5 rounded-xl text-[10px] font-black border transition-all tracking-widest ${proDays === p.d ? 'bg-amber-500 text-black border-amber-500 shadow-lg shadow-amber-500/20' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
+                      className={`py-3.5 rounded-xl text-[10px] font-extrabold border transition-all tracking-widest ${proDays === p.d ? 'bg-amber-500 text-black border-amber-500 shadow-lg shadow-amber-500/20' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
                     >
                       {p.l}
                     </button>
@@ -473,7 +445,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
                   <input 
                     type="number" 
                     placeholder="Días personalizados..."
-                    className="w-full bg-black/40 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white font-black outline-none focus:border-amber-500/50 transition-all text-sm tracking-widest"
+                    className="w-full bg-black/40 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white font-extrabold outline-none focus:border-amber-500/50 transition-all text-sm tracking-widest"
                     value={proDays}
                     onChange={(e) => setProDays(e.target.value)}
                   />
@@ -483,7 +455,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
               <button 
                 onClick={handleActivatePro}
                 disabled={isActionLoading === selectedBizId || !proDays}
-                className="w-full bg-amber-500 text-black py-4.5 rounded-2xl font-black uppercase text-[11px] tracking-[0.2em] shadow-xl flex items-center justify-center gap-2 hover:bg-amber-400 transition-all disabled:opacity-50 active:scale-95"
+                className="w-full bg-amber-500 text-black py-4.5 rounded-2xl font-extrabold uppercase text-[11px] tracking-[0.2em] shadow-xl flex items-center justify-center gap-2 hover:bg-amber-400 transition-all disabled:opacity-50 active:scale-95"
               >
                 {isActionLoading === selectedBizId ? (
                   <Loader2 className="animate-spin" size={18} />

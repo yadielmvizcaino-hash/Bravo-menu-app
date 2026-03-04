@@ -10,6 +10,7 @@ import {
 import { Business, Product, Category, PlanType, Event } from '../types.ts';
 import { supabase } from '../lib/supabase.ts';
 import OptimizedImage from '../components/OptimizedImage.tsx';
+import { useBusiness } from '../hooks/useBusinesses.ts';
 
 interface CartItem extends Product {
   quantity: number;
@@ -18,9 +19,14 @@ interface CartItem extends Product {
 const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) => {
   const { id } = useParams<{ id: string }>();
   
-  const [dbBusiness, setDbBusiness] = useState<Business | null>(null);
-  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  const { 
+    data: business, 
+    isLoading: isLoadingDetails, 
+    error: fetchErrorQuery 
+  } = useBusiness(id);
+
+  const fetchError = fetchErrorQuery?.message || null;
+
   const [activeTab, setActiveTab] = useState<'menu' | 'eventos' | 'fotos'>('menu');
   const [selectedCategory, setSelectedCategory] = useState('Todo');
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
@@ -47,88 +53,15 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
     notes: ''
   });
 
-  const businessFromProps = businesses.find(b => b.id === id);
-  
   useEffect(() => {
-    const fetchFullData = async () => {
-      if (!id) return;
-      
-      // Incrementar visita de forma asíncrona
-      supabase.rpc('increment_business_visit', { target_business_id: id })
-        .then(({ error }) => {
-          if (error) console.warn("Error incrementando visita:", error);
-        });
-
-      const needsData = !businessFromProps || !businessFromProps.products || businessFromProps.products.length === 0;
-      
-      if (needsData) {
-        setIsLoadingDetails(true);
-        try {
-          const { data: bizData, error: bizError } = await supabase
-            .from('businesses')
-            .select('*, products(*), categories(*), events(*), banners(*)')
-            .eq('id', id)
-            .single();
-
-          if (bizError) {
-            console.error("Supabase Error:", bizError);
-            setFetchError(bizError.message);
-            throw bizError;
-          }
-
-          if (bizData) {
-            setDbBusiness({
-              ...bizData,
-              isVisible: bizData.isVisible ?? bizData.is_visible ?? true,
-              logoUrl: bizData.logoUrl ?? bizData.logo_url,
-              coverPhotos: bizData.coverPhotos ?? bizData.cover_photos ?? [],
-              averageRating: bizData.averageRating ?? bizData.average_rating ?? 0,
-              ratingsCount: bizData.ratingsCount ?? bizData.ratings_count ?? 0,
-              planExpiresAt: bizData.planExpiresAt ?? bizData.plan_expires_at,
-              cuisineTypes: bizData.cuisineTypes ?? bizData.cuisine_types ?? [],
-              deliveryEnabled: bizData.deliveryEnabled ?? bizData.delivery_enabled ?? false,
-              deliveryPriceInside: bizData.deliveryPriceInside ?? bizData.delivery_price_inside ?? 0,
-              deliveryPriceOutside: bizData.deliveryPriceOutside ?? bizData.delivery_price_outside ?? 0,
-              products: (bizData.products || []).map((p: any) => ({
-                id: p.id,
-                name: p.name,
-                description: p.description,
-                price: p.price,
-                categoryId: p.categoryId ?? p.category_id,
-                imageUrl: p.imageUrl ?? p.image_url,
-                isVisible: p.isVisible ?? p.is_visible ?? true,
-                isHighlighted: p.isHighlighted ?? p.is_highlighted ?? false
-              })),
-              categories: bizData.categories || [],
-              events: (bizData.events || []).map((e: any) => ({
-                ...e,
-                dateTime: e.dateTime ?? e.date_time,
-                imageUrl: e.imageUrl ?? e.image_url,
-                interestedCount: e.interestedCount ?? e.interested_count ?? 0
-              })),
-              banners: (bizData.banners || []).map((b: any) => ({
-                ...b,
-                imageUrl: b.imageUrl ?? b.image_url,
-                linkUrl: b.linkUrl ?? b.link_url
-              })),
-              leads: [],
-              stats: bizData.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
-            } as Business);
-          }
-        } catch (err) {
-          console.error("Error fetching detail data:", err);
-        } finally {
-          setIsLoadingDetails(false);
-        }
-      }
-    };
-    fetchFullData();
-  }, [id, businessFromProps]);
-
-  const business = useMemo(() => {
-    if (dbBusiness) return dbBusiness;
-    return businessFromProps || null;
-  }, [dbBusiness, businessFromProps]);
+    if (!id) return;
+    
+    // Incrementar visita de forma asíncrona
+    supabase.rpc('increment_business_visit', { target_business_id: id })
+      .then(({ error }) => {
+        if (error) console.warn("Error incrementando visita:", error);
+      });
+  }, [id]);
 
   // Lógica de Horarios
   const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
@@ -182,9 +115,6 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
 
       if (!error) {
         setHasRated(true);
-        if (dbBusiness) {
-          setDbBusiness({ ...dbBusiness, averageRating: newAvg, ratingsCount: newCount });
-        }
       }
     } catch (err) {
       console.error("Error submitting rating:", err);
@@ -287,18 +217,18 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
 
   if (fetchError) return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6">
-       <h1 className="text-2xl font-bold text-red-500 mb-4">Error de Base de Datos</h1>
+       <h1 className="text-2xl font-semibold text-red-500 mb-4">Error de Base de Datos</h1>
        <p className="text-gray-400 mb-6 text-center max-w-md">{fetchError}</p>
        <p className="text-amber-500 text-sm mb-6 text-center max-w-md">
          Asegúrate de haber ejecutado el script SQL en Supabase para crear las relaciones (Foreign Keys) correctamente.
        </p>
-       <Link to="/" className="bg-amber-500 text-black px-6 py-3 rounded-xl font-bold">Volver al inicio</Link>
+       <Link to="/" className="bg-amber-500 text-black px-6 py-3 rounded-xl font-semibold">Volver al inicio</Link>
     </div>
   );
 
   if (!business && !isLoadingDetails) return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6">
-       <h1 className="text-2xl font-bold mb-4">Negocio no encontrado</h1>
+       <h1 className="text-2xl font-semibold mb-4">Negocio no encontrado</h1>
        <Link to="/" className="text-amber-500 hover:underline">Volver al inicio</Link>
     </div>
   );
@@ -308,7 +238,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
       {cartItemsCount > 0 && !isCartOpen && !showDeliveryForm && (
         <button onClick={() => setIsCartOpen(true)} className="fixed bottom-6 right-6 z-[80] bg-amber-500 text-black px-4 py-3 rounded-full shadow-2xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all">
           <ShoppingBag size={24} strokeWidth={2.5} />
-          <span className="text-lg font-black">{cartItemsCount}</span>
+          <span className="text-lg font-extrabold">{cartItemsCount}</span>
         </button>
       )}
 
@@ -340,17 +270,17 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             />
             <div className="flex-1 pb-2 md:pb-3">
               <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                 <span className="bg-amber-500 text-black text-[9px] md:text-[10px] font-black px-2.5 py-0.5 rounded-lg flex items-center gap-1.5 uppercase tracking-wider shadow-lg shadow-amber-500/20">
+                 <span className="bg-amber-500 text-black text-[9px] md:text-[10px] font-extrabold px-2.5 py-0.5 rounded-lg flex items-center gap-1.5 uppercase tracking-wider shadow-lg shadow-amber-500/20">
                    <Crown size={10} fill="currentColor" /> {business?.plan}
                  </span>
-                 <span className="text-white/90 text-[9px] md:text-[10px] font-black uppercase tracking-widest bg-white/10 backdrop-blur-xl px-2.5 py-0.5 rounded-lg border border-white/10">{business?.type}</span>
+                 <span className="text-white/90 text-[9px] md:text-[10px] font-extrabold uppercase tracking-widest bg-white/10 backdrop-blur-xl px-2.5 py-0.5 rounded-lg border border-white/10">{business?.type}</span>
               </div>
-              <h1 className="text-xl md:text-3xl font-black text-white tracking-tighter mb-1.5 leading-tight drop-shadow-2xl">{business?.name}</h1>
+              <h1 className="text-xl md:text-3xl font-extrabold text-white tracking-tighter mb-1.5 leading-tight drop-shadow-2xl">{business?.name}</h1>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5 text-amber-500">
                   {[1, 2, 3, 4, 5].map(s => <Star key={s} size={16} fill={s <= Math.round(business?.averageRating || 0) ? "currentColor" : "none"} />)}
                 </div>
-                <span className="text-white/50 text-xs font-black uppercase tracking-widest bg-black/20 backdrop-blur-sm px-2 py-1 rounded-md">({business?.ratingsCount || 0} reseñas)</span>
+                <span className="text-white/50 text-xs font-extrabold uppercase tracking-widest bg-black/20 backdrop-blur-sm px-2 py-1 rounded-md">({business?.ratingsCount || 0} reseñas)</span>
               </div>
             </div>
           </div>
@@ -359,9 +289,9 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           <div className="hidden md:flex flex-col items-end gap-6 pb-8 shrink-0">
             {/* Address & Socials */}
             <div className="text-right space-y-2">
-              <h3 className="text-white text-lg font-black uppercase tracking-tight leading-tight drop-shadow-lg">{business?.address}</h3>
+              <h3 className="text-white text-lg font-extrabold uppercase tracking-tight leading-tight drop-shadow-lg">{business?.address}</h3>
               <div className="flex items-center justify-end gap-4">
-                <p className="text-white/60 text-xs font-black uppercase tracking-widest">{business?.municipality}, {business?.province}</p>
+                <p className="text-white/60 text-xs font-extrabold uppercase tracking-widest">{business?.municipality}, {business?.province}</p>
                 <div className="h-4 w-[1px] bg-white/20" />
                 <div className="flex items-center gap-4">
                   {business?.instagram && (
@@ -387,19 +317,19 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business?.address + ', ' + business?.municipality + ', ' + business?.province)}`, '_blank')}
-                className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white hover:text-black transition-all text-[10px] font-black uppercase tracking-widest shadow-xl"
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white hover:text-black transition-all text-[10px] font-extrabold uppercase tracking-widest shadow-xl"
               >
                 <MapPin size={12} /> Llegar
               </button>
               <button 
                 onClick={() => window.open(`tel:${business?.phone}`, '_self')}
-                className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white hover:text-black transition-all text-[10px] font-black uppercase tracking-widest shadow-xl"
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white hover:text-black transition-all text-[10px] font-extrabold uppercase tracking-widest shadow-xl"
               >
                 <Phone size={12} /> Llamar
               </button>
               <button 
                 onClick={() => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank')}
-                className="flex items-center gap-2 bg-[#25d366] text-white px-4 py-2.5 rounded-xl hover:bg-[#22c35e] transition-all text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-[#25d366]/20"
+                className="flex items-center gap-2 bg-[#25d366] text-white px-4 py-2.5 rounded-xl hover:bg-[#22c35e] transition-all text-[10px] font-extrabold uppercase tracking-widest shadow-2xl shadow-[#25d366]/20"
               >
                 <MessageCircle size={12} /> WhatsApp
               </button>
@@ -413,8 +343,8 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
               >
                 <div className={`w-2 h-2 rounded-full ${isCurrentlyOpen ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.6)]'}`} />
                 <div className="flex flex-col items-start">
-                  <span className="text-white font-black text-[9px] uppercase tracking-widest">{isCurrentlyOpen ? 'Abierto' : 'Cerrado'}</span>
-                  <span className="text-white/50 font-bold text-[8px] uppercase tracking-tighter">
+                  <span className="text-white font-extrabold text-[9px] uppercase tracking-widest">{isCurrentlyOpen ? 'Abierto' : 'Cerrado'}</span>
+                  <span className="text-white/50 font-semibold text-[8px] uppercase tracking-tighter">
                     {todaySchedule?.open ? `${todaySchedule.from} - ${todaySchedule.to}` : 'Hoy cerrado'}
                   </span>
                 </div>
@@ -424,13 +354,13 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
               {/* Dropdown Schedule */}
               <div className={`absolute bottom-full right-0 mb-4 w-64 bg-[#141416]/95 backdrop-blur-2xl rounded-3xl border border-white/10 shadow-2xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${showFullSchedule ? 'max-h-[500px] opacity-100 translate-y-0' : 'max-h-0 opacity-0 translate-y-4'}`}>
                 <div className="p-5 space-y-1.5">
-                  <h4 className="text-white/30 text-[9px] font-black uppercase tracking-[0.2em] mb-3 px-2">Horarios Semanales</h4>
+                  <h4 className="text-white/30 text-[9px] font-extrabold uppercase tracking-[0.2em] mb-3 px-2">Horarios Semanales</h4>
                   {sortedSchedule.map((item) => {
                     const isToday = item.day === todayName;
                     return (
                       <div key={item.day} className={`flex justify-between items-center px-4 py-2.5 rounded-xl transition-all ${isToday ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' : 'hover:bg-white/5'}`}>
-                        <span className={`text-[10px] font-black uppercase tracking-widest ${isToday ? 'text-black' : 'text-white/60'}`}>{item.day}</span>
-                        <span className={`text-[10px] font-bold ${isToday ? 'text-black' : item.open ? 'text-white' : 'text-red-500/40'}`}>
+                        <span className={`text-[10px] font-extrabold uppercase tracking-widest ${isToday ? 'text-black' : 'text-white/60'}`}>{item.day}</span>
+                        <span className={`text-[10px] font-semibold ${isToday ? 'text-black' : item.open ? 'text-white' : 'text-red-500/40'}`}>
                           {item.open ? `${item.from} - ${item.to}` : 'Cerrado'}
                         </span>
                       </div>
@@ -456,8 +386,8 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                   loading={index === 0 ? "eager" : "lazy"}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/30 to-transparent flex flex-col justify-center p-6 md:p-8">
-                   <div className="bg-amber-500 text-black w-fit px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-[0.2em] mb-2">Destacado</div>
-                   <h3 className="text-white text-base md:text-xl font-bold mb-2 uppercase tracking-tight leading-snug max-w-sm drop-shadow-lg">{banner.title || "Oferta Especial"}</h3>
+                   <div className="bg-amber-500 text-black w-fit px-3 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-[0.2em] mb-2">Destacado</div>
+                   <h3 className="text-white text-base md:text-xl font-semibold mb-2 uppercase tracking-tight leading-snug max-w-sm drop-shadow-lg">{banner.title || "Oferta Especial"}</h3>
                 </div>
               </div>
             ))}
@@ -469,7 +399,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           <div className="p-5 space-y-6">
             {/* Fila 1: Ubicación y Redes */}
             <div className="flex flex-col">
-              <h3 className="text-white text-lg font-bold leading-tight mb-1">{business?.address}</h3>
+              <h3 className="text-white text-lg font-semibold leading-tight mb-1">{business?.address}</h3>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <p className="text-gray-500 text-xs font-medium">{business?.municipality}, {business?.province}</p>
                 <div className="flex items-center gap-4">
@@ -496,21 +426,21 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             <div className="grid grid-cols-3 gap-2">
               <button 
                 onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business?.address + ', ' + business?.municipality + ', ' + business?.province)}`, '_blank')}
-                className="flex items-center justify-center bg-[#1a1a1c] text-white px-4 py-3 rounded-2xl border border-white/5 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest"
+                className="flex items-center justify-center bg-[#1a1a1c] text-white px-4 py-3 rounded-2xl border border-white/5 hover:bg-white hover:text-black transition-all text-[11px] font-extrabold uppercase tracking-widest"
               >
                 Llegar
               </button>
               
               <button 
                 onClick={() => window.open(`tel:${business?.phone}`, '_self')}
-                className="flex items-center justify-center bg-[#1a1a1c] text-white px-4 py-3 rounded-2xl border border-white/5 hover:bg-white hover:text-black transition-all text-[11px] font-black uppercase tracking-widest"
+                className="flex items-center justify-center bg-[#1a1a1c] text-white px-4 py-3 rounded-2xl border border-white/5 hover:bg-white hover:text-black transition-all text-[11px] font-extrabold uppercase tracking-widest"
               >
                 Llamar
               </button>
               
               <button 
                 onClick={() => window.open(`https://wa.me/${(business?.whatsapp || business?.phone || '').replace(/[^0-9]/g, '')}`, '_blank')}
-                className="flex items-center justify-center bg-[#25d366] text-white px-4 py-3 rounded-2xl hover:bg-[#22c35e] transition-all text-[11px] font-black uppercase tracking-widest shadow-lg shadow-[#25d366]/10"
+                className="flex items-center justify-center bg-[#25d366] text-white px-4 py-3 rounded-2xl hover:bg-[#22c35e] transition-all text-[11px] font-extrabold uppercase tracking-widest shadow-lg shadow-[#25d366]/10"
               >
                 WhatsApp
               </button>
@@ -524,7 +454,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
               className="w-full p-4 flex items-center justify-between group"
             >
               <div className="flex items-center gap-2">
-                <span className="text-white font-bold text-sm capitalize">{todayName}</span>
+                <span className="text-white font-semibold text-sm capitalize">{todayName}</span>
                 <span className="text-gray-400 font-medium text-sm">
                   {todaySchedule?.open ? `${todaySchedule.from} - ${todaySchedule.to}` : 'Cerrado'}
                 </span>
@@ -534,7 +464,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)] ml-1" />
                 )}
               </div>
-              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest group-hover:text-white transition-colors">
+              <span className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest group-hover:text-white transition-colors">
                 {showFullSchedule ? 'Ocultar' : 'Horarios'}
               </span>
             </button>
@@ -548,12 +478,12 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                       key={item.day} 
                       className={`flex justify-between items-center px-3 py-1.5 rounded-xl transition-colors ${isToday ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-transparent'}`}
                     >
-                      <span className={`text-xs font-bold capitalize ${isToday ? 'text-amber-500' : 'text-gray-400'}`}>
+                      <span className={`text-xs font-semibold capitalize ${isToday ? 'text-amber-500' : 'text-gray-400'}`}>
                         {item.day}
                       </span>
                       <div className="flex items-center gap-2">
                         {!item.open && <span className="w-1 h-1 rounded-full bg-red-500/50" />}
-                        <span className={`text-xs font-bold ${item.open ? 'text-white' : 'text-red-500/50'}`}>
+                        <span className={`text-xs font-semibold ${item.open ? 'text-white' : 'text-red-500/50'}`}>
                           {item.open ? `${item.from} - ${item.to}` : 'Cerrado'}
                         </span>
                       </div>
@@ -568,7 +498,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
         {/* Tabs Principales */}
         <div className="bg-[#141416] p-1.5 rounded-2xl border border-white/5 flex gap-1.5 shadow-xl sticky top-20 z-50">
           {['menu', 'eventos', 'fotos'].map((t) => (
-            <button key={t} onClick={() => setActiveTab(t as any)} className={`flex-1 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${activeTab === t ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-gray-500 hover:text-white'}`}>
+            <button key={t} onClick={() => setActiveTab(t as any)} className={`flex-1 py-2.5 rounded-xl text-[10px] font-semibold uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${activeTab === t ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-gray-500 hover:text-white'}`}>
               {t === 'menu' ? <LayoutGrid size={14} /> : t === 'eventos' ? <Calendar size={14} /> : <Camera size={14} />} {t}
             </button>
           ))}
@@ -580,7 +510,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 -mx-6 px-6">
               <button 
                 onClick={() => setSelectedCategory('Todo')} 
-                className={`shrink-0 px-4 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all border ${selectedCategory === 'Todo' ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
+                className={`shrink-0 px-4 py-2 rounded-full text-[9px] font-semibold uppercase tracking-widest transition-all border ${selectedCategory === 'Todo' ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
               >
                 Todo
               </button>
@@ -588,7 +518,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                 <button 
                   key={cat.id} 
                   onClick={() => setSelectedCategory(cat.name)} 
-                  className={`shrink-0 px-4 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all border ${selectedCategory === cat.name ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
+                  className={`shrink-0 px-4 py-2 rounded-full text-[9px] font-semibold uppercase tracking-widest transition-all border ${selectedCategory === cat.name ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
                 >
                   {cat.name}
                 </button>
@@ -602,10 +532,10 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                     <OptimizedImage src={prod.imageUrl} containerClassName="w-full h-full" className="transition-transform duration-700 group-hover:scale-110" alt={prod.name} />
                   </div>
                   <div className="p-4 flex flex-col flex-1">
-                    <h3 className="text-white font-bold text-xs mb-1 uppercase tracking-tight truncate">{prod.name}</h3>
+                    <h3 className="text-white font-semibold text-xs mb-1 uppercase tracking-tight truncate">{prod.name}</h3>
                     <p className="text-gray-500 text-[9px] leading-relaxed mb-4 line-clamp-2">{prod.description || 'Sin descripción.'}</p>
                     <div className="flex items-center justify-between mt-auto pt-2 border-t border-white/5">
-                      <span className="text-amber-500 font-bold text-base">${prod.price}</span>
+                      <span className="text-amber-500 font-semibold text-base">${prod.price}</span>
                       <button onClick={() => addToCart(prod)} className="w-8 h-8 bg-amber-500 text-black rounded-full flex items-center justify-center hover:bg-white transition-all shadow-xl active:scale-90"><Plus size={16} strokeWidth={3} /></button>
                     </div>
                   </div>
@@ -620,12 +550,12 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                   <div className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto">
                     <CheckCircle size={32} />
                   </div>
-                  <h3 className="text-white font-bold text-xl uppercase tracking-tight">¡Gracias por calificar!</h3>
+                  <h3 className="text-white font-semibold text-xl uppercase tracking-tight">¡Gracias por calificar!</h3>
                   <p className="text-gray-500 text-sm">Tu opinión ayuda a que este lugar siga mejorando.</p>
                 </div>
               ) : (
                 <div className="space-y-6">
-                  <h3 className="text-white font-bold text-xl uppercase tracking-tight">¿Qué te pareció el lugar?</h3>
+                  <h3 className="text-white font-semibold text-xl uppercase tracking-tight">¿Qué te pareció el lugar?</h3>
                   <div className="flex items-center justify-center gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
@@ -648,14 +578,14 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                     <button 
                       onClick={handleRatingSubmit}
                       disabled={isRatingSubmitting}
-                      className="inline-flex items-center gap-2 bg-amber-500 text-black px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/10 animate-fade-in"
+                      className="inline-flex items-center gap-2 bg-amber-500 text-black px-8 py-4 rounded-2xl font-extrabold text-xs uppercase tracking-widest hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/10 animate-fade-in"
                     >
                       {isRatingSubmitting ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
                       Enviar Calificación
                     </button>
                   )}
                   {selectedRating === 0 && (
-                    <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em]">Toca una estrella para calificar</p>
+                    <p className="text-gray-500 text-[10px] font-extrabold uppercase tracking-[0.3em]">Toca una estrella para calificar</p>
                   )}
                 </div>
               )}
@@ -671,20 +601,20 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                 <div key={event.id} className="bg-[#141416] border border-white/5 rounded-3xl overflow-hidden group shadow-2xl flex flex-col">
                   <div className="relative h-56 overflow-hidden">
                     <OptimizedImage src={event.imageUrl} containerClassName="w-full h-full" className="group-hover:scale-110 transition-transform duration-1000" />
-                    <div className="absolute top-4 right-4 bg-amber-500 text-black text-[10px] font-black px-3 py-1 rounded-lg uppercase shadow-xl tracking-widest">
+                    <div className="absolute top-4 right-4 bg-amber-500 text-black text-[10px] font-extrabold px-3 py-1 rounded-lg uppercase shadow-xl tracking-widest">
                       {new Date(event.dateTime).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
                     </div>
                   </div>
                   <div className="p-6 space-y-4">
-                    <h3 className="text-white text-xl font-bold uppercase tracking-tight">{event.title}</h3>
-                    <div className="flex flex-wrap gap-4 text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em]">
+                    <h3 className="text-white text-xl font-semibold uppercase tracking-tight">{event.title}</h3>
+                    <div className="flex flex-wrap gap-4 text-gray-500 text-[10px] font-semibold uppercase tracking-[0.2em]">
                        <span className="flex items-center gap-1.5"><Clock size={14} className="text-amber-500" /> {new Date(event.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                        <span className="flex items-center gap-1.5"><Calendar size={14} className="text-amber-500" /> {new Date(event.dateTime).toLocaleDateString()}</span>
                     </div>
                     <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">{event.description}</p>
                     <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-                       <span className="text-amber-500 font-bold text-lg">{event.price ? `$${event.price}` : 'Entrada Libre'}</span>
-                       <button className="text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:text-amber-500 transition-colors">Interesado <ChevronRight size={14} /></button>
+                       <span className="text-amber-500 font-semibold text-lg">{event.price ? `$${event.price}` : 'Entrada Libre'}</span>
+                       <button className="text-white text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-2 hover:text-amber-500 transition-colors">Interesado <ChevronRight size={14} /></button>
                     </div>
                   </div>
                 </div>
@@ -692,7 +622,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             ) : (
               <div className="col-span-full py-24 text-center text-gray-500 space-y-4 bg-[#141416] rounded-3xl border border-dashed border-white/10">
                  <Calendar className="mx-auto opacity-20" size={48} />
-                 <p className="uppercase tracking-widest font-black text-xs">No hay eventos programados</p>
+                 <p className="uppercase tracking-widest font-extrabold text-xs">No hay eventos programados</p>
               </div>
             )}
           </div>
@@ -709,7 +639,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             {(!business?.coverPhotos || business.coverPhotos.length === 0) && (
               <div className="col-span-full py-24 text-center text-gray-500 space-y-4 bg-[#141416] rounded-3xl border border-dashed border-white/10">
                  <Camera className="mx-auto opacity-20" size={48} />
-                 <p className="uppercase tracking-widest font-black text-xs">No hay fotos disponibles</p>
+                 <p className="uppercase tracking-widest font-extrabold text-xs">No hay fotos disponibles</p>
               </div>
             )}
           </div>
@@ -723,7 +653,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           <div className="fixed bottom-0 left-0 right-0 z-[100] bg-[#141416] rounded-t-3xl border-t border-white/10 shadow-2xl animate-slide-up max-h-[85vh] flex flex-col">
             <div className="p-6 flex items-center justify-between border-b border-white/5">
               <div className="flex items-center gap-4">
-                <h2 className="text-xl font-bold text-white tracking-tight">Tu Pedido</h2>
+                <h2 className="text-xl font-semibold text-white tracking-tight">Tu Pedido</h2>
                 {cart.length > 0 && (
                   <button 
                     onClick={() => {
@@ -745,19 +675,19 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                 <div key={item.id} className="flex items-center gap-4 bg-[#1a1a1c] p-3 rounded-2xl border border-white/5">
                   <img src={item.imageUrl} className="w-16 h-16 rounded-xl object-cover" />
                   <div className="flex-1">
-                    <h4 className="text-white font-bold text-sm uppercase truncate">{item.name}</h4>
-                    <p className="text-amber-500 font-black text-xs">${item.price}</p>
+                    <h4 className="text-white font-semibold text-sm uppercase truncate">{item.name}</h4>
+                    <p className="text-amber-500 font-extrabold text-xs">${item.price}</p>
                   </div>
                   <div className="flex items-center gap-3 bg-black/40 px-2 py-1 rounded-xl">
                     <button onClick={() => updateQuantity(item.id, -1)}><Minus size={14} /></button>
-                    <span className="text-white font-bold">{item.quantity}</span>
+                    <span className="text-white font-semibold">{item.quantity}</span>
                     <button onClick={() => updateQuantity(item.id, 1)}><Plus size={14} /></button>
                   </div>
                 </div>
               ))}
             </div>
             <div className="p-8 border-t border-white/5 bg-black/50 space-y-6">
-              <div className="flex justify-between font-bold">
+              <div className="flex justify-between font-semibold">
                 <span className="text-gray-500 uppercase tracking-widest text-xs">Total</span>
                 <span className="text-amber-500 text-2xl">${cartTotal}</span>
               </div>
@@ -765,7 +695,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
               {business?.plan === PlanType.PRO && business?.deliveryEnabled ? (
                 <button 
                   onClick={handleWhatsAppOrder} 
-                  className="w-full bg-[#25d366] text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-2xl transition-all hover:bg-[#20bd5a]"
+                  className="w-full bg-[#25d366] text-white py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 shadow-2xl transition-all hover:bg-[#20bd5a]"
                 >
                   <MessageCircle size={22} fill="currentColor" /> Realizar pedido por WhatsApp
                 </button>
@@ -775,7 +705,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                     <Info size={20} />
                   </div>
                   <p className="text-amber-500/90 text-sm font-medium leading-relaxed">
-                    Esta lista es <span className="font-bold underline">solo de referencia</span> para mostrar al camarero y agilizar tu pedido en mesa.
+                    Esta lista es <span className="font-semibold underline">solo de referencia</span> para mostrar al camarero y agilizar tu pedido en mesa.
                   </p>
                 </div>
               )}
@@ -787,18 +717,18 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
       {showDeliveryForm && (
         <div className="fixed inset-0 z-[110] bg-black flex flex-col animate-fade-in overflow-y-auto">
           <header className="sticky top-0 p-6 flex items-center justify-between bg-black border-b border-white/5">
-            <h2 className="text-xl font-bold text-white flex items-center gap-2"><Truck className="text-[#25d366]" /> Entrega</h2>
+            <h2 className="text-xl font-semibold text-white flex items-center gap-2"><Truck className="text-[#25d366]" /> Entrega</h2>
             <button onClick={() => setShowDeliveryForm(false)} className="text-gray-500"><X size={28} /></button>
           </header>
           <div className="p-6 max-w-2xl mx-auto w-full space-y-6">
             <div className="bg-[#12241b] rounded-2xl p-6 text-center border border-[#25d366]/20">
-               <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Costo de envío</p>
-               <h3 className="text-[#25d366] text-4xl font-black uppercase">CUP {deliveryPrice}</h3>
-               <p className="text-gray-500 text-[10px] uppercase font-bold tracking-[0.2em]">{deliveryZone === 'inside' ? 'Local' : 'Fuera de zona'}</p>
+               <p className="text-gray-400 text-xs font-semibold uppercase tracking-widest mb-1">Costo de envío</p>
+               <h3 className="text-[#25d366] text-4xl font-extrabold uppercase">CUP {deliveryPrice}</h3>
+               <p className="text-gray-500 text-[10px] uppercase font-semibold tracking-[0.2em]">{deliveryZone === 'inside' ? 'Local' : 'Fuera de zona'}</p>
             </div>
             <div className="grid grid-cols-1 gap-3">
-               <button onClick={() => setDeliveryZone('inside')} className={`p-5 rounded-2xl border text-left flex justify-between ${deliveryZone === 'inside' ? 'bg-[#1a1a1c] border-amber-500/50 text-white' : 'bg-transparent border-white/5 text-gray-500'}`}><span>Local</span><span className="font-bold">CUP {business?.deliveryPriceInside}</span></button>
-               <button onClick={() => setDeliveryZone('outside')} className={`p-5 rounded-2xl border text-left flex justify-between ${deliveryZone === 'outside' ? 'bg-[#1a1a1c] border-amber-500/50 text-white' : 'bg-transparent border-white/5 text-gray-500'}`}><span>Otro</span><span className="font-bold">CUP {business?.deliveryPriceOutside}</span></button>
+               <button onClick={() => setDeliveryZone('inside')} className={`p-5 rounded-2xl border text-left flex justify-between ${deliveryZone === 'inside' ? 'bg-[#1a1a1c] border-amber-500/50 text-white' : 'bg-transparent border-white/5 text-gray-500'}`}><span>Local</span><span className="font-semibold">CUP {business?.deliveryPriceInside}</span></button>
+               <button onClick={() => setDeliveryZone('outside')} className={`p-5 rounded-2xl border text-left flex justify-between ${deliveryZone === 'outside' ? 'bg-[#1a1a1c] border-amber-500/50 text-white' : 'bg-transparent border-white/5 text-gray-500'}`}><span>Otro</span><span className="font-semibold">CUP {business?.deliveryPriceOutside}</span></button>
             </div>
             <div className="space-y-4">
               <input placeholder="Nombre" className="w-full bg-[#1a1a1c] border border-white/10 rounded-xl py-4 px-5 text-white" value={deliveryData.receiverName} onChange={e => setDeliveryData({...deliveryData, receiverName: e.target.value})} />
@@ -806,8 +736,8 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
               <textarea placeholder="Dirección completa" className="w-full bg-[#1a1a1c] border border-white/10 rounded-xl py-4 px-5 text-white resize-none" rows={3} value={deliveryData.address} onChange={e => setDeliveryData({...deliveryData, address: e.target.value})} />
               <textarea placeholder="Notas adicionales (Ej: Cerca de la bodega, traer cambio de 1000...)" className="w-full bg-[#1a1a1c] border border-white/10 rounded-xl py-4 px-5 text-white resize-none" rows={2} value={deliveryData.notes} onChange={e => setDeliveryData({...deliveryData, notes: e.target.value})} />
             </div>
-            <div className="pt-6 flex items-center justify-between"><span className="text-gray-500 uppercase text-xs font-bold">Total Final</span><span className="text-amber-500 text-3xl font-black">${cartTotal + deliveryPrice}</span></div>
-            <button onClick={handleWhatsAppOrder} className="w-full bg-[#25d366] text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-2xl">Confirmar por WhatsApp</button>
+            <div className="pt-6 flex items-center justify-between"><span className="text-gray-500 uppercase text-xs font-semibold">Total Final</span><span className="text-amber-500 text-3xl font-extrabold">${cartTotal + deliveryPrice}</span></div>
+            <button onClick={handleWhatsAppOrder} className="w-full bg-[#25d366] text-white py-5 rounded-2xl font-semibold flex items-center justify-center gap-3 shadow-2xl">Confirmar por WhatsApp</button>
           </div>
         </div>
       )}

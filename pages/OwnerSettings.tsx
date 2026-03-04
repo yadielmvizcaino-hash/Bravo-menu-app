@@ -179,16 +179,16 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
   return (
     <div className="max-w-4xl mx-auto pb-20">
       <div className="mb-10">
-        <h1 className="text-3xl font-black text-white mb-2 tracking-tight uppercase">Editar perfil</h1>
+        <h1 className="text-3xl font-extrabold text-white mb-2 tracking-tight uppercase">Editar perfil</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Información Básica */}
         <section className="bg-black border border-gray-800 rounded-3xl p-8 shadow-xl">
-          <h3 className="text-white font-bold text-base mb-6 uppercase tracking-tight">Información básica</h3>
+          <h3 className="text-white font-semibold text-base mb-6 uppercase tracking-tight">Información básica</h3>
           <div className="space-y-5">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Nombre del negocio *</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Nombre del negocio *</label>
               <input 
                 required
                 type="text" 
@@ -199,7 +199,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
             </div>
             
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Descripción</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Descripción</label>
               <textarea 
                 rows={3} 
                 className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white resize-none focus:border-amber-500/50 outline-none text-sm font-medium"
@@ -211,7 +211,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
 
             <div className="space-y-5">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Tipo de negocio *</label>
+                <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Tipo de negocio *</label>
                 <select 
                   required
                   className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none appearance-none text-sm font-medium cursor-pointer"
@@ -225,7 +225,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               </div>
               
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Tipos de cocina</label>
+                <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Tipos de cocina</label>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <div className="flex-1 flex gap-2">
                     <input 
@@ -247,7 +247,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                 </div>
                 <div className="flex flex-wrap gap-2 mt-3">
                   {formData.cuisineTypes?.map(tag => (
-                    <span key={tag} className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-3 py-1 rounded-lg text-[10px] font-bold uppercase flex items-center gap-2">
+                    <span key={tag} className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-3 py-1 rounded-lg text-[10px] font-semibold uppercase flex items-center gap-2">
                       {tag}
                       <button type="button" onClick={() => removeCuisine(tag)} className="hover:text-amber-400"><X size={12} /></button>
                     </span>
@@ -260,10 +260,10 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
 
         {/* Identidad Visual */}
         <section className="bg-black border border-gray-800 rounded-3xl p-8 shadow-xl">
-          <h3 className="text-white font-bold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Palette size={18} className="text-amber-500" /> Identidad Visual</h3>
+          <h3 className="text-white font-semibold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Palette size={18} className="text-amber-500" /> Identidad Visual</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Logo del negocio</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Logo del negocio</label>
               <div className="relative aspect-square w-32 rounded-2xl overflow-hidden bg-gray-800 border-2 border-dashed border-gray-700 group">
                 {isUploadingLogo ? (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
@@ -275,7 +275,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                 )}
                 {!formData.logoUrl && (
                   <button type="button" onClick={() => logoInputRef.current?.click()} className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 transition-colors">
-                    <Upload size={20} className="mb-1" /><span className="text-[10px] font-bold uppercase tracking-widest">Subir</span>
+                    <Upload size={20} className="mb-1" /><span className="text-[10px] font-semibold uppercase tracking-widest">Subir</span>
                   </button>
                 )}
                 <input type="file" ref={logoInputRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
@@ -284,7 +284,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
             </div>
 
             <div className="space-y-4">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Banner Principal (Cabecera)</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Banner Principal (Cabecera)</label>
               <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-gray-800 border-2 border-dashed border-gray-700 group">
                 {isUploadingCover && (formData.coverPhotos?.length || 0) === 0 ? (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
@@ -295,7 +295,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                   </>
                 ) : (
                   <button type="button" onClick={() => coverInputRef.current?.click()} className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 transition-colors">
-                    <ImageIcon size={20} className="mb-1" /><span className="text-[10px] font-bold uppercase tracking-widest">Subir Banner</span>
+                    <ImageIcon size={20} className="mb-1" /><span className="text-[10px] font-semibold uppercase tracking-widest">Subir Banner</span>
                   </button>
                 )}
               </div>
@@ -306,10 +306,10 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
 
         {/* Galería de fotos */}
         <section className="bg-black border border-gray-800 rounded-3xl p-8 shadow-xl">
-          <h3 className="text-white font-bold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Camera size={18} className="text-amber-500" /> Galería de fotos</h3>
+          <h3 className="text-white font-semibold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Camera size={18} className="text-amber-500" /> Galería de fotos</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Fotos adicionales ({formData.coverPhotos?.length || 0}/{business.plan === PlanType.PRO ? 10 : 1})</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Fotos adicionales ({formData.coverPhotos?.length || 0}/{business.plan === PlanType.PRO ? 10 : 1})</label>
             </div>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -339,7 +339,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                   ) : (
                     <>
                       <Plus size={24} className="mb-1" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest">Añadir</span>
+                      <span className="text-[10px] font-semibold uppercase tracking-widest">Añadir</span>
                     </>
                   )}
                 </button>
@@ -352,10 +352,10 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
 
         {/* Ubicación */}
         <section className="bg-black border border-gray-800 rounded-3xl p-8 shadow-xl">
-          <h3 className="text-white font-bold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><MapPin size={18} className="text-amber-500" /> Ubicación</h3>
+          <h3 className="text-white font-semibold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><MapPin size={18} className="text-amber-500" /> Ubicación</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Provincia *</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Provincia *</label>
               <select 
                 className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none appearance-none text-sm font-medium cursor-pointer"
                 value={formData.province || ''}
@@ -366,7 +366,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Municipio *</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Municipio *</label>
               <select 
                 className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none appearance-none disabled:opacity-50 text-sm font-medium cursor-pointer"
                 disabled={!formData.province}
@@ -379,7 +379,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
             </div>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Dirección completa</label>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Dirección completa</label>
             <input 
               type="text" 
               className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
@@ -392,10 +392,10 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
 
         {/* Contacto */}
         <section className="bg-black border border-gray-800 rounded-3xl p-8 shadow-xl">
-          <h3 className="text-white font-bold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Phone size={18} className="text-amber-500" /> Contacto</h3>
+          <h3 className="text-white font-semibold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Phone size={18} className="text-amber-500" /> Contacto</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Teléfono</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Teléfono</label>
               <input 
                 type="text" 
                 className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
@@ -404,7 +404,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">WhatsApp</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">WhatsApp</label>
               <input 
                 type="text" 
                 className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
@@ -415,7 +415,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Email</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Email</label>
               <input 
                 type="email" 
                 className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
@@ -424,7 +424,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Instagram</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Instagram</label>
               <input 
                 type="text" 
                 className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
@@ -435,7 +435,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
             </div>
           </div>
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Facebook</label>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Facebook</label>
             <input 
               type="text" 
               className="w-full bg-black border border-gray-700 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-medium"
@@ -450,14 +450,14 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
         <section className="bg-black border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden">
           <div className="flex items-center gap-2 mb-8">
             <Clock size={20} className="text-amber-500" />
-            <h3 className="text-white font-bold text-lg tracking-tight uppercase">Horario de atención</h3>
+            <h3 className="text-white font-semibold text-lg tracking-tight uppercase">Horario de atención</h3>
           </div>
           
           <div className="space-y-3">
             {Object.entries(formData.schedule || DEFAULT_SCHEDULE).map(([day, config]) => (
               <div key={day} className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 py-3 border-b border-gray-800/50 last:border-0">
                 <div className="flex items-center justify-between sm:w-44">
-                  <span className="text-sm font-bold text-gray-300 capitalize">{day}</span>
+                  <span className="text-sm font-semibold text-gray-300 capitalize">{day}</span>
                   
                   <div className="flex items-center gap-3">
                     <button 
@@ -471,7 +471,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                     >
                       <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all shadow-sm ${config.open ? 'left-6' : 'left-1'}`} />
                     </button>
-                    <span className={`text-[10px] font-black uppercase tracking-widest w-12 ${config.open ? 'text-amber-500' : 'text-gray-500'}`}>
+                    <span className={`text-[10px] font-extrabold uppercase tracking-widest w-12 ${config.open ? 'text-amber-500' : 'text-gray-500'}`}>
                       {config.open ? 'Abierto' : 'Cerrado'}
                     </span>
                   </div>
@@ -481,7 +481,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                   <div className="flex items-center gap-2 sm:gap-3 ml-0 sm:ml-auto">
                     <div className="relative flex-1 sm:flex-none">
                       <select 
-                        className="w-full bg-black border border-gray-700 rounded-lg pl-3 pr-8 py-2 text-xs text-white outline-none focus:border-amber-500/50 appearance-none font-bold"
+                        className="w-full bg-black border border-gray-700 rounded-lg pl-3 pr-8 py-2 text-xs text-white outline-none focus:border-amber-500/50 appearance-none font-semibold"
                         value={config.from}
                         onChange={e => {
                           const newSchedule = { ...formData.schedule };
@@ -493,10 +493,10 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                       </select>
                       <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                     </div>
-                    <span className="text-gray-600 text-xs font-bold">a</span>
+                    <span className="text-gray-600 text-xs font-semibold">a</span>
                     <div className="relative flex-1 sm:flex-none">
                       <select 
-                        className="w-full bg-black border border-gray-700 rounded-lg pl-3 pr-8 py-2 text-xs text-white outline-none focus:border-amber-500/50 appearance-none font-bold"
+                        className="w-full bg-black border border-gray-700 rounded-lg pl-3 pr-8 py-2 text-xs text-white outline-none focus:border-amber-500/50 appearance-none font-semibold"
                         value={config.to}
                         onChange={e => {
                           const newSchedule = { ...formData.schedule };
@@ -528,35 +528,35 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
           </div>
 
           <div className="space-y-1">
-            <h3 className="text-white font-bold text-xl tracking-tight uppercase">Pedidos a domicilio</h3>
+            <h3 className="text-white font-semibold text-xl tracking-tight uppercase">Pedidos a domicilio</h3>
             <p className="text-gray-500 text-[10px] font-medium leading-relaxed max-w-md uppercase tracking-widest">
               Activa esta opción para permitir que los clientes realicen pedidos por WhatsApp directamente desde tu menú.
             </p>
           </div>
 
           <div className="pt-6 border-t border-white/5 space-y-6">
-            <h4 className="font-bold text-xs text-white uppercase tracking-widest">Configuración de precios de envío</h4>
+            <h4 className="font-semibold text-xs text-white uppercase tracking-widest">Configuración de precios de envío</h4>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">
                   Precio dentro de tu municipio (CUP)
                 </label>
                 <input 
                   type="number" 
-                  className="w-full bg-black border border-gray-800 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-bold"
+                  className="w-full bg-black border border-gray-800 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-semibold"
                   value={formData.deliveryPriceInside}
                   onChange={e => setFormData({...formData, deliveryPriceInside: parseFloat(e.target.value) || 0})}
                   placeholder="200"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">
                   Precio fuera de tu municipio (CUP)
                 </label>
                 <input 
                   type="number" 
-                  className="w-full bg-black border border-gray-800 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-bold"
+                  className="w-full bg-black border border-gray-800 rounded-xl py-4 px-5 text-white focus:border-amber-500/50 outline-none transition-all text-sm font-semibold"
                   value={formData.deliveryPriceOutside}
                   onChange={e => setFormData({...formData, deliveryPriceOutside: parseFloat(e.target.value) || 0})}
                   placeholder="500"
@@ -570,7 +570,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
           <button 
             type="submit" 
             disabled={isSaving}
-            className="w-full bg-amber-500 text-black py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/10 disabled:opacity-50"
+            className="w-full bg-amber-500 text-black py-5 rounded-2xl font-extrabold text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/10 disabled:opacity-50"
           >
             {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />} 
             Guardar cambios
@@ -582,7 +582,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
           <div className="bg-red-500/5 border border-red-500/20 rounded-3xl p-8">
             <div className="flex items-center gap-3 mb-4 text-red-500">
               <AlertTriangle size={24} />
-              <h3 className="text-xl font-black uppercase tracking-tight">Zona de Peligro</h3>
+              <h3 className="text-xl font-extrabold uppercase tracking-tight">Zona de Peligro</h3>
             </div>
             <p className="text-gray-400 text-sm mb-6 font-medium">
               Al eliminar tu negocio, se borrarán permanentemente todos tus productos, categorías, eventos y banners. Esta acción no se puede deshacer.
@@ -590,7 +590,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
             <button 
               type="button"
               onClick={() => setShowDeleteConfirm(true)}
-              className="bg-red-500/10 text-red-500 border border-red-500/20 px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
+              className="bg-red-500/10 text-red-500 border border-red-500/20 px-6 py-3 rounded-xl font-semibold text-xs uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
             >
               <Trash2 size={16} /> Eliminar mi negocio permanentemente
             </button>
@@ -605,15 +605,15 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
             <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <AlertTriangle size={32} />
             </div>
-            <h2 className="text-2xl font-black text-white text-center mb-4 uppercase tracking-tight">¿Estás seguro?</h2>
+            <h2 className="text-2xl font-extrabold text-white text-center mb-4 uppercase tracking-tight">¿Estás seguro?</h2>
             <p className="text-gray-400 text-center mb-8 font-medium">
-              Esta acción eliminará <span className="text-white font-bold">{business.name}</span> y todos sus datos para siempre. No podrás recuperar esta información.
+              Esta acción eliminará <span className="text-white font-semibold">{business.name}</span> y todos sus datos para siempre. No podrás recuperar esta información.
             </p>
             <div className="flex flex-col gap-3">
               <button 
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="w-full bg-red-500 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-600 transition-all disabled:opacity-50"
+                className="w-full bg-red-500 text-white py-4 rounded-2xl font-extrabold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-600 transition-all disabled:opacity-50"
               >
                 {isDeleting ? <Loader2 className="animate-spin" size={18} /> : <Trash2 size={18} />}
                 Sí, eliminar definitivamente
@@ -621,7 +621,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               <button 
                 onClick={() => setShowDeleteConfirm(false)}
                 disabled={isDeleting}
-                className="w-full bg-white/5 text-gray-400 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
+                className="w-full bg-white/5 text-gray-400 py-4 rounded-2xl font-extrabold text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
               >
                 Cancelar
               </button>

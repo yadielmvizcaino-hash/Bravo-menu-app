@@ -21,7 +21,7 @@ const StatCard: React.FC<{
       </div>
       {trend && (
         <div className="flex flex-col items-end">
-          <span className="text-green-500 text-[10px] font-black flex items-center gap-0.5">
+          <span className="text-green-500 text-[10px] font-extrabold flex items-center gap-0.5">
             <TrendingUp size={10} /> {trend}
           </span>
         </div>
@@ -29,8 +29,8 @@ const StatCard: React.FC<{
     </div>
     
     <div>
-      <p className="text-gray-500 text-[9px] font-black uppercase tracking-[0.15em] mb-0.5">{label}</p>
-      <h3 className="text-2xl font-black text-white leading-none tracking-tighter">{value}</h3>
+      <p className="text-gray-500 text-[9px] font-extrabold uppercase tracking-[0.15em] mb-0.5">{label}</p>
+      <h3 className="text-2xl font-extrabold text-white leading-none tracking-tighter">{value}</h3>
     </div>
 
     {data && data.length > 0 && (
@@ -133,11 +133,11 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
     <div className="max-w-7xl mx-auto pb-10 px-4 md:px-0">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-2xl md:text-3xl font-black text-white mb-1 tracking-tighter">Hola, {business.name} 👋</h1>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-white mb-1 tracking-tighter">Hola, {business.name} 👋</h1>
           <p className="text-gray-500 text-xs font-medium">Panel de control y estadísticas en tiempo real.</p>
         </div>
         <div className="flex items-center gap-2 w-full md:w-auto">
-           <button className="flex-1 md:flex-none bg-white/5 border border-white/10 text-white px-4 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white hover:text-black transition-all">
+           <button className="flex-1 md:flex-none bg-white/5 border border-white/10 text-white px-4 py-2 rounded-xl font-extrabold text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white hover:text-black transition-all">
              <Calendar size={12} /> Historial
            </button>
         </div>
@@ -173,7 +173,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
           {/* Accesos Rápidos Rediseñados - Compactos */}
           <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 shadow-xl">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-sm font-black text-white uppercase tracking-tight">Accesos rápidos</h2>
+              <h2 className="text-sm font-extrabold text-white uppercase tracking-tight">Accesos rápidos</h2>
               <Zap size={14} className="text-amber-500" />
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -188,7 +188,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
                     <div className={`w-10 h-10 rounded-xl ${item.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-500`}>
                       {item.icon}
                     </div>
-                    <span className="text-white font-black text-[9px] uppercase tracking-widest">{item.label}</span>
+                    <span className="text-white font-extrabold text-[9px] uppercase tracking-widest">{item.label}</span>
                  </Link>
                ))}
             </div>
@@ -197,7 +197,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
           {/* Diseñador de QR - Compacto */}
           <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 shadow-xl">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-sm font-black text-white uppercase tracking-tight">Diseñador de QR</h2>
+              <h2 className="text-sm font-extrabold text-white uppercase tracking-tight">Diseñador de QR</h2>
             </div>
             <div className="flex items-center gap-6">
               <div className="bg-white p-3 rounded-2xl shrink-0">
@@ -208,7 +208,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
                  <button 
                    onClick={handleDownloadQR}
                    disabled={isDownloading}
-                   className="w-full bg-white text-black py-2.5 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-amber-500 transition-all disabled:opacity-50"
+                   className="w-full bg-white text-black py-2.5 rounded-xl font-extrabold text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-amber-500 transition-all disabled:opacity-50"
                  >
                    {isDownloading ? <Loader2 className="animate-spin" size={14} /> : <Download size={14} />} 
                    Descargar QR
@@ -225,15 +225,15 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
               <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
                 <Crown size={20} fill="currentColor" />
               </div>
-              <span className="bg-amber-500 text-black text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">
+              <span className="bg-amber-500 text-black text-[8px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-widest">
                 {isPro ? 'PRO' : 'Gratis'}
               </span>
             </div>
-            <h3 className="text-white font-black text-base mb-1 tracking-tight">Suscripción</h3>
+            <h3 className="text-white font-extrabold text-base mb-1 tracking-tight">Suscripción</h3>
             <p className="text-gray-500 text-[10px] font-medium mb-6 leading-relaxed">
               {isPro ? 'Acceso total a funciones premium.' : 'Plan básico. Actualiza para más.'}
             </p>
-            <Link to="/admin/pricing" className="block w-full text-center bg-white text-black py-3 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-amber-500 transition-all">
+            <Link to="/admin/pricing" className="block w-full text-center bg-white text-black py-3 rounded-xl font-extrabold text-[9px] uppercase tracking-widest hover:bg-amber-500 transition-all">
               {isPro ? 'Gestionar' : 'Mejorar'}
             </Link>
           </div>
@@ -241,14 +241,14 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
           {/* Tarjeta de Reputación - Compacta */}
           <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 shadow-xl">
              <div className="flex items-center justify-between mb-6">
-               <h3 className="text-sm font-black text-white uppercase tracking-tight">Reputación</h3>
+               <h3 className="text-sm font-extrabold text-white uppercase tracking-tight">Reputación</h3>
                <Star size={16} className="text-amber-500" />
              </div>
              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-500 text-[9px] font-black uppercase tracking-widest">Promedio</span>
+                  <span className="text-gray-500 text-[9px] font-extrabold uppercase tracking-widest">Promedio</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-black text-2xl tracking-tighter">{business.averageRating?.toFixed(1) || '0.0'}</span>
+                    <span className="text-white font-extrabold text-2xl tracking-tighter">{business.averageRating?.toFixed(1) || '0.0'}</span>
                     <div className="flex flex-col">
                       <div className="flex items-center gap-0.5 text-amber-500">
                         {[1, 2, 3, 4, 5].map(s => <Star key={s} size={8} fill={s <= Math.round(business.averageRating || 0) ? "currentColor" : "none"} />)}
@@ -258,7 +258,7 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
                 </div>
                 
                 <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest">
+                  <div className="flex items-center justify-between text-[9px] font-extrabold uppercase tracking-widest">
                     <span className="text-gray-500">Satisfacción</span>
                     <span className="text-white">{Math.round((business.averageRating || 0) * 20)}%</span>
                   </div>
@@ -271,8 +271,8 @@ const Dashboard: React.FC<{ business: Business }> = ({ business }) => {
                 </div>
 
                 <div className="flex items-center justify-between pt-3 border-t border-white/5">
-                  <span className="text-gray-500 text-[9px] font-black uppercase tracking-widest">Total votos</span>
-                  <span className="text-white font-black text-xs">{business.ratingsCount || 0}</span>
+                  <span className="text-gray-500 text-[9px] font-extrabold uppercase tracking-widest">Total votos</span>
+                  <span className="text-white font-extrabold text-xs">{business.ratingsCount || 0}</span>
                 </div>
              </div>
           </div>

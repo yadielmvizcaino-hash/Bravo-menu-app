@@ -238,14 +238,14 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-4xl font-black text-white mb-2 uppercase tracking-tighter">Gestión de Menú</h1>
-          <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Organiza tus categorías y productos</p>
+          <h1 className="text-4xl font-extrabold text-white mb-2 uppercase tracking-tighter">Gestión de Menú</h1>
+          <p className="text-gray-500 font-semibold uppercase tracking-widest text-[10px]">Organiza tus categorías y productos</p>
         </div>
         <div className="flex gap-3 w-full md:w-auto">
-          <button onClick={openCreateCatModal} className="flex-1 md:flex-none bg-white/5 text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+          <button onClick={openCreateCatModal} className="flex-1 md:flex-none bg-white/5 text-white px-6 py-4 rounded-2xl font-extrabold text-[10px] uppercase tracking-widest border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-2">
             <Layers size={18} /> Nueva Categoría
           </button>
-          <button onClick={openNewProductModal} className="flex-1 md:flex-none bg-amber-500 text-black px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-amber-500/10 hover:bg-amber-400 transition-all">
+          <button onClick={openNewProductModal} className="flex-1 md:flex-none bg-amber-500 text-black px-6 py-4 rounded-2xl font-extrabold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-amber-500/10 hover:bg-amber-400 transition-all">
             <Plus size={18} strokeWidth={3} /> Nuevo Producto
           </button>
         </div>
@@ -254,21 +254,21 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
       {/* Categories Section - Organic Integration */}
       <div className="space-y-6">
         <div className="flex items-center justify-between px-2">
-          <h2 className="text-white font-black text-xs uppercase tracking-[0.2em] flex items-center gap-2">
+          <h2 className="text-white font-extrabold text-xs uppercase tracking-[0.2em] flex items-center gap-2">
             <Layers size={14} className="text-amber-500" /> Categorías
           </h2>
-          <span className="text-gray-600 text-[10px] font-bold uppercase tracking-widest">{business.categories.length} Secciones</span>
+          <span className="text-gray-600 text-[10px] font-semibold uppercase tracking-widest">{business.categories.length} Secciones</span>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {business.categories.map((cat, index) => (
             <div key={cat.id} className="bg-[#141416] border border-white/5 p-5 rounded-[2rem] flex items-center gap-4 group hover:border-amber-500/30 transition-all shadow-xl">
-              <div className="w-12 h-12 bg-amber-500/10 text-amber-500 rounded-2xl flex items-center justify-center font-black text-sm shrink-0">
+              <div className="w-12 h-12 bg-amber-500/10 text-amber-500 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0">
                 {index + 1}
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-black text-sm uppercase tracking-tight truncate">{cat.name}</h3>
-                <p className="text-gray-500 text-[9px] uppercase tracking-widest font-black">
+                <h3 className="text-white font-extrabold text-sm uppercase tracking-tight truncate">{cat.name}</h3>
+                <p className="text-gray-500 text-[9px] uppercase tracking-widest font-extrabold">
                   {business.products.filter(p => p.categoryId === cat.id).length} productos
                 </p>
               </div>
@@ -294,7 +294,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
       {/* Products Section */}
       <div className="space-y-8 pt-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-2 border-t border-white/5 pt-12">
-          <h2 className="text-white font-black text-xs uppercase tracking-[0.2em] flex items-center gap-2">
+          <h2 className="text-white font-extrabold text-xs uppercase tracking-[0.2em] flex items-center gap-2">
             <Plus size={14} className="text-amber-500" /> Productos
           </h2>
           
@@ -304,13 +304,13 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
               <input 
                 type="text" 
                 placeholder="Buscar producto..." 
-                className="w-full bg-white/5 border border-white/5 rounded-2xl py-3 pl-11 pr-4 text-white text-xs font-bold focus:border-amber-500/50 outline-none transition-all"
+                className="w-full bg-white/5 border border-white/5 rounded-2xl py-3 pl-11 pr-4 text-white text-xs font-semibold focus:border-amber-500/50 outline-none transition-all"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
               />
             </div>
             <select 
-              className="bg-white/5 border border-white/5 rounded-2xl py-3 px-4 text-white text-xs font-bold focus:border-amber-500/50 outline-none appearance-none cursor-pointer min-w-[140px]"
+              className="bg-white/5 border border-white/5 rounded-2xl py-3 px-4 text-white text-xs font-semibold focus:border-amber-500/50 outline-none appearance-none cursor-pointer min-w-[140px]"
               value={selectedCatId}
               onChange={e => setSelectedCatId(e.target.value)}
             >
@@ -332,18 +332,18 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
                <div className="p-7 flex-1 flex flex-col justify-between min-w-0">
                   <div className="flex justify-between items-start gap-4">
                     <div className="min-w-0">
-                      <h3 className="text-white font-black text-lg truncate uppercase tracking-tight leading-none mb-1">{product.name}</h3>
-                      <p className="text-gray-500 text-[9px] uppercase font-black tracking-[0.2em] truncate mb-2">
+                      <h3 className="text-white font-extrabold text-lg truncate uppercase tracking-tight leading-none mb-1">{product.name}</h3>
+                      <p className="text-gray-500 text-[9px] uppercase font-extrabold tracking-[0.2em] truncate mb-2">
                         {business.categories.find(c => c.id === product.categoryId)?.name || 'Sin categoría'}
                       </p>
-                      <span className="text-amber-500 font-black text-xl tracking-tighter leading-none">${product.price}</span>
+                      <span className="text-amber-500 font-extrabold text-xl tracking-tighter leading-none">${product.price}</span>
                     </div>
                     <button onClick={() => toggleVisibility(product.id)} className={`shrink-0 p-3 rounded-2xl transition-all ${product.isVisible ? 'bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black' : 'bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white'}`}>
                       {product.isVisible ? <Eye size={18} /> : <EyeOff size={18} />}
                     </button>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => openEditProductModal(product)} className="flex-1 bg-white/5 text-white py-3 rounded-2xl text-[10px] uppercase font-black tracking-widest border border-white/5 hover:bg-white hover:text-black transition-all">Editar</button>
+                    <button onClick={() => openEditProductModal(product)} className="flex-1 bg-white/5 text-white py-3 rounded-2xl text-[10px] uppercase font-extrabold tracking-widest border border-white/5 hover:bg-white hover:text-black transition-all">Editar</button>
                     <button 
                       onClick={() => handleDelete(product.id)} 
                       disabled={isDeleting === product.id}
@@ -360,7 +360,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
               <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto text-gray-600">
                 <Search size={32} />
               </div>
-              <p className="text-gray-500 font-black text-xs uppercase tracking-widest">No se encontraron productos</p>
+              <p className="text-gray-500 font-extrabold text-xs uppercase tracking-widest">No se encontraron productos</p>
             </div>
           )}
         </div>
@@ -371,7 +371,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in">
           <div className="bg-[#0a0a0b] border border-white/10 rounded-[3rem] w-full max-w-xl overflow-hidden shadow-2xl">
             <div className="flex items-center justify-between p-8 border-b border-white/5">
-              <h2 className="text-2xl font-black text-white uppercase tracking-tighter">{editingProduct ? 'Editar' : 'Nuevo'} Producto</h2>
+              <h2 className="text-2xl font-extrabold text-white uppercase tracking-tighter">{editingProduct ? 'Editar' : 'Nuevo'} Producto</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-white transition-colors"><X size={28} /></button>
             </div>
             <form onSubmit={handleSave} className="p-8 space-y-6 max-h-[80vh] overflow-y-auto no-scrollbar">
@@ -384,7 +384,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
                 ) : (
                   <OptimizedImage src={formData.imageUrl} containerClassName="w-full h-full" alt="Previsualización" />
                 )}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white font-black text-xs uppercase tracking-widest transition-opacity backdrop-blur-sm">
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white font-extrabold text-xs uppercase tracking-widest transition-opacity backdrop-blur-sm">
                   Cambiar Imagen
                 </div>
                 <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*" />
@@ -393,20 +393,20 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
               <div className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">Nombre del Producto</label>
-                    <input required type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 px-6 text-white focus:border-amber-500 outline-none text-sm font-bold transition-all" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Ej: Pizza Margarita" />
+                    <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-2">Nombre del Producto</label>
+                    <input required type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 px-6 text-white focus:border-amber-500 outline-none text-sm font-semibold transition-all" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Ej: Pizza Margarita" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">Precio (CUP)</label>
-                    <input required type="number" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 px-6 text-white focus:border-amber-500 outline-none text-sm font-bold transition-all" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Ej: 850" />
+                    <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-2">Precio (CUP)</label>
+                    <input required type="number" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 px-6 text-white focus:border-amber-500 outline-none text-sm font-semibold transition-all" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Ej: 850" />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">Categoría</label>
+                  <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-2">Categoría</label>
                   <select 
                     required 
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 px-6 text-white focus:border-amber-500 outline-none text-sm font-bold appearance-none cursor-pointer transition-all"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 px-6 text-white focus:border-amber-500 outline-none text-sm font-semibold appearance-none cursor-pointer transition-all"
                     value={formData.categoryId}
                     onChange={e => setFormData({...formData, categoryId: e.target.value})}
                   >
@@ -418,10 +418,10 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">Descripción</label>
+                  <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-2">Descripción</label>
                   <textarea 
                     rows={3} 
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 px-6 text-white focus:border-amber-500 outline-none text-sm font-bold resize-none transition-all"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 px-6 text-white focus:border-amber-500 outline-none text-sm font-semibold resize-none transition-all"
                     value={formData.description}
                     onChange={e => setFormData({...formData, description: e.target.value})}
                     placeholder="Describe los ingredientes o detalles..."
@@ -430,7 +430,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
               </div>
 
               <div className="pt-4">
-                <button type="submit" disabled={isSaving || isUploading} className="w-full bg-amber-500 text-black font-black py-5 rounded-[1.5rem] flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-2xl shadow-amber-500/20 disabled:opacity-50 text-xs uppercase tracking-[0.2em]">
+                <button type="submit" disabled={isSaving || isUploading} className="w-full bg-amber-500 text-black font-extrabold py-5 rounded-[1.5rem] flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-2xl shadow-amber-500/20 disabled:opacity-50 text-xs uppercase tracking-[0.2em]">
                   {isSaving ? <Loader2 className="animate-spin" /> : <Save size={20} />} Guardar Producto
                 </button>
               </div>
@@ -444,18 +444,18 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
         <div className="fixed inset-0 z-[210] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fade-in">
           <div className="bg-[#0a0a0b] border border-white/10 rounded-[3rem] w-full max-w-md overflow-hidden shadow-2xl">
             <div className="flex items-center justify-between p-8 border-b border-white/5">
-              <h2 className="text-2xl font-black text-white uppercase tracking-tighter">{editingCategory ? 'Editar' : 'Nueva'} Categoría</h2>
+              <h2 className="text-2xl font-extrabold text-white uppercase tracking-tighter">{editingCategory ? 'Editar' : 'Nueva'} Categoría</h2>
               <button onClick={() => setIsCatModalOpen(false)} className="text-gray-500 hover:text-white transition-colors"><X size={28} /></button>
             </div>
             
             <form onSubmit={handleSaveCategory} className="p-8 space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">Nombre de la Categoría</label>
+                <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest ml-2">Nombre de la Categoría</label>
                 <input 
                   autoFocus
                   required
                   type="text" 
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 px-6 text-white focus:border-amber-500 outline-none text-sm font-bold transition-all"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 px-6 text-white focus:border-amber-500 outline-none text-sm font-semibold transition-all"
                   value={catName}
                   onChange={e => setCatName(e.target.value)}
                   placeholder="Ej: Entrantes, Bebidas..."
@@ -466,7 +466,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
                 <button 
                   type="submit"
                   disabled={isSavingCat}
-                  className="w-full bg-amber-500 text-black font-black py-5 rounded-[1.5rem] flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-2xl shadow-amber-500/20 disabled:opacity-50 text-xs uppercase tracking-[0.2em]"
+                  className="w-full bg-amber-500 text-black font-extrabold py-5 rounded-[1.5rem] flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-2xl shadow-amber-500/20 disabled:opacity-50 text-xs uppercase tracking-[0.2em]"
                 >
                   {isSavingCat ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                   {editingCategory ? 'Guardar Cambios' : 'Crear Categoría'}
