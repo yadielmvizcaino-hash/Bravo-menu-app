@@ -211,7 +211,7 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
                 key={event.id}
                 className="min-w-[280px] md:min-w-[350px] bg-[#1a1a1c] rounded-3xl overflow-hidden border border-white/5 hover:border-amber-500/30 transition-all group snap-start"
               >
-                <div className="relative h-40 overflow-hidden">
+                <div className="relative h-32 overflow-hidden">
                   <OptimizedImage 
                     src={event.imageUrl || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=800'} 
                     alt={event.title}
@@ -219,11 +219,11 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
                     className="group-hover:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1c] to-transparent" />
-                  <div className="absolute top-4 right-4 bg-amber-500 text-black px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider shadow-lg">
+                  <div className="absolute top-3 right-3 bg-amber-500 text-black px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider shadow-lg">
                     {event.price && event.price > 0 ? `$${event.price}` : 'Gratis'}
                   </div>
                 </div>
-                <div className="p-5">
+                <div className="p-4">
                   <span className="text-amber-500 text-[9px] font-extrabold uppercase tracking-widest mb-1 block opacity-70">
                     {event.businessName}
                   </span>
