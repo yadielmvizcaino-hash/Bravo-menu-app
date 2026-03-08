@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { 
   MapPin, Phone, MessageCircle, Clock, ChevronRight, 
   Plus, Star, LayoutGrid, Calendar, Camera, 
@@ -28,6 +28,15 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
   const fetchError = fetchErrorQuery?.message || null;
 
   const [activeTab, setActiveTab] = useState<'menu' | 'eventos' | 'fotos'>('menu');
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'eventos' || tab === 'fotos' || tab === 'menu') {
+      setActiveTab(tab as any);
+    }
+  }, [searchParams]);
+
   const [selectedCategory, setSelectedCategory] = useState('Todo');
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [showFullSchedule, setShowFullSchedule] = useState(false);

@@ -1,8 +1,8 @@
 
-import React, { useState, useEffect } from 'react';
-import { Search, MapPin, Star, Crown, ChevronRight, Utensils, ChevronDown } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Search, MapPin, Star, Crown, ChevronRight, Utensils, ChevronDown, Calendar, Clock, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Business, BusinessType, PlanType } from '../types';
+import { Business, BusinessType, PlanType, Event } from '../types';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
 import OptimizedImage from '../components/OptimizedImage';
 
@@ -17,6 +17,12 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
   }, [selectedProvince]);
 
   const municipalities = selectedProvince ? CUBA_MUNICIPALITIES_BY_PROVINCE[selectedProvince] || [] : [];
+
+  const isProActive = (b: Business) => {
+    if (b.plan !== PlanType.PRO) return false;
+    if (!b.planExpiresAt) return false;
+    return new Date(b.planExpiresAt) > new Date();
+  };
 
   const filteredBusinesses = businesses.filter(b => {
     // Si isVisible es explícitamente false (o su versión snake_case), se oculta.
@@ -39,12 +45,6 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
     return matchesSearch && matchesProvince && matchesMunicipality && matchesType;
   });
 
-  const isProActive = (b: Business) => {
-    if (b.plan !== PlanType.PRO) return false;
-    if (!b.planExpiresAt) return false;
-    return new Date(b.planExpiresAt) > new Date();
-  };
-
   const sortedBusinesses = [...filteredBusinesses].sort((a, b) => {
     const aPro = isProActive(a);
     const bPro = isProActive(b);
@@ -52,6 +52,42 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
     if (!aPro && bPro) return 1;
     return 0;
   });
+
+  // Extraer eventos de negocios filtrados que tengan PRO activo
+  const filteredEvents = useMemo(() => {
+    const events: (Event & { businessId: string, businessName: string })[] = [];
+    filteredBusinesses.forEach(biz => {
+      if (isProActive(biz) && biz.events) {
+        biz.events.forEach(event => {
+          // Solo eventos futuros o de hoy
+          const eventDate = new Date(event.dateTime);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          
+          if (eventDate >= today) {
+            events.push({
+              ...event,
+              businessId: biz.id,
+              businessName: biz.name
+            });
+          }
+        });
+      }
+    });
+    // Ordenar por fecha más cercana
+    return events.sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
+  }, [filteredBusinesses]);
+
+  const scrollEvents = (direction: 'left' | 'right') => {
+    const container = document.getElementById('events-carousel');
+    if (container) {
+      const scrollAmount = 300;
+      container.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black font-sans text-gray-200">
@@ -140,6 +176,76 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
           </div>
         </div>
       </header>
+      
+      {/* Carrusel de Eventos */}
+      {filteredEvents.length > 0 && (
+        <section className="max-w-7xl mx-auto px-6 py-8 overflow-hidden">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3 text-amber-500 font-extrabold text-[10px] uppercase tracking-[0.4em]">
+              <Calendar size={14} /> 
+              <span>Próximos Eventos ({filteredEvents.length})</span>
+            </div>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => scrollEvents('left')}
+                className="p-2 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button 
+                onClick={() => scrollEvents('right')}
+                className="p-2 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
+
+          <div 
+            id="events-carousel"
+            className="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x snap-mandatory"
+          >
+            {filteredEvents.map((event) => (
+              <Link 
+                to={`/negocio/${event.businessId}?tab=eventos`}
+                key={event.id}
+                className="min-w-[280px] md:min-w-[350px] bg-[#1a1a1c] rounded-3xl overflow-hidden border border-white/5 hover:border-amber-500/30 transition-all group snap-start"
+              >
+                <div className="relative h-40 overflow-hidden">
+                  <OptimizedImage 
+                    src={event.imageUrl || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=800'} 
+                    alt={event.title}
+                    containerClassName="w-full h-full"
+                    className="group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1c] to-transparent" />
+                  <div className="absolute top-4 right-4 bg-amber-500 text-black px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider shadow-lg">
+                    {event.price && event.price > 0 ? `$${event.price}` : 'Gratis'}
+                  </div>
+                </div>
+                <div className="p-5">
+                  <span className="text-amber-500 text-[9px] font-extrabold uppercase tracking-widest mb-1 block opacity-70">
+                    {event.businessName}
+                  </span>
+                  <h4 className="text-white font-extrabold text-base mb-3 line-clamp-1 uppercase tracking-tight group-hover:text-amber-500 transition-colors">
+                    {event.title}
+                  </h4>
+                  <div className="flex flex-wrap gap-4 text-gray-500 text-[10px] font-extrabold uppercase tracking-widest">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar size={12} className="text-amber-500" />
+                      {new Date(event.dateTime).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Clock size={12} className="text-amber-500" />
+                      {new Date(event.dateTime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="max-w-7xl mx-auto px-6 py-10">
         <div className="flex items-center gap-3 mb-10 text-amber-500 font-extrabold text-[10px] uppercase tracking-[0.4em]">

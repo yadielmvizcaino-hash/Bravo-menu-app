@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { Business, PlanType } from '../types';
 
-const BUSINESS_LIST_COLUMNS = 'id, name, type, province, municipality, logo_url, cover_photos, plan, is_visible, average_rating, ratings_count, cuisine_types';
+const BUSINESS_LIST_COLUMNS = 'id, name, type, province, municipality, logo_url, cover_photos, plan, plan_expires_at, is_visible, average_rating, ratings_count, cuisine_types, events(*)';
 
 export const useBusinesses = () => {
   return useQuery({
@@ -23,7 +23,14 @@ export const useBusinesses = () => {
         coverPhotos: biz.cover_photos ?? [],
         averageRating: biz.average_rating ?? 0,
         ratingsCount: biz.ratings_count ?? 0,
+        planExpiresAt: biz.plan_expires_at,
         cuisineTypes: biz.cuisine_types ?? [],
+        events: (biz.events || []).map((e: any) => ({
+          ...e,
+          dateTime: e.dateTime ?? e.date_time,
+          imageUrl: e.imageUrl ?? e.image_url,
+          interestedCount: e.interestedCount ?? e.interested_count ?? 0
+        })),
         stats: (biz as any).stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
       } as any as Business));
     },
