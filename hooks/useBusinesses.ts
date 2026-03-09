@@ -8,6 +8,8 @@ const BUSINESS_LIST_COLUMNS = 'id, name, type, province, municipality, logo_url,
 export const useBusinesses = () => {
   return useQuery({
     queryKey: ['businesses'],
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 30, // 30 minutes
     queryFn: async () => {
       const { data, error } = await supabase
         .from('businesses')

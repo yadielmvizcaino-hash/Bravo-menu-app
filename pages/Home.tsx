@@ -94,22 +94,22 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
       <header className="relative min-h-[75vh] flex flex-col items-center justify-center pt-10 pb-8 px-4 overflow-hidden">
         <div className="absolute inset-0 z-0 bg-black" />
         
-        <div className="relative z-10 max-w-4xl w-full text-center px-4">
-          <div className="flex items-center justify-center gap-4 mb-4">
+        <div className="relative z-10 max-w-4xl w-full text-center px-4 animate-fade-in">
+          <div className="flex items-center justify-center gap-4 mb-4 opacity-0 animate-fade-in" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
             <div className="h-[1px] w-12 bg-amber-500/50" />
             <span className="text-amber-500 text-xs font-medium tracking-[0.3em] uppercase">Explora Cuba</span>
             <div className="h-[1px] w-12 bg-amber-500/50" />
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight uppercase">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight uppercase opacity-0 animate-fade-in" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
             Bravo <span className="text-amber-500">Menú</span>
           </h1>
           
-          <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto mb-8 leading-relaxed font-light opacity-90">
+          <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto mb-8 leading-relaxed font-light opacity-0 animate-fade-in" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
             Encuentra los mejores restaurantes, bares y cafeterías. Menús actualizados en tiempo real.
           </p>
 
-          <div className="bg-[#1a1a1c]/70 backdrop-blur-md p-4 md:p-5 rounded-3xl border border-white/5 shadow-2xl max-w-2xl mx-auto space-y-3">
+          <div className="bg-[#1a1a1c]/70 backdrop-blur-md p-4 md:p-5 rounded-3xl border border-white/5 shadow-2xl max-w-2xl mx-auto space-y-3 opacity-0 animate-fade-in" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
             <div className="relative group">
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-amber-500 transition-colors" size={20} />
               <input 
@@ -205,7 +205,7 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
             id="events-carousel"
             className="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x snap-mandatory"
           >
-            {filteredEvents.map((event) => (
+            {filteredEvents.map((event, index) => (
               <Link 
                 to={`/negocio/${event.businessId}?tab=eventos`}
                 key={event.id}
@@ -217,6 +217,8 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
                     alt={event.title}
                     containerClassName="w-full h-full"
                     className="group-hover:scale-110 transition-transform duration-700"
+                    loading={index < 2 ? "eager" : "lazy"}
+                    fetchPriority={index < 2 ? "high" : "auto"}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1c] to-transparent" />
                   <div className="absolute top-3 right-3 bg-amber-500 text-black px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider shadow-lg">
@@ -271,11 +273,12 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
           </div>
         ) : sortedBusinesses.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {sortedBusinesses.map((business) => (
+            {sortedBusinesses.map((business, index) => (
               <Link 
                 to={`/negocio/${business.id}`} 
                 key={business.id}
-                className="group bg-[#1a1a1c] rounded-3xl overflow-hidden border border-gray-800/50 hover:border-amber-500/30 transition-all duration-500 shadow-xl flex flex-col hover:shadow-amber-500/10"
+                className="group bg-[#1a1a1c] rounded-3xl overflow-hidden border border-gray-800/50 hover:border-amber-500/30 transition-all duration-500 shadow-xl flex flex-col hover:shadow-amber-500/10 animate-fade-in"
+                style={{ animationDelay: `${index * 50}ms` }}
               >
                 <div className="relative h-36 md:h-64 overflow-hidden">
                   <OptimizedImage 
@@ -283,6 +286,8 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
                     alt={business.name} 
                     containerClassName="w-full h-full"
                     className="group-hover:scale-110 transition-transform duration-1000"
+                    loading={index < 3 ? "eager" : "lazy"}
+                    fetchPriority={index < 3 ? "high" : "auto"}
                   />
                   <div className="absolute top-5 left-5 flex flex-col gap-2">
                     {isProActive(business) && (

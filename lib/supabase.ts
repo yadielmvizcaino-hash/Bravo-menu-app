@@ -4,6 +4,15 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = 'https://cjuztbinihyimbedbqto.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqdXp0YmluaWh5aW1iZWRicXRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMzM1MDcsImV4cCI6MjA4NjYwOTUwN30.qhNzEKHwtBumHOaJmCQnV2soyw0LvN9suulQvukmNbI';
 
+/**
+ * Supabase Client Initialization
+ * 
+ * SECURITY NOTE: 
+ * 1. Row Level Security (RLS) must be enabled on all tables in the Supabase dashboard.
+ * 2. Policies should ensure that users can only update/delete their own business data.
+ * 3. The 'anon' key is used here for client-side operations. Sensitive operations 
+ *    are protected by RLS policies based on the business ID.
+ */
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
 /**

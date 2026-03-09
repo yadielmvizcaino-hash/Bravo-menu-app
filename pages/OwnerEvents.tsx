@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { compressImage } from '../utils/image';
 import { supabase, uploadImage } from '../lib/supabase';
 import OptimizedImage from '../components/OptimizedImage';
+import { sanitizeString } from '../utils/security';
 
 const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => void }> = ({ business, onUpdate }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -81,8 +82,8 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
       const eventData = {
         id: editingEvent?.id || Math.random().toString(36).substr(2, 9),
         business_id: business.id,
-        title: formData.title,
-        description: formData.description,
+        title: sanitizeString(formData.title),
+        description: sanitizeString(formData.description),
         date_time: formData.dateTime,
         image_url: formData.imageUrl,
         price: formData.price ? parseFloat(formData.price) : null,

@@ -5,6 +5,7 @@ import { Business, PlanType, Product, Category } from '../types';
 import { compressImage } from '../utils/image';
 import { supabase, uploadImage } from '../lib/supabase';
 import OptimizedImage from '../components/OptimizedImage';
+import { sanitizeString } from '../utils/security';
 
 const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void }> = ({ business, onUpdate }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,7 +61,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
       const categoryData = {
         id: editingCategory?.id || Math.random().toString(36).substr(2, 9),
         business_id: business.id,
-        name: catName.trim()
+        name: sanitizeString(catName)
       };
 
       const { error } = await supabase.from('categories').upsert(categoryData);
@@ -125,9 +126,9 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
       const productData = {
         id: editingProduct?.id || Math.random().toString(36).substr(2, 9),
         business_id: business.id,
-        name: formData.name,
+        name: sanitizeString(formData.name),
         price: parseFloat(formData.price),
-        description: formData.description,
+        description: sanitizeString(formData.description),
         category_id: formData.categoryId,
         image_url: formData.imageUrl,
         is_visible: formData.isVisible

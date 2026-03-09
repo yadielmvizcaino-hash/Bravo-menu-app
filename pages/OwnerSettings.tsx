@@ -6,6 +6,7 @@ import { compressImage } from '../utils/image';
 import { uploadImage } from '../lib/supabase';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
 import OptimizedImage from '../components/OptimizedImage';
+import { sanitizeString, isValidEmail } from '../utils/security';
 
 interface DayConfig {
   open: boolean;
@@ -163,9 +164,26 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formData.email && !isValidEmail(formData.email)) {
+      alert("Por favor, introduce un email válido.");
+      return;
+    }
+
     setIsSaving(true);
     try {
-      await onUpdate(formData);
+      const sanitizedData = {
+        ...formData,
+        name: sanitizeString(formData.name),
+        description: sanitizeString(formData.description),
+        address: sanitizeString(formData.address),
+        phone: sanitizeString(formData.phone),
+        whatsapp: sanitizeString(formData.whatsapp || ''),
+        email: sanitizeString(formData.email || ''),
+        instagram: sanitizeString(formData.instagram || ''),
+        facebook: sanitizeString(formData.facebook || '')
+      };
+      await onUpdate(sanitizedData);
       alert('¡Perfil actualizado correctamente!');
     } catch (err) {
       alert('Error al guardar cambios.');

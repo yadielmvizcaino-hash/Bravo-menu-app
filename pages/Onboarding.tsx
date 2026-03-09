@@ -5,6 +5,7 @@ import { Store, MapPin, Phone, ArrowRight, Loader2, Zap, Check, PlusCircle, Lock
 import { BusinessType, PlanType } from '../types';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
 import { supabase } from '../lib/supabase';
+import { sanitizeString, isValidPhone } from '../utils/security';
 
 const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }> = ({ onComplete }) => {
   const navigate = useNavigate();
@@ -33,6 +34,11 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
       return;
     }
 
+    if (!isValidPhone(formData.phone)) {
+      alert("Por favor, introduce un número de teléfono válido.");
+      return;
+    }
+
     setIsSubmitting(true);
     setStatusText('Creando perfil...');
     
@@ -41,14 +47,14 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
       
       const { error: bizError } = await supabase.from('businesses').insert({
         id: businessId,
-        name: formData.name,
+        name: sanitizeString(formData.name),
         type: formData.type,
         province: formData.province,
         municipality: formData.municipality,
-        address: formData.address,
+        address: sanitizeString(formData.address),
         phone: formData.phone,
         password: formData.password,
-        description: formData.description,
+        description: sanitizeString(formData.description),
         plan: PlanType.FREE,
         logo_url: 'https://via.placeholder.com/150',
         cover_photos: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200'],
