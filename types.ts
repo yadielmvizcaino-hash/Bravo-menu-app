@@ -35,6 +35,7 @@ export interface Event {
   imageUrl: string;
   price?: number;
   interestedCount: number;
+  clicks: number;
 }
 
 export interface Banner {

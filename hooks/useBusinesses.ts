@@ -35,7 +35,8 @@ export const useBusinesses = () => {
             ...e,
             dateTime: e.dateTime ?? e.date_time,
             imageUrl: e.imageUrl ?? e.image_url,
-            interestedCount: e.interestedCount ?? e.interested_count ?? 0
+            interestedCount: e.interestedCount ?? e.interested_count ?? 0,
+            clicks: e.clicks ?? 0
           })),
           stats: (biz as any).stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
         } as any as Business));
@@ -94,12 +95,14 @@ export const useBusiness = (id: string | undefined) => {
             ...e,
             dateTime: e.dateTime ?? e.date_time,
             imageUrl: e.imageUrl ?? e.image_url,
-            interestedCount: e.interestedCount ?? e.interested_count ?? 0
+            interestedCount: e.interestedCount ?? e.interested_count ?? 0,
+            clicks: e.clicks ?? 0
           })),
           banners: (bizData.banners || []).map((b: any) => ({
             ...b,
             imageUrl: b.imageUrl ?? b.image_url,
-            linkUrl: b.linkUrl ?? b.link_url
+            linkUrl: b.linkUrl ?? b.link_url,
+            clicks: b.clicks ?? 0
           })),
           leads: bizData.leads || [],
           stats: bizData.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }

@@ -8,7 +8,7 @@ import {
   Instagram, Facebook, Mail, Globe, ChevronDown, ChevronUp, Trash2, Navigation
 } from 'lucide-react';
 import { Business, Product, Category, PlanType, Event } from '../types.ts';
-import { supabase } from '../lib/supabase.ts';
+import { supabase, incrementClicks } from '../lib/supabase.ts';
 import OptimizedImage from '../components/OptimizedImage.tsx';
 import { useBusiness } from '../hooks/useBusinesses.ts';
 
@@ -402,7 +402,16 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
         {banners.length > 0 && (
           <div className="relative h-40 md:h-52 rounded-3xl overflow-hidden group shadow-2xl border border-white/5 animate-fade-in">
             {banners.map((banner, index) => (
-              <div key={banner.id} className={`absolute inset-0 transition-opacity duration-1000 ${index === currentBannerIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
+              <div 
+                key={banner.id} 
+                className={`absolute inset-0 transition-opacity duration-1000 cursor-pointer ${index === currentBannerIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                onClick={() => {
+                  incrementClicks('banners', banner.id);
+                  if (banner.linkUrl) {
+                    window.open(banner.linkUrl, '_blank');
+                  }
+                }}
+              >
                 <OptimizedImage 
                   src={banner.imageUrl} 
                   containerClassName="w-full h-full" 
@@ -623,7 +632,11 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           <div className="animate-fade-in grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
             {events.length > 0 ? (
               events.map(event => (
-                <div key={event.id} className="bg-[#141416] border border-white/5 rounded-3xl overflow-hidden group shadow-2xl flex flex-col">
+                <div 
+                  key={event.id} 
+                  className="bg-[#141416] border border-white/5 rounded-3xl overflow-hidden group shadow-2xl flex flex-col cursor-pointer"
+                  onClick={() => incrementClicks('events', event.id)}
+                >
                   <div className="relative h-56 overflow-hidden">
                     <OptimizedImage src={event.imageUrl} containerClassName="w-full h-full" className="group-hover:scale-110 transition-transform duration-1000" />
                     <div className="absolute top-4 right-4 bg-amber-500 text-black text-[10px] font-extrabold px-3 py-1 rounded-lg uppercase shadow-xl tracking-widest">

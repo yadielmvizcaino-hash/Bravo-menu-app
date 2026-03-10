@@ -48,3 +48,29 @@ export const uploadImage = async (file: Blob, path: string): Promise<string> => 
     });
   }
 };
+
+/**
+ * Incrementa el contador de clics para un banner o evento.
+ */
+export const incrementClicks = async (table: 'banners' | 'events', id: string) => {
+  try {
+    // Intentamos obtener el valor actual
+    const { data, error: fetchError } = await supabase
+      .from(table)
+      .select('clicks')
+      .eq('id', id)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // Incrementamos
+    const { error: updateError } = await supabase
+      .from(table)
+      .update({ clicks: (data?.clicks || 0) + 1 })
+      .eq('id', id);
+
+    if (updateError) throw updateError;
+  } catch (err) {
+    console.error(`Error incrementando clics en ${table}:`, err);
+  }
+};

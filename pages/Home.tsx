@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Business, BusinessType, PlanType, Event } from '../types';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
 import OptimizedImage from '../components/OptimizedImage';
+import { incrementClicks } from '../lib/supabase';
 
 const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ businesses, loading }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -209,6 +210,7 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
               <Link 
                 to={`/negocio/${event.businessId}?tab=eventos`}
                 key={event.id}
+                onClick={() => incrementClicks('events', event.id)}
                 className="min-w-[280px] md:min-w-[350px] bg-[#1a1a1c] rounded-3xl overflow-hidden border border-white/5 hover:border-amber-500/30 transition-all group snap-start"
               >
                 <div className="relative h-32 overflow-hidden">

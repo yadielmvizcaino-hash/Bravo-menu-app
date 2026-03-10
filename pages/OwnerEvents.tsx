@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from 'react';
-import { Plus, Crown, Calendar as CalendarIcon, Trash2, Edit2, Users, Clock, X, Save, Upload, Loader2 } from 'lucide-react';
+import { Plus, Crown, Calendar as CalendarIcon, Trash2, Edit2, Users, Clock, X, Save, Upload, Loader2, Eye } from 'lucide-react';
 import { Business, PlanType, Event } from '../types';
 import { Link } from 'react-router-dom';
 import { compressImage } from '../utils/image';
@@ -87,7 +87,8 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
         date_time: formData.dateTime,
         image_url: formData.imageUrl,
         price: formData.price ? parseFloat(formData.price) : null,
-        interested_count: editingEvent?.interestedCount || 0
+        interested_count: editingEvent?.interestedCount || 0,
+        clicks: editingEvent?.clicks || 0
       };
 
       const { error } = await supabase.from('events').upsert(eventData);
@@ -100,7 +101,8 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
         dateTime: eventData.date_time,
         imageUrl: eventData.image_url,
         price: eventData.price || undefined,
-        interestedCount: eventData.interested_count
+        interestedCount: eventData.interested_count,
+        clicks: eventData.clicks
       };
 
       let updatedEvents;
@@ -173,6 +175,7 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
                     <span className="flex items-center gap-2"><CalendarIcon size={16} className="text-amber-500" /> {new Date(event.dateTime).toLocaleDateString()}</span>
                     <span className="flex items-center gap-2"><Clock size={16} className="text-amber-500" /> {new Date(event.dateTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
                     <span className="flex items-center gap-2"><Users size={16} className="text-amber-500" /> {event.interestedCount} interesados</span>
+                    <span className="flex items-center gap-2"><Eye size={16} className="text-amber-500" /> {event.clicks || 0} clics</span>
                  </div>
                  <p className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed font-light">{event.description}</p>
                  <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
