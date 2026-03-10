@@ -31,6 +31,18 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
     return null;
   }, [src, lowQualitySrc]);
 
+  // Generar srcset automático para Unsplash
+  const generatedSrcSet = useMemo(() => {
+    if (props.srcSet) return props.srcSet;
+    if (src && typeof src === 'string' && src.includes('unsplash.com')) {
+      const baseUrl = src.split('?')[0];
+      return [400, 800, 1200, 1600]
+        .map(w => `${baseUrl}?auto=format&fit=crop&q=80&w=${w} ${w}w`)
+        .join(', ');
+    }
+    return undefined;
+  }, [src, props.srcSet]);
+
   // Resetear el estado cuando la fuente de la imagen cambia
   useEffect(() => {
     if (imgRef.current?.complete) {
@@ -42,13 +54,15 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   }, [src]);
 
   return (
-    <div className={`relative overflow-hidden bg-black ${containerClassName}`}>
+    <div className={`relative overflow-hidden bg-[#0a0a0b] ${containerClassName}`}>
       {/* Low Quality Placeholder / Blur-up */}
-      {placeholderSrc && !isLoaded && !hasError && (
+      {placeholderSrc && !hasError && (
         <img
           src={placeholderSrc}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover blur-lg scale-110 transition-opacity duration-500"
+          className={`absolute inset-0 w-full h-full object-cover blur-xl scale-110 transition-opacity duration-1000 ${
+            isLoaded ? 'opacity-0' : 'opacity-100'
+          }`}
           aria-hidden="true"
         />
       )}
@@ -69,14 +83,16 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         <img
           ref={imgRef}
           src={src}
+          srcSet={generatedSrcSet}
+          sizes={props.sizes || "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"}
           alt={alt}
           loading={loading}
           {...({ fetchpriority: fetchPriority } as any)}
           referrerPolicy="no-referrer"
           onLoad={() => setIsLoaded(true)}
           onError={() => setHasError(true)}
-          className={`w-full h-full object-cover transition-all duration-700 ease-in-out ${
-            isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-100 scale-105 blur-md'
+          className={`w-full h-full object-cover transition-all duration-1000 ease-out ${
+            isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-105 blur-md'
           } ${className}`}
           {...props}
         />
