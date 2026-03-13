@@ -13,7 +13,12 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
  * 3. The 'anon' key is used here for client-side operations. Sensitive operations 
  *    are protected by RLS policies based on the business ID.
  */
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+  }
+});
 
 /**
  * Sube una imagen al Storage de Supabase.

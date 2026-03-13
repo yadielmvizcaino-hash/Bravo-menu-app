@@ -63,24 +63,25 @@ export const useBusiness = (id: string | undefined) => {
         const { data: bizData, error: bizError } = await supabase
           .from('businesses')
           .select('*, products(*), categories(*), events(*), banners(*)')
-          .eq('id', id)
-          .single();
+          .eq('id', id);
 
         if (bizError) throw bizError;
+        if (!bizData || bizData.length === 0) return null;
+        const business = bizData[0];
 
         return {
-          ...bizData,
-          isVisible: bizData.isVisible ?? bizData.is_visible ?? true,
-          logoUrl: bizData.logoUrl ?? bizData.logo_url,
-          coverPhotos: bizData.coverPhotos ?? bizData.cover_photos ?? [],
-          averageRating: bizData.averageRating ?? bizData.average_rating ?? 0,
-          ratingsCount: bizData.ratingsCount ?? bizData.ratings_count ?? 0,
-          planExpiresAt: bizData.planExpiresAt ?? bizData.plan_expires_at,
-          cuisineTypes: bizData.cuisineTypes ?? bizData.cuisine_types ?? [],
-          deliveryEnabled: bizData.deliveryEnabled ?? bizData.delivery_enabled ?? false,
-          deliveryPriceInside: bizData.deliveryPriceInside ?? bizData.delivery_price_inside ?? 0,
-          deliveryPriceOutside: bizData.deliveryPriceOutside ?? bizData.delivery_price_outside ?? 0,
-          products: (bizData.products || []).map((p: any) => ({
+          ...business,
+          isVisible: business.isVisible ?? business.is_visible ?? true,
+          logoUrl: business.logoUrl ?? business.logo_url,
+          coverPhotos: business.coverPhotos ?? business.cover_photos ?? [],
+          averageRating: business.averageRating ?? business.average_rating ?? 0,
+          ratingsCount: business.ratingsCount ?? business.ratings_count ?? 0,
+          planExpiresAt: business.planExpiresAt ?? business.plan_expires_at,
+          cuisineTypes: business.cuisineTypes ?? business.cuisine_types ?? [],
+          deliveryEnabled: business.deliveryEnabled ?? business.delivery_enabled ?? false,
+          deliveryPriceInside: business.deliveryPriceInside ?? business.delivery_price_inside ?? 0,
+          deliveryPriceOutside: business.deliveryPriceOutside ?? business.delivery_price_outside ?? 0,
+          products: (business.products || []).map((p: any) => ({
             id: p.id,
             name: p.name,
             description: p.description,
@@ -90,22 +91,22 @@ export const useBusiness = (id: string | undefined) => {
             isVisible: p.isVisible ?? p.is_visible ?? true,
             isHighlighted: p.isHighlighted ?? p.is_highlighted ?? false
           })),
-          categories: bizData.categories || [],
-          events: (bizData.events || []).map((e: any) => ({
+          categories: business.categories || [],
+          events: (business.events || []).map((e: any) => ({
             ...e,
             dateTime: e.dateTime ?? e.date_time,
             imageUrl: e.imageUrl ?? e.image_url,
             interestedCount: e.interestedCount ?? e.interested_count ?? 0,
             clicks: e.clicks ?? 0
           })),
-          banners: (bizData.banners || []).map((b: any) => ({
+          banners: (business.banners || []).map((b: any) => ({
             ...b,
             imageUrl: b.imageUrl ?? b.image_url,
             linkUrl: b.linkUrl ?? b.link_url,
             clicks: b.clicks ?? 0
           })),
-          leads: bizData.leads || [],
-          stats: bizData.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
+          leads: business.leads || [],
+          stats: business.stats || { visits: 0, qrScans: 0, uniqueVisitors: 0 }
         } as Business;
       };
 
