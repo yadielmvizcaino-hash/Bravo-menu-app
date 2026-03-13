@@ -17,7 +17,7 @@ const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
     const fetchSettings = async () => {
       setIsLoadingSettings(true);
       try {
-        const { data } = await supabase.from('system_settings').select('*').eq('id', 'main').single();
+        const { data } = await supabase.from('system_settings').select('*').eq('id', 'main').maybeSingle();
         if (data) {
           setSystemSettings({
             payment_card: data.payment_card,

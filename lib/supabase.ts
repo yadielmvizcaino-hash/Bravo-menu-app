@@ -64,7 +64,7 @@ export const incrementClicks = async (table: 'banners' | 'events', id: string) =
       .from(table)
       .select('clicks')
       .eq('id', id)
-      .single();
+      .maybeSingle();
 
     if (fetchError) throw fetchError;
 

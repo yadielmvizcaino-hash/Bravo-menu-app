@@ -145,7 +145,7 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
         {business.banners.map(banner => (
           <div key={banner.id} className="bg-black border border-white/5 rounded-3xl p-6 flex flex-col md:flex-row items-center gap-8 group hover:border-amber-500/30 transition-all shadow-xl">
              <div className="w-full md:w-64 h-36 rounded-2xl overflow-hidden shrink-0">
-               <OptimizedImage src={banner.imageUrl} containerClassName="w-full h-full" alt="Banner" />
+               <OptimizedImage src={banner.imageUrl} containerClassName="w-full h-full" alt="Banner" sizes="(max-width: 768px) 100vw, 256px" />
              </div>
              <div className="flex-1 w-full overflow-hidden">
                <h3 className="text-white font-semibold text-lg mb-2 uppercase tracking-tight truncate">{banner.title || 'Oferta'}</h3>

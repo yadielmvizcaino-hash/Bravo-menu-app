@@ -327,7 +327,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
           {filteredProducts.map(product => (
             <div key={product.id} className={`bg-[#141416] border ${product.isVisible ? 'border-white/5' : 'border-red-500/20 opacity-75'} rounded-[2.5rem] overflow-hidden group flex h-44 shadow-2xl transition-all hover:border-white/10`}>
                <div className="relative w-44 shrink-0 bg-black overflow-hidden">
-                 <OptimizedImage src={product.imageUrl} containerClassName="w-full h-full" className="group-hover:scale-110 transition-transform duration-700" alt={product.name} />
+                 <OptimizedImage src={product.imageUrl} containerClassName="w-full h-full" className="group-hover:scale-110 transition-transform duration-700" alt={product.name} sizes="(max-width: 768px) 100vw, 176px" />
                  {!product.isVisible && <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm"><EyeOff size={24} className="text-white/50" /></div>}
                </div>
                <div className="p-7 flex-1 flex flex-col justify-between min-w-0">
@@ -383,7 +383,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
                 {isUploading ? (
                   <Loader2 className="animate-spin text-amber-500" size={40} />
                 ) : (
-                  <OptimizedImage src={formData.imageUrl} containerClassName="w-full h-full" alt="Previsualización" />
+                  <OptimizedImage src={formData.imageUrl} containerClassName="w-full h-full" alt="Previsualización" sizes="100vw" />
                 )}
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white font-extrabold text-xs uppercase tracking-widest transition-opacity backdrop-blur-sm">
                   Cambiar Imagen

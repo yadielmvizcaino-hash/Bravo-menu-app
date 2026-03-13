@@ -287,7 +287,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
                 ) : formData.logoUrl && (
                   <>
-                    <OptimizedImage src={formData.logoUrl} containerClassName="w-full h-full" alt="Logo" />
+                    <OptimizedImage src={formData.logoUrl} containerClassName="w-full h-full" alt="Logo" sizes="128px" />
                     <button type="button" onClick={() => setFormData(p => ({...p, logoUrl: ''}))} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md z-20 hover:bg-red-600 transition-colors shadow-lg"><X size={14} /></button>
                   </>
                 )}
@@ -308,7 +308,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10"><Loader2 className="animate-spin text-amber-500" /></div>
                 ) : formData.coverPhotos?.[0] ? (
                   <>
-                    <OptimizedImage src={formData.coverPhotos[0]} containerClassName="w-full h-full" alt="Banner" />
+                    <OptimizedImage src={formData.coverPhotos[0]} containerClassName="w-full h-full" alt="Banner" sizes="100vw" />
                     <button type="button" onClick={() => removeCoverPhoto(0)} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-md z-20 hover:bg-red-600 transition-colors shadow-lg"><X size={14} /></button>
                   </>
                 ) : (
@@ -334,7 +334,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               {(formData.coverPhotos || []).map((url, index) => (
                 index > 0 && (
                   <div key={index} className="relative aspect-video sm:aspect-square rounded-xl overflow-hidden group border border-gray-800">
-                    <OptimizedImage src={url} containerClassName="w-full h-full" alt={`Foto ${index + 1}`} />
+                    <OptimizedImage src={url} containerClassName="w-full h-full" alt={`Foto ${index + 1}`} sizes="(max-width: 640px) 50vw, 25vw" />
                     <button 
                       type="button" 
                       onClick={() => removeCoverPhoto(index)} 

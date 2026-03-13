@@ -34,7 +34,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
 
   useEffect(() => {
     const fetchSettings = async () => {
-      const { data: settingsData } = await supabase.from('system_settings').select('*').eq('id', 'main').single();
+      const { data: settingsData } = await supabase.from('system_settings').select('*').eq('id', 'main').maybeSingle();
       if (settingsData) {
         setSystemSettings({
           payment_card: settingsData.payment_card,

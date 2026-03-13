@@ -276,6 +276,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           alt="Hero" 
           loading="eager"
           fetchPriority="high"
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
       </div>
@@ -292,6 +293,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
               alt="Logo" 
               loading="eager"
               fetchPriority="high"
+              sizes="112px"
             />
             <div className="flex-1 pb-2 md:pb-3">
               <div className="flex flex-wrap items-center gap-2 mb-1.5">
@@ -418,6 +420,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                   className="transition-transform duration-[5s] group-hover:scale-110" 
                   alt={banner.title || 'Promo'} 
                   loading={index === 0 ? "eager" : "lazy"}
+                  sizes="100vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/30 to-transparent flex flex-col justify-center p-6 md:p-8">
                    <div className="bg-amber-500 text-black w-fit px-3 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-[0.2em] mb-2">Destacado</div>
@@ -563,7 +566,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
               {filteredProducts.map(prod => (
                 <div key={prod.id} className="bg-[#141416] rounded-3xl overflow-hidden border border-white/5 flex flex-col group shadow-2xl hover:translate-y-[-4px] transition-all duration-300">
                   <div className="relative aspect-square overflow-hidden">
-                    <OptimizedImage src={prod.imageUrl} containerClassName="w-full h-full" className="transition-transform duration-700 group-hover:scale-110" alt={prod.name} />
+                    <OptimizedImage src={prod.imageUrl} containerClassName="w-full h-full" className="transition-transform duration-700 group-hover:scale-110" alt={prod.name} sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" />
                   </div>
                   <div className="p-4 flex flex-col flex-1">
                     <h3 className="text-white font-semibold text-xs mb-1 uppercase tracking-tight truncate">{prod.name}</h3>
@@ -638,7 +641,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                   onClick={() => incrementClicks('events', event.id)}
                 >
                   <div className="relative h-56 overflow-hidden">
-                    <OptimizedImage src={event.imageUrl} containerClassName="w-full h-full" className="group-hover:scale-110 transition-transform duration-1000" />
+                    <OptimizedImage src={event.imageUrl} containerClassName="w-full h-full" className="group-hover:scale-110 transition-transform duration-1000" sizes="(max-width: 768px) 100vw, 50vw" />
                     <div className="absolute top-4 right-4 bg-amber-500 text-black text-[10px] font-extrabold px-3 py-1 rounded-lg uppercase shadow-xl tracking-widest">
                       {new Date(event.dateTime).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
                     </div>
@@ -671,7 +674,12 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
           <div className="animate-fade-in grid grid-cols-2 md:grid-cols-3 gap-4 pb-12">
             {business?.coverPhotos?.map((photo, i) => (
               <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-white/5 bg-gray-900 group">
-                <OptimizedImage src={photo} containerClassName="w-full h-full" className="group-hover:scale-110 transition-transform duration-700" />
+                <OptimizedImage 
+                  src={photo} 
+                  containerClassName="w-full h-full" 
+                  className="group-hover:scale-110 transition-transform duration-700" 
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
               </div>
             ))}
             {(!business?.coverPhotos || business.coverPhotos.length === 0) && (

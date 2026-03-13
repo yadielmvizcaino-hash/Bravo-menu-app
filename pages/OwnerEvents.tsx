@@ -157,7 +157,7 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
          {business.events.map(event => (
            <div key={event.id} className="bg-black border border-gray-800 rounded-3xl overflow-hidden group hover:border-amber-500/30 transition-all shadow-2xl flex flex-col">
               <div className="relative h-64 bg-black">
-                 <OptimizedImage src={event.imageUrl} containerClassName="w-full h-full" className="group-hover:scale-105 transition-transform duration-700" alt={event.title} />
+                 <OptimizedImage src={event.imageUrl} containerClassName="w-full h-full" className="group-hover:scale-105 transition-transform duration-700" alt={event.title} sizes="(max-width: 768px) 100vw, 50vw" />
                  <div className="absolute top-6 right-6 flex gap-2">
                     <button onClick={() => openEditModal(event)} className="p-3 bg-black/60 backdrop-blur-md text-white rounded-xl hover:bg-amber-500 hover:text-black transition-all shadow-2xl"><Edit2 size={18} /></button>
                     <button 
@@ -203,7 +203,7 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
                   {isUploading ? (
                     <Loader2 className="animate-spin text-amber-500" size={32} />
                   ) : formData.imageUrl ? (
-                    <OptimizedImage src={formData.imageUrl} containerClassName="w-full h-full" alt="Preview" />
+                    <OptimizedImage src={formData.imageUrl} containerClassName="w-full h-full" alt="Preview" sizes="100vw" />
                   ) : (
                     <div className="text-center">
                       <Upload className="mx-auto text-gray-600 mb-2" size={32} />
