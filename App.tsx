@@ -22,7 +22,7 @@ import { useBusinesses, useBusiness } from './hooks/useBusinesses.ts';
 
 const App: React.FC = () => {
   const queryClient = useQueryClient();
-  const [loggedInId, setLoggedInId] = useState<string | null>(localStorage.getItem('bravo_menu_biz_id'));
+  const [loggedInId, setLoggedInId] = useState<string | null>(localStorage.getItem('gallery_menus_biz_id'));
 
   // Fetch all businesses for the main list
   const { 
@@ -46,19 +46,19 @@ const App: React.FC = () => {
   // Background check for expired plans removed to allow Dashboard to handle it with a popup
   
   const handleOnboardingComplete = async (businessId: string) => {
-    localStorage.setItem('bravo_menu_biz_id', businessId);
+    localStorage.setItem('gallery_menus_biz_id', businessId);
     setLoggedInId(businessId);
     queryClient.invalidateQueries({ queryKey: ['businesses'] });
   };
 
   const handleLogin = (id: string) => {
-    localStorage.setItem('bravo_menu_biz_id', id);
+    localStorage.setItem('gallery_menus_biz_id', id);
     setLoggedInId(id);
     queryClient.invalidateQueries({ queryKey: ['business', id] });
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('bravo_menu_biz_id');
+    localStorage.removeItem('gallery_menus_biz_id');
     setLoggedInId(null);
     queryClient.setQueryData(['business', loggedInId], null);
   };
@@ -196,7 +196,7 @@ const PublicHeader: React.FC<{ loggedInBusinessId: string | null }> = ({ loggedI
           </Link>
         )}
         <Link to="/" className="flex items-center gap-2 text-white font-semibold text-lg">
-          <span className="text-amber-500 text-2xl">🍴</span> Bravo Menú
+          <span className="text-amber-500 text-2xl">🍴</span> Gallery menus
         </Link>
       </div>
       <div className="flex items-center gap-4">
@@ -237,7 +237,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
       {isSidebarOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden" onClick={() => setIsSidebarOpen(false)} />}
       <aside className={`w-64 bg-black border-r border-gray-800 fixed h-full flex flex-col z-50 transition-transform md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 flex flex-col h-full">
-          <Link to="/" className="flex items-center gap-2 text-amber-500 font-semibold text-xl mb-8">🍴 Bravo Menú</Link>
+          <Link to="/" className="flex items-center gap-2 text-amber-500 font-semibold text-xl mb-8">🍴 Gallery menus</Link>
           <div className="bg-black border border-gray-800 p-3 rounded-xl mb-6 flex items-center gap-3">
             <img src={business.logoUrl || 'https://via.placeholder.com/150'} alt="Logo" className="w-10 h-10 rounded-lg object-cover" />
             <div className="overflow-hidden">

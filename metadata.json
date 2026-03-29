@@ -1,5 +1,5 @@
 {
-  "name": "Bravo Menú app",
+  "name": "Gallery menus app",
   "description": "Plataforma SAAS para restaurantes, bares y cafeterías en Cuba. Gestión de menús digitales, eventos, banners y captación de leads.",
   "requestFramePermissions": [
     "geolocation"

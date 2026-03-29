@@ -103,7 +103,7 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
           </div>
 
           <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-4 tracking-tight uppercase opacity-0 animate-fade-in" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-            Bravo <span className="text-amber-500">Menú</span>
+            Gallery <span className="text-amber-500">menus</span>
           </h1>
           
           <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto mb-8 leading-relaxed font-light opacity-0 animate-fade-in" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>

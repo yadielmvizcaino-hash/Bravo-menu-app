@@ -3,7 +3,7 @@ import localforage from 'localforage';
 
 // Configurar localforage
 localforage.config({
-  name: 'bravo-menu-cache',
+  name: 'gallery-menus-cache',
   storeName: 'app_data'
 });
 

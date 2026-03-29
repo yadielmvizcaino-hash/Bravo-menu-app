@@ -213,7 +213,7 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
                 <Shield className="text-amber-500" size={20} />
                 <h1 className="text-xl font-extrabold text-white uppercase tracking-tight">Panel Maestro</h1>
               </div>
-              <p className="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest">Infraestructura Bravo Menú</p>
+              <p className="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest">Infraestructura Gallery menus</p>
             </div>
           </div>
           <div className="flex items-center gap-2 w-full md:w-auto">
