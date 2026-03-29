@@ -196,7 +196,7 @@ const PublicHeader: React.FC<{ loggedInBusinessId: string | null }> = ({ loggedI
           </Link>
         )}
         <Link to="/" className="flex items-center gap-2 text-white font-semibold text-lg">
-          <span className="text-amber-500 text-2xl">🍴</span> Gallery menus
+          Gallery menus
         </Link>
       </div>
       <div className="flex items-center gap-4">
@@ -205,14 +205,14 @@ const PublicHeader: React.FC<{ loggedInBusinessId: string | null }> = ({ loggedI
             to="/admin" 
             className="bg-green-500 text-black px-5 py-2 rounded-xl font-medium text-xs hover:bg-green-400 transition-all flex items-center gap-2"
           >
-            <LayoutGrid size={16} /> Ir a mi Panel
+            Ir a mi Panel
           </Link>
         ) : (
           <Link 
             to="/login" 
             className="bg-amber-500 text-black px-5 py-2 rounded-xl font-medium text-xs hover:bg-amber-400 transition-all flex items-center gap-2"
           >
-            <PlusCircle size={16} /> Crea tu menú
+            Crea tu menú
           </Link>
         )}
       </div>
@@ -237,7 +237,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
       {isSidebarOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden" onClick={() => setIsSidebarOpen(false)} />}
       <aside className={`w-64 bg-black border-r border-gray-800 fixed h-full flex flex-col z-50 transition-transform md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 flex flex-col h-full">
-          <Link to="/" className="flex items-center gap-2 text-amber-500 font-semibold text-xl mb-8">🍴 Gallery menus</Link>
+          <Link to="/" className="flex items-center gap-2 text-amber-500 font-semibold text-xl mb-8">Gallery menus</Link>
           <div className="bg-black border border-gray-800 p-3 rounded-xl mb-6 flex items-center gap-3">
             <img src={business.logoUrl || 'https://via.placeholder.com/150'} alt="Logo" className="w-10 h-10 rounded-lg object-cover" />
             <div className="overflow-hidden">
@@ -283,12 +283,11 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
           <div className="flex items-center gap-4">
              {isAdmin && (
                <Link to="/super-admin" className="bg-white text-black px-4 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 hover:bg-gray-200 transition-colors">
-                 <Shield size={14} /> Administrar
+                 Administrar
                </Link>
              )}
              <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500">
-                  <User size={16} />
                 </div>
                 <span className="text-xs font-semibold text-white hidden sm:block">Dueño</span>
              </div>
