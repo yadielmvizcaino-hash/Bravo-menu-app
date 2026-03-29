@@ -1,8 +1,0 @@
-{
-    "name": "bravo/menu",
-    "description": "Plataforma de menú digital Bravo Menú",
-    "type": "project",
-    "require": {
-        "php": ">=7.4"
-    }
-}
