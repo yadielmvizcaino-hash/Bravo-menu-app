@@ -248,30 +248,6 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
         <div className="lg:col-span-2 space-y-6">
-          {/* Accesos Rápidos Rediseñados - Compactos */}
-          <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 shadow-xl">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-sm font-extrabold text-white uppercase tracking-tight">Accesos rápidos</h2>
-              <Zap size={14} className="text-amber-500" />
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-               {[
-                 { label: 'Productos', icon: <Package size={18} />, to: '/admin/menu', color: 'bg-amber-500/10 text-amber-500' },
-                 { label: 'Banners', icon: <ImageIcon size={18} />, to: '/admin/banners', color: 'bg-purple-500/10 text-purple-500' },
-                 { label: 'Eventos', icon: <Calendar size={18} />, to: '/admin/events', color: 'bg-green-500/10 text-green-500' },
-                 { label: 'QR Menú', icon: <QrCode size={18} />, to: '#', color: 'bg-orange-500/10 text-orange-500' },
-                 { label: isAdmin ? 'Súper Admin' : 'Configuración', icon: isAdmin ? <Shield size={18} /> : <Settings size={18} />, to: isAdmin ? '/super-admin' : '/admin/pricing', color: 'bg-gray-500/10 text-gray-400' },
-               ].map((item, idx) => (
-                 <Link key={idx} to={item.to} className="flex items-center gap-3 p-3 rounded-2xl bg-black border border-white/5 hover:border-amber-500/30 hover:bg-amber-500/5 transition-all group">
-                    <div className={`w-10 h-10 rounded-xl ${item.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-500`}>
-                      {item.icon}
-                    </div>
-                    <span className="text-white font-extrabold text-[9px] uppercase tracking-widest">{item.label}</span>
-                 </Link>
-               ))}
-            </div>
-          </div>
-
           {/* Diseñador de QR - Compacto */}
           <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 shadow-xl">
             <div className="flex justify-between items-center mb-6">

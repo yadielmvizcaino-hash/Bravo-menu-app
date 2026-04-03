@@ -1,8 +1,8 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://cjuztbinihyimbedbqto.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqdXp0YmluaWh5aW1iZWRicXRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMzM1MDcsImV4cCI6MjA4NjYwOTUwN30.qhNzEKHwtBumHOaJmCQnV2soyw0LvN9suulQvukmNbI';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://cjuztbinihyimbedbqto.supabase.co';
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqdXp0YmluaWh5aW1iZWRicXRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMzM1MDcsImV4cCI6MjA4NjYwOTUwN30.qhNzEKHwtBumHOaJmCQnV2soyw0LvN9suulQvukmNbI';
 
 /**
  * Supabase Client Initialization
