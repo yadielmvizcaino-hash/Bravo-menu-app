@@ -6,7 +6,7 @@ import { supabase } from '../lib/supabase.ts';
 
 const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
   const navigate = useNavigate();
-  const [phone, setPhone] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -18,11 +18,18 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
     setLoading(true);
     setError(null);
 
+    // Special case for SuperAdmin
+    if (identifier === 'admin' && password === 'superadmin.123') {
+      setLoading(false);
+      navigate('/super-admin');
+      return;
+    }
+
     try {
       const { data, error: fetchError } = await supabase
         .from('businesses')
         .select('id')
-        .eq('phone', phone)
+        .eq('phone', identifier)
         .eq('password', password)
         .maybeSingle();
 
@@ -55,17 +62,15 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
 
         <form onSubmit={handleLogin} className="bg-black border border-white/5 p-8 rounded-3xl shadow-2xl space-y-6">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Teléfono / WhatsApp</label>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Usuario o Teléfono</label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">+53</span>
               <input 
                 required
-                type="tel" 
-                placeholder="5XXXXXXX"
-                maxLength={8}
-                className="w-full bg-black border border-gray-800 rounded-xl py-4 pl-12 pr-4 text-white focus:border-amber-500/50 outline-none transition-all font-mono tracking-widest text-sm"
-                value={phone}
-                onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
+                type="text" 
+                placeholder="Usuario o 5XXXXXXX"
+                className="w-full bg-black border border-gray-800 rounded-xl py-4 px-4 text-white focus:border-amber-500/50 outline-none transition-all font-mono tracking-widest text-sm"
+                value={identifier}
+                onChange={e => setIdentifier(e.target.value)}
               />
             </div>
           </div>
@@ -101,7 +106,7 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
 
           <button 
             type="submit" 
-            disabled={loading || phone.length < 8 || !password}
+            disabled={loading || !identifier || !password}
             className="w-full bg-amber-500 text-black py-4 rounded-2xl font-semibold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/20 disabled:opacity-50 group"
           >
             {loading ? <Loader2 className="animate-spin" /> : <><LogIn size={18} /> Entrar a mi menú <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>}
