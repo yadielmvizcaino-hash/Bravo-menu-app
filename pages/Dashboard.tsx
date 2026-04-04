@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { Eye, Users, Package, Download, Crown, Info, ChevronRight, TrendingUp, Calendar, Zap, Layers, Image as ImageIcon, Settings, Shield, Star, Loader2, MousePointer2, QrCode, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Eye, Users, Package, Download, Crown, Info, ChevronRight, TrendingUp, Calendar, Zap, Layers, Image as ImageIcon, Settings, Shield, Star, Loader2, MousePointer2, QrCode, AlertCircle, ArrowUpRight } from 'lucide-react';
 import { Business, PlanType } from '../types';
 import { Link } from 'react-router-dom';
 import { AreaChart, Area, ResponsiveContainer, YAxis, XAxis, Tooltip } from 'recharts';
@@ -14,43 +15,56 @@ const StatCard: React.FC<{
   trend?: string,
   data?: any[]
 }> = ({ label, value, icon, color, trend, data }) => (
-  <div className="bg-[#0a0a0b] border border-white/5 p-4 rounded-2xl flex flex-col gap-3 shadow-xl hover:border-white/10 transition-all group">
-    <div className="flex items-center justify-between">
-      <div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-500`}>
-        {React.cloneElement(icon as React.ReactElement, { size: 18 })}
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    whileHover={{ y: -4 }}
+    className="bg-[#0d0d0e] border border-white/5 p-5 rounded-[2rem] flex flex-col gap-4 shadow-2xl hover:border-white/10 transition-all group relative overflow-hidden"
+  >
+    <div className="absolute top-0 right-0 w-32 h-32 bg-white/2 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-white/5 transition-colors" />
+    
+    <div className="flex items-center justify-between relative z-10">
+      <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+        {React.cloneElement(icon as React.ReactElement, { size: 22 })}
       </div>
       {trend && (
-        <div className="flex flex-col items-end">
-          <span className="text-green-500 text-[10px] font-extrabold flex items-center gap-0.5">
-            <TrendingUp size={10} /> {trend}
+        <div className="bg-green-500/10 px-2 py-1 rounded-lg border border-green-500/20">
+          <span className="text-green-500 text-[10px] font-black flex items-center gap-1 uppercase tracking-wider">
+            <ArrowUpRight size={12} /> {trend}
           </span>
         </div>
       )}
     </div>
     
-    <div>
-      <p className="text-gray-500 text-[9px] font-extrabold uppercase tracking-[0.15em] mb-0.5">{label}</p>
-      <h3 className="text-2xl font-extrabold text-white leading-none tracking-tighter">{value}</h3>
+    <div className="relative z-10 mt-1">
+      <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1 opacity-70">{label}</p>
+      <h3 className="text-3xl font-black text-white leading-none tracking-tight">{value}</h3>
     </div>
 
     {data && data.length > 0 && (
-      <div className="h-8 w-full mt-1 opacity-40 group-hover:opacity-100 transition-opacity">
+      <div className="h-12 w-full mt-2 opacity-30 group-hover:opacity-60 transition-opacity relative z-10">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data}>
+            <defs>
+              <linearGradient id={`gradient-${label}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="currentColor" stopOpacity={0.3}/>
+                <stop offset="95%" stopColor="currentColor" stopOpacity={0}/>
+              </linearGradient>
+            </defs>
             <Area 
               type="monotone" 
               dataKey="value" 
               stroke="currentColor" 
-              fillOpacity={0.1} 
-              fill="currentColor" 
-              strokeWidth={1.5}
+              fillOpacity={1} 
+              fill={`url(#gradient-${label})`} 
+              strokeWidth={2}
               className={color.split(' ')[1]}
             />
           </AreaChart>
         </ResponsiveContainer>
       </div>
     )}
-  </div>
+  </motion.div>
 );
 
 const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) => void }> = ({ business, onUpdate }) => {
@@ -209,16 +223,25 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-white mb-1 tracking-tighter">Hola, {business.name} 👋</h1>
-          <p className="text-gray-500 text-xs font-medium">Panel de control y estadísticas en tiempo real.</p>
-        </div>
-        <div className="flex items-center gap-2 w-full md:w-auto">
-           <button className="flex-1 md:flex-none bg-white/5 border border-white/10 text-white px-4 py-2 rounded-xl font-extrabold text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white hover:text-black transition-all">
-             <Calendar size={12} /> Historial
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
+          <h1 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight leading-tight">
+            Hola, <span className="text-amber-500">{business.name}</span> 👋
+          </h1>
+          <p className="text-gray-500 text-sm font-medium tracking-wide">Panel de control y estadísticas en tiempo real.</p>
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-3 w-full md:w-auto"
+        >
+           <button className="flex-1 md:flex-none bg-white/5 border border-white/10 text-white px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center justify-center gap-2 hover:bg-white hover:text-black transition-all shadow-xl active:scale-95">
+             <Calendar size={14} /> Historial
            </button>
-        </div>
+        </motion.div>
       </div>
 
       {/* Grid de Estadísticas */}
@@ -246,90 +269,128 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-        <div className="lg:col-span-2 space-y-6">
-          {/* Diseñador de QR - Compacto */}
-          <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 shadow-xl">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-sm font-extrabold text-white uppercase tracking-tight">Diseñador de QR</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+        <div className="lg:col-span-2 space-y-8">
+          {/* Diseñador de QR - Refinado */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="bg-[#0d0d0e] border border-white/5 rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden group"
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-amber-500/10 transition-colors" />
+            
+            <div className="flex justify-between items-center mb-8 relative z-10">
+              <h2 className="text-lg font-black text-white uppercase tracking-tight flex items-center gap-3">
+                <QrCode size={20} className="text-amber-500" />
+                Diseñador de QR
+              </h2>
             </div>
-            <div className="flex items-center gap-6">
-              <div className="bg-white p-3 rounded-2xl shrink-0">
-                <img src={qrImageUrl} className="w-20 h-20" alt="QR" />
+            <div className="flex flex-col sm:flex-row items-center gap-10 relative z-10">
+              <div className="bg-white p-5 rounded-[2rem] shrink-0 shadow-2xl rotate-[-2deg] group-hover:rotate-0 transition-transform duration-500">
+                <img src={qrImageUrl} className="w-32 h-32" alt="QR" />
               </div>
-              <div className="flex-1 space-y-4">
-                 <p className="text-gray-500 text-[11px] leading-relaxed font-medium">Tu acceso directo al menú. Descárgalo e imprímelo para tus mesas.</p>
+              <div className="flex-1 space-y-6 text-center sm:text-left">
+                 <div className="space-y-2">
+                   <p className="text-white font-bold text-lg leading-tight">Tu acceso directo al menú.</p>
+                   <p className="text-gray-500 text-sm leading-relaxed font-medium">Descárgalo e imprímelo para tus mesas. Los clientes podrán ver tu menú al instante.</p>
+                 </div>
                  <button 
                    onClick={handleDownloadQR}
                    disabled={isDownloading}
-                   className="w-full bg-white text-black py-2.5 rounded-xl font-extrabold text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-amber-500 transition-all disabled:opacity-50"
+                   className="w-full sm:w-auto bg-amber-500 text-black px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/20 active:scale-95 disabled:opacity-50"
                  >
-                   {isDownloading ? <Loader2 className="animate-spin" size={14} /> : <Download size={14} />} 
-                   Descargar QR
+                   {isDownloading ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />} 
+                   Descargar Código QR
                  </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="space-y-6">
-          {/* Tarjeta de Plan - Compacta */}
-          <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 relative overflow-hidden shadow-xl">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
-                <Crown size={20} fill="currentColor" />
+        <div className="space-y-8">
+          {/* Tarjeta de Plan - Refinada */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-[#0d0d0e] border border-white/5 rounded-[2.5rem] p-8 relative overflow-hidden shadow-2xl group"
+          >
+            <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-amber-500/10 transition-colors" />
+            
+            <div className="flex items-center justify-between mb-6 relative z-10">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-inner">
+                <Crown size={28} fill="currentColor" />
               </div>
-              <span className="bg-amber-500 text-black text-[8px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-widest">
+              <span className="bg-amber-500 text-black text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em] shadow-lg">
                 {isPro ? 'PRO' : 'Gratis'}
               </span>
             </div>
-            <h3 className="text-white font-extrabold text-base mb-1 tracking-tight">Suscripción</h3>
-            <p className="text-gray-500 text-[10px] font-medium mb-6 leading-relaxed">
-              {isPro ? 'Acceso total a funciones premium.' : 'Plan básico. Actualiza para más.'}
-            </p>
-            <Link to="/admin/pricing" className="block w-full text-center bg-white text-black py-3 rounded-xl font-extrabold text-[9px] uppercase tracking-widest hover:bg-amber-500 transition-all">
-              {isPro ? 'Gestionar' : 'Mejorar'}
-            </Link>
-          </div>
+            <div className="relative z-10">
+              <h3 className="text-white font-black text-xl mb-2 tracking-tight">Suscripción</h3>
+              <p className="text-gray-500 text-xs font-medium mb-8 leading-relaxed opacity-80">
+                {isPro ? 'Disfrutas de todas las funciones premium activas.' : 'Plan básico limitado. Actualiza para desbloquear todo el potencial.'}
+              </p>
+              <Link to="/admin/pricing" className="block w-full text-center bg-white/5 border border-white/10 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all shadow-xl active:scale-95">
+                {isPro ? 'Gestionar Plan' : 'Mejorar ahora'}
+              </Link>
+            </div>
+          </motion.div>
 
-          {/* Tarjeta de Reputación - Compacta */}
-          <div className="bg-[#0a0a0b] border border-white/5 rounded-3xl p-6 shadow-xl">
-             <div className="flex items-center justify-between mb-6">
-               <h3 className="text-sm font-extrabold text-white uppercase tracking-tight">Reputación</h3>
-               <Star size={16} className="text-amber-500" />
+          {/* Tarjeta de Reputación - Refinada */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-[#0d0d0e] border border-white/5 rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden group"
+          >
+             <div className="flex items-center justify-between mb-8 relative z-10">
+               <h3 className="text-sm font-black text-white uppercase tracking-[0.15em] flex items-center gap-2">
+                 <Star size={18} className="text-amber-500" fill="currentColor" />
+                 Reputación
+               </h3>
              </div>
-             <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-500 text-[9px] font-extrabold uppercase tracking-widest">Promedio</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-white font-extrabold text-2xl tracking-tighter">{business.averageRating?.toFixed(1) || '0.0'}</span>
-                    <div className="flex flex-col">
-                      <div className="flex items-center gap-0.5 text-amber-500">
-                        {[1, 2, 3, 4, 5].map(s => <Star key={s} size={8} fill={s <= Math.round(business.averageRating || 0) ? "currentColor" : "none"} />)}
+             
+             <div className="space-y-6 relative z-10">
+                <div className="flex items-end justify-between">
+                  <div className="space-y-1">
+                    <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest opacity-60">Promedio General</p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-white font-black text-4xl tracking-tighter leading-none">{business.averageRating?.toFixed(1) || '0.0'}</span>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-0.5 text-amber-500">
+                          {[1, 2, 3, 4, 5].map(s => <Star key={s} size={10} fill={s <= Math.round(business.averageRating || 0) ? "currentColor" : "none"} />)}
+                        </div>
+                        <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">{business.ratingsCount || 0} opiniones</span>
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-[9px] font-extrabold uppercase tracking-widest">
-                    <span className="text-gray-500">Satisfacción</span>
-                    <span className="text-white">{Math.round((business.averageRating || 0) * 20)}%</span>
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.15em]">
+                    <span className="text-gray-500">Nivel de Satisfacción</span>
+                    <span className="text-amber-500">{Math.round((business.averageRating || 0) * 20)}%</span>
                   </div>
-                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-amber-500 rounded-full transition-all duration-1000" 
-                      style={{ width: `${(business.averageRating || 0) * 20}%` }} 
+                  <div className="h-2.5 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(business.averageRating || 0) * 20}%` }}
+                      transition={{ duration: 1.5, ease: "easeOut" }}
+                      className="h-full bg-gradient-to-r from-amber-600 to-amber-400 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.3)]" 
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-white/5">
-                  <span className="text-gray-500 text-[9px] font-extrabold uppercase tracking-widest">Total votos</span>
-                  <span className="text-white font-extrabold text-xs">{business.ratingsCount || 0}</span>
+                <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-green-500">
+                    <TrendingUp size={14} />
+                    <span className="text-[10px] font-black uppercase tracking-widest">En crecimiento</span>
+                  </div>
+                  <ChevronRight size={16} className="text-gray-700" />
                 </div>
              </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { HashRouter, Routes, Route, Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { LayoutGrid, Users, User, BarChart3, Package, Layers, Image as ImageIcon, Calendar, LogOut, Crown, Search, Menu as MenuIcon, Share2, X, Loader2, AlertCircle, PlusCircle, LogIn, Store, ChevronRight, Settings, ArrowLeft, Shield, Camera, Palette } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -185,7 +185,28 @@ const App: React.FC = () => {
 
 const PublicHeader: React.FC<{ loggedInBusinessId: string | null }> = ({ loggedInBusinessId }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isBusinessDetail = location.pathname.startsWith('/negocio/');
+  const [clickCount, setClickCount] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleSecretClick = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    
+    const newCount = clickCount + 1;
+    if (newCount >= 7) {
+      setClickCount(0);
+      const password = window.prompt("Acceso de Desarrollador - Ingrese PIN:");
+      if (password === "2024") {
+        navigate('/super-admin');
+      }
+    } else {
+      setClickCount(newCount);
+      timerRef.current = setTimeout(() => {
+        setClickCount(0);
+      }, 2000);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-[100] bg-black/80 backdrop-blur-md h-16 flex items-center justify-between px-6 border-b border-white/5">
@@ -195,9 +216,12 @@ const PublicHeader: React.FC<{ loggedInBusinessId: string | null }> = ({ loggedI
             <ArrowLeft size={20} />
           </Link>
         )}
-        <Link to="/" className="flex items-center gap-2 text-white font-semibold text-lg">
+        <div 
+          onClick={handleSecretClick}
+          className="flex items-center gap-2 text-white font-semibold text-lg cursor-default select-none active:scale-95 transition-transform"
+        >
           Gallery menus
-        </Link>
+        </div>
       </div>
       <div className="flex items-center gap-4">
         {loggedInBusinessId ? (
@@ -229,15 +253,41 @@ const PublicLayout: React.FC<{ children: React.ReactNode, loggedInBusinessId: st
 
 const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onLogout: () => void }> = ({ children, business, onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const navigate = useNavigate();
   const isPro = business?.plan === PlanType.PRO;
   const isAdmin = business?.role === 'admin';
+
+  const handleSecretClick = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    
+    const newCount = clickCount + 1;
+    if (newCount >= 7) {
+      setClickCount(0);
+      const password = window.prompt("Acceso de Desarrollador - Ingrese PIN:");
+      if (password === "2024") {
+        navigate('/super-admin');
+      }
+    } else {
+      setClickCount(newCount);
+      timerRef.current = setTimeout(() => {
+        setClickCount(0);
+      }, 2000);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-black overflow-x-hidden">
       {isSidebarOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden" onClick={() => setIsSidebarOpen(false)} />}
       <aside className={`w-64 bg-black border-r border-gray-800 fixed h-full flex flex-col z-50 transition-transform md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 flex flex-col h-full">
-          <Link to="/" className="flex items-center gap-2 text-amber-500 font-semibold text-xl mb-8">Gallery menus</Link>
+          <div 
+            onClick={handleSecretClick}
+            className="flex items-center gap-2 text-amber-500 font-semibold text-xl mb-8 cursor-default select-none active:scale-95 transition-transform"
+          >
+            Gallery menus
+          </div>
           <div className="bg-black border border-gray-800 p-3 rounded-xl mb-6 flex items-center gap-3">
             <img src={business.logoUrl || 'https://via.placeholder.com/150'} alt="Logo" className="w-10 h-10 rounded-lg object-cover" />
             <div className="overflow-hidden">
