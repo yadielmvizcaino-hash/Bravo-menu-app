@@ -12,42 +12,46 @@ const StatCard: React.FC<{
   value: string | number, 
   icon: React.ReactNode, 
   color: string, 
+  description?: string,
   trend?: string,
   data?: any[]
-}> = ({ label, value, icon, color, trend, data }) => (
+}> = ({ label, value, icon, color, description, trend, data }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    whileHover={{ y: -4 }}
-    className="bg-[#0d0d0e] border border-white/5 p-5 rounded-[2rem] flex flex-col gap-4 shadow-2xl hover:border-white/10 transition-all group relative overflow-hidden"
+    whileHover={{ y: -6, scale: 1.02 }}
+    className="bg-[#0d0d0e] border border-white/5 p-6 rounded-[2.5rem] flex flex-col gap-5 shadow-2xl hover:border-amber-500/30 transition-all group relative overflow-hidden"
   >
-    <div className="absolute top-0 right-0 w-32 h-32 bg-white/2 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-white/5 transition-colors" />
+    <div className="absolute top-0 right-0 w-40 h-40 bg-white/2 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-amber-500/5 transition-colors duration-700" />
     
     <div className="flex items-center justify-between relative z-10">
-      <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
-        {React.cloneElement(icon as React.ReactElement, { size: 22 })}
+      <div className={`w-14 h-14 rounded-2xl ${color} flex items-center justify-center shrink-0 shadow-xl group-hover:scale-110 transition-transform duration-500`}>
+        {React.cloneElement(icon as React.ReactElement, { size: 26 })}
       </div>
       {trend && (
-        <div className="bg-green-500/10 px-2 py-1 rounded-lg border border-green-500/20">
-          <span className="text-green-500 text-[10px] font-black flex items-center gap-1 uppercase tracking-wider">
-            <ArrowUpRight size={12} /> {trend}
+        <div className="bg-green-500/10 px-3 py-1.5 rounded-xl border border-green-500/20 backdrop-blur-md">
+          <span className="text-green-500 text-[10px] font-black flex items-center gap-1.5 uppercase tracking-wider">
+            <ArrowUpRight size={14} /> {trend}
           </span>
         </div>
       )}
     </div>
     
-    <div className="relative z-10 mt-1">
-      <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1 opacity-70">{label}</p>
-      <h3 className="text-3xl font-black text-white leading-none tracking-tight">{value}</h3>
+    <div className="relative z-10">
+      <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.25em] mb-2 opacity-60 group-hover:opacity-100 transition-opacity">{label}</p>
+      <div className="flex items-baseline gap-2">
+        <h3 className="text-4xl font-black text-white leading-none tracking-tighter">{value}</h3>
+        {description && <span className="text-gray-600 text-[10px] font-bold uppercase tracking-widest">{description}</span>}
+      </div>
     </div>
 
     {data && data.length > 0 && (
-      <div className="h-12 w-full mt-2 opacity-30 group-hover:opacity-60 transition-opacity relative z-10">
+      <div className="h-16 w-full mt-2 opacity-20 group-hover:opacity-50 transition-opacity relative z-10">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data}>
             <defs>
               <linearGradient id={`gradient-${label}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="currentColor" stopOpacity={0.3}/>
+                <stop offset="5%" stopColor="currentColor" stopOpacity={0.4}/>
                 <stop offset="95%" stopColor="currentColor" stopOpacity={0}/>
               </linearGradient>
             </defs>
@@ -57,7 +61,7 @@ const StatCard: React.FC<{
               stroke="currentColor" 
               fillOpacity={1} 
               fill={`url(#gradient-${label})`} 
-              strokeWidth={2}
+              strokeWidth={3}
               className={color.split(' ')[1]}
             />
           </AreaChart>
@@ -71,9 +75,6 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
   const isPro = business.plan === PlanType.PRO;
   const isAdmin = business.role === 'admin';
   const [isDownloading, setIsDownloading] = useState(false);
-  const [visitsHistory, setVisitsHistory] = useState<{ name: string, value: number }[]>([]);
-  const [totalVisits, setTotalVisits] = useState(business.stats.visits);
-  const [isLoadingStats, setIsLoadingStats] = useState(true);
 
   const isExpiredPro = useMemo(() => {
     if (business.plan !== PlanType.PRO) return false;
@@ -109,49 +110,6 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
       setIsDowngrading(false);
     }
   };
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        // Obtener historial de visitas de los últimos 7 días
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-        const dateStr = sevenDaysAgo.toISOString().split('T')[0];
-
-        const { data, error } = await supabase
-          .from('business_visits')
-          .select('visit_date, visit_count')
-          .eq('business_id', business.id)
-          .gte('visit_date', dateStr)
-          .order('visit_date', { ascending: true });
-
-        if (error) throw error;
-
-        if (data && data.length > 0) {
-          const history = data.map(d => ({
-            name: d.visit_date.split('-')[2], // Solo el día
-            value: d.visit_count
-          }));
-          setVisitsHistory(history);
-          
-          // Calcular total real de visitas (suma de todo el historial o usar el contador del negocio)
-          // Por ahora sumamos lo que tenemos en el historial para mostrar algo real
-          const sum = data.reduce((acc, curr) => acc + curr.visit_count, 0);
-          setTotalVisits(sum);
-        } else {
-          // Si no hay datos, mostrar ceros o datos de ejemplo si se prefiere
-          setVisitsHistory([]);
-          setTotalVisits(0);
-        }
-      } catch (err) {
-        console.error("Error fetching stats:", err);
-      } finally {
-        setIsLoadingStats(false);
-      }
-    };
-
-    fetchStats();
-  }, [business.id]);
 
   // Generamos la URL pública precisa basada en la ubicación actual
   const businessUrl = `${window.location.href.split('#')[0]}#/negocio/${business.id}`;
@@ -245,27 +203,22 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
       </div>
 
       {/* Grid de Estadísticas */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
         <StatCard 
-          label="Visitas Reales" 
-          value={isLoadingStats ? '...' : totalVisits} 
-          icon={<Eye />} 
-          color="bg-blue-500/10 text-blue-500" 
-          trend={visitsHistory.length > 0 ? "Activo" : "Sin datos"} 
-          data={visitsHistory}
-        />
-        <StatCard 
-          label="Calificación" 
-          value={business.averageRating?.toFixed(1) || '0.0'} 
-          icon={<Star />} 
+          label="Escaneos QR" 
+          value={business.stats.qrScans || 0} 
+          icon={<QrCode />} 
           color="bg-amber-500/10 text-amber-500" 
-          trend={business.ratingsCount ? `${business.ratingsCount} votos` : 'Sin votos'} 
+          description="Totales"
+          trend="+12%" 
         />
         <StatCard 
-          label="Productos" 
-          value={business.products.length} 
-          icon={<Package />} 
-          color="bg-purple-500/10 text-purple-500" 
+          label="Visitantes Únicos" 
+          value={business.stats.uniqueVisitors || 0} 
+          icon={<Users />} 
+          color="bg-blue-500/10 text-blue-500" 
+          description="Personas"
+          trend="Estable"
         />
       </div>
 
