@@ -19,11 +19,22 @@ interface CartItem extends Product {
 const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) => {
   const { id } = useParams<{ id: string }>();
   
+  // Encontrar el negocio en la lista ya cargada para mostrar info básica de inmediato
+  const cachedBusiness = useMemo(() => {
+    return businesses.find(b => b.id === id);
+  }, [businesses, id]);
+
   const { 
-    data: business, 
+    data: fullBusiness, 
     isLoading: isLoadingDetails, 
     error: fetchErrorQuery 
   } = useBusiness(id);
+
+  // Combinar datos: preferir los datos completos, pero usar los cacheados como fallback
+  const business = useMemo(() => {
+    if (fullBusiness) return fullBusiness;
+    return cachedBusiness || null;
+  }, [fullBusiness, cachedBusiness]);
 
   const fetchError = fetchErrorQuery?.message || null;
 
@@ -224,7 +235,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
     let message = `*NUEVO PEDIDO*\n------------------------\n`;
     cart.forEach(item => { message += `• ${item.quantity}x ${item.name} ($${item.price.toLocaleString()})\n`; });
     message += `\n*Subtotal:* $${cartTotal.toLocaleString()}\n`;
-    message += `*Costo envío:* $${deliveryPrice.toLocaleString()}\n*Total:* $${(cartTotal + deliveryPrice).toLocaleString()}\n\n*ENTREGA:*\n• *Zona:* ${deliveryZone === 'inside' ? 'Dentro de ' + business.municipality : 'Fuera de ' + business.municipality}\n• *Nombre:* ${deliveryData.receiverName}\n• *Tel. Cliente:* ${deliveryData.clientPhone}\n• *Dirección:* ${deliveryData.address}\n`;
+    message += `*Costo envío:* $${deliveryPrice.toLocaleString()}\n*Total:* $${(cartTotal + deliveryPrice).toLocaleString()}\n\n*ENTREGA:*\n• *Zona:* ${deliveryZone === 'inside' ? 'Dentro de ' + (business?.municipality || '') : 'Fuera de ' + (business?.municipality || '')}\n• *Nombre:* ${deliveryData.receiverName}\n• *Tel. Cliente:* ${deliveryData.clientPhone}\n• *Dirección:* ${deliveryData.address}\n`;
     
     if (deliveryData.notes.trim()) {
       message += `• *Notas:* ${deliveryData.notes}\n`;
@@ -234,27 +245,20 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  if (isLoadingDetails) return (
-    <div className="min-h-screen bg-black flex items-center justify-center text-white">
-      <Loader2 className="animate-spin text-amber-500" size={48} />
-    </div>
-  );
-
-  if (fetchError) return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6">
-       <h1 className="text-2xl font-semibold text-red-500 mb-4">Error de Base de Datos</h1>
-       <p className="text-gray-400 mb-6 text-center max-w-md">{fetchError}</p>
-       <p className="text-amber-500 text-sm mb-6 text-center max-w-md">
-         Asegúrate de haber ejecutado el script SQL en Supabase para crear las relaciones (Foreign Keys) correctamente.
-       </p>
-       <Link to="/" className="bg-amber-500 text-black px-6 py-3 rounded-xl font-semibold">Volver al inicio</Link>
-    </div>
-  );
-
+  // Si no hay negocio ni en caché ni cargando, mostrar error
   if (!business && !isLoadingDetails) return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6">
-       <h1 className="text-2xl font-semibold mb-4">Negocio no encontrado</h1>
-       <Link to="/" className="text-amber-500 hover:underline">Volver al inicio</Link>
+       <h1 className="text-2xl font-semibold mb-4 text-amber-500">Negocio no encontrado</h1>
+       <p className="text-gray-500 mb-6">El negocio que buscas no existe o ha sido eliminado.</p>
+       <Link to="/" className="bg-white/10 px-6 py-3 rounded-xl font-semibold hover:bg-white/20 transition-all">Volver al inicio</Link>
+    </div>
+  );
+
+  if (fetchError && !business) return (
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6">
+       <h1 className="text-2xl font-semibold text-red-500 mb-4">Error de Conexión</h1>
+       <p className="text-gray-400 mb-6 text-center max-w-md">{fetchError}</p>
+       <Link to="/" className="bg-amber-500 text-black px-6 py-3 rounded-xl font-semibold">Volver al inicio</Link>
     </div>
   );
 
@@ -544,41 +548,61 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
         {/* Contenido Dinámico */}
         {activeTab === 'menu' && (
           <div className="animate-fade-in space-y-8">
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 -mx-6 px-6">
-              <button 
-                onClick={() => setSelectedCategory('Todo')} 
-                className={`shrink-0 px-4 py-2 rounded-full text-[9px] font-semibold uppercase tracking-widest transition-all border ${selectedCategory === 'Todo' ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
-              >
-                Todo
-              </button>
-              {categories.map(cat => (
-                <button 
-                  key={cat.id} 
-                  onClick={() => setSelectedCategory(cat.name)} 
-                  className={`shrink-0 px-4 py-2 rounded-full text-[9px] font-semibold uppercase tracking-widest transition-all border ${selectedCategory === cat.name ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
-                >
-                  {cat.name}
-                </button>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {filteredProducts.map(prod => (
-                <div key={prod.id} className="bg-[#141416] rounded-3xl overflow-hidden border border-white/5 flex flex-col group shadow-2xl hover:translate-y-[-4px] transition-all duration-300">
-                  <div className="relative aspect-square overflow-hidden">
-                    <OptimizedImage src={prod.imageUrl} containerClassName="w-full h-full" className="transition-transform duration-700 group-hover:scale-110" alt={prod.name} sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" />
-                  </div>
-                  <div className="p-4 flex flex-col flex-1">
-                    <h3 className="text-white font-semibold text-xs mb-1 uppercase tracking-tight truncate">{prod.name}</h3>
-                    <p className="text-gray-500 text-[9px] leading-relaxed mb-4 line-clamp-2">{prod.description || 'Sin descripción.'}</p>
-                    <div className="flex items-center justify-between mt-auto pt-2 border-t border-white/5">
-                      <span className="text-amber-500 font-semibold text-base">${prod.price}</span>
-                      <button onClick={() => addToCart(prod)} className="w-8 h-8 bg-amber-500 text-black rounded-full flex items-center justify-center hover:bg-white transition-all shadow-xl active:scale-90"><Plus size={16} strokeWidth={3} /></button>
+            {isLoadingDetails && !business?.products ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                  <div key={i} className="bg-[#141416] rounded-3xl overflow-hidden border border-white/5 flex flex-col h-64 animate-pulse">
+                    <div className="aspect-square bg-white/5" />
+                    <div className="p-4 space-y-3">
+                      <div className="h-3 bg-white/10 rounded w-3/4" />
+                      <div className="h-2 bg-white/5 rounded w-full" />
+                      <div className="flex justify-between items-center pt-2">
+                        <div className="h-4 bg-amber-500/20 rounded w-1/4" />
+                        <div className="w-8 h-8 bg-white/5 rounded-full" />
+                      </div>
                     </div>
                   </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 -mx-6 px-6">
+                  <button 
+                    onClick={() => setSelectedCategory('Todo')} 
+                    className={`shrink-0 px-4 py-2 rounded-full text-[9px] font-semibold uppercase tracking-widest transition-all border ${selectedCategory === 'Todo' ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
+                  >
+                    Todo
+                  </button>
+                  {categories.map(cat => (
+                    <button 
+                      key={cat.id} 
+                      onClick={() => setSelectedCategory(cat.name)} 
+                      className={`shrink-0 px-4 py-2 rounded-full text-[9px] font-semibold uppercase tracking-widest transition-all border ${selectedCategory === cat.name ? 'bg-amber-500 text-black border-amber-500 shadow-lg' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'}`}
+                    >
+                      {cat.name}
+                    </button>
+                  ))}
                 </div>
-              ))}
-            </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {filteredProducts.map(prod => (
+                    <div key={prod.id} className="bg-[#141416] rounded-3xl overflow-hidden border border-white/5 flex flex-col group shadow-2xl hover:translate-y-[-4px] transition-all duration-300">
+                      <div className="relative aspect-square overflow-hidden">
+                        <OptimizedImage src={prod.imageUrl} containerClassName="w-full h-full" className="transition-transform duration-700 group-hover:scale-110" alt={prod.name} sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" />
+                      </div>
+                      <div className="p-4 flex flex-col flex-1">
+                        <h3 className="text-white font-semibold text-xs mb-1 uppercase tracking-tight truncate">{prod.name}</h3>
+                        <p className="text-gray-500 text-[9px] leading-relaxed mb-4 line-clamp-2">{prod.description || 'Sin descripción.'}</p>
+                        <div className="flex items-center justify-between mt-auto pt-2 border-t border-white/5">
+                          <span className="text-amber-500 font-semibold text-base">${prod.price}</span>
+                          <button onClick={() => addToCart(prod)} className="w-8 h-8 bg-amber-500 text-black rounded-full flex items-center justify-center hover:bg-white transition-all shadow-xl active:scale-90"><Plus size={16} strokeWidth={3} /></button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
 
             {/* Sistema de Calificación */}
             <div className="bg-[#141416] rounded-3xl p-6 border border-white/5 shadow-2xl text-center mt-12 mb-12">
