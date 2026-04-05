@@ -203,7 +203,7 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
       </div>
 
       {/* Grid de Estadísticas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
         <StatCard 
           label="Escaneos QR" 
           value={business.stats.qrScans || 0} 
@@ -219,6 +219,14 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
           color="bg-blue-500/10 text-blue-500" 
           description="Personas"
           trend="Estable"
+        />
+        <StatCard 
+          label="Puntuación" 
+          value={business.averageRating?.toFixed(1) || '0.0'} 
+          icon={<Star />} 
+          color="bg-green-500/10 text-green-500" 
+          description={`${business.ratingsCount || 0} reseñas`}
+          trend={business.averageRating && business.averageRating >= 4.5 ? "Excelente" : "Bueno"}
         />
       </div>
 
