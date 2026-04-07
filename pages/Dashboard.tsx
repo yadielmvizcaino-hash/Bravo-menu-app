@@ -202,73 +202,76 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard 
-          label="Pedidos Totales" 
-          value="0" 
-          icon={<Package />} 
-          color="bg-purple-500/10 text-purple-500" 
-          description="Digitales"
-        />
-        <StatCard 
-          label="Ticket Promedio" 
-          value="$0" 
-          icon={<TrendingUp />} 
-          color="bg-green-500/10 text-green-500" 
-          description="Valor medio"
-        />
-        <StatCard 
-          label="Escaneos QR" 
-          value={business.stats.qrScans || 0} 
-          icon={<QrCode />} 
-          color="bg-amber-500/10 text-amber-500" 
-          description="Totales"
-        />
-        <StatCard 
-          label="Puntuación" 
-          value={business.averageRating?.toFixed(1) || '0.0'} 
-          icon={<Star />} 
-          color="bg-green-500/10 text-green-500" 
-          description={`${business.ratingsCount || 0} reseñas`}
-        />
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Estado del plan */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-[#0d0d0e] border border-white/5 p-8 rounded-[2.5rem] shadow-xl flex flex-col justify-between group hover:border-amber-500/30 transition-all"
+        >
+          <div>
+            <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.25em] mb-4 opacity-60">Plan Actual</p>
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                <Crown size={28} fill="currentColor" />
+              </div>
+              <h3 className="text-3xl font-black text-white tracking-tight">{isPro ? 'Plan PRO' : 'Plan Gratis'}</h3>
+            </div>
+          </div>
+          <Link to="/admin/pricing" className="w-full bg-amber-500 text-black py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] text-center hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/10">
+            {isPro ? 'Gestionar Suscripción' : 'Mejorar a PRO'}
+          </Link>
+        </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Productos más vendidos */}
-          <div className="bg-[#0d0d0e] border border-white/5 p-6 rounded-[2rem] shadow-xl">
-            <h3 className="text-white font-black text-sm uppercase tracking-widest mb-4">Productos más vendidos</h3>
-            <p className="text-gray-500 text-xs">Sin datos suficientes aún.</p>
+        {/* Calificación del Negocio */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-[#0d0d0e] border border-white/5 p-8 rounded-[2.5rem] shadow-xl flex flex-col justify-between group hover:border-green-500/30 transition-all"
+        >
+          <div>
+            <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.25em] mb-4 opacity-60">Calificación</p>
+            <div className="flex items-center gap-4 mb-2">
+              <div className="w-14 h-14 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-500">
+                <Star size={28} fill="currentColor" />
+              </div>
+              <h3 className="text-5xl font-black text-white tracking-tighter">{business.averageRating?.toFixed(1) || '0.0'}</h3>
+            </div>
+            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest ml-1">{business.ratingsCount || 0} Reseñas totales</p>
           </div>
-          {/* Categorías más visitadas */}
-          <div className="bg-[#0d0d0e] border border-white/5 p-6 rounded-[2rem] shadow-xl">
-            <h3 className="text-white font-black text-sm uppercase tracking-widest mb-4">Categorías más visitadas</h3>
-            <p className="text-gray-500 text-xs">Sin datos suficientes aún.</p>
+          <div className="flex items-center gap-1 text-amber-500 mt-4">
+            {[1, 2, 3, 4, 5].map(s => (
+              <Star key={s} size={16} fill={s <= Math.round(business.averageRating || 0) ? "currentColor" : "none"} />
+            ))}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="space-y-6">
-          {/* Estado del plan */}
-          <div className="bg-[#0d0d0e] border border-white/5 p-6 rounded-[2rem] shadow-xl flex items-center justify-between">
+        {/* Código QR para Descargar */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-[#0d0d0e] border border-white/5 p-8 rounded-[2.5rem] shadow-xl flex flex-col justify-between group hover:border-blue-500/30 transition-all"
+        >
+          <div className="flex items-start justify-between mb-4">
             <div>
-              <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1">Plan Actual</p>
-              <h3 className="text-xl font-black text-white">{isPro ? 'Plan PRO' : 'Plan Gratis'}</h3>
+              <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.25em] mb-4 opacity-60">Código QR</p>
+              <h3 className="text-xl font-black text-white tracking-tight leading-tight">Menú Digital<br/>Listo</h3>
             </div>
-            <Link to="/admin/pricing" className="bg-amber-500 text-black px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-amber-400 transition-all">
-              {isPro ? 'Gestionar' : 'Mejorar'}
-            </Link>
-          </div>
-          {/* Código QR */}
-          <div className="bg-[#0d0d0e] border border-white/5 p-6 rounded-[2rem] shadow-xl flex items-center gap-4">
-            <div className="bg-white p-2 rounded-xl">
-              <img src={qrImageUrl} className="w-16 h-16" alt="QR" />
-            </div>
-            <div>
-              <h3 className="text-white font-black text-sm uppercase tracking-tight">Código QR</h3>
-              <button onClick={handleDownloadQR} className="text-amber-500 text-[10px] font-black uppercase tracking-widest hover:underline">Descargar</button>
+            <div className="bg-white p-2 rounded-2xl shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
+              <img src={qrImageUrl} className="w-20 h-20" alt="QR" />
             </div>
           </div>
-        </div>
+          <button 
+            onClick={handleDownloadQR}
+            disabled={isDownloading}
+            className="w-full bg-white/5 border border-white/10 text-white py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-white hover:text-black transition-all disabled:opacity-50"
+          >
+            {isDownloading ? <Loader2 className="animate-spin" size={18} /> : <Download size={18} />}
+            Descargar QR
+          </button>
+        </motion.div>
       </div>
     </div>
   );
