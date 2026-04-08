@@ -753,6 +753,9 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                     <span className="text-white font-semibold">{item.quantity}</span>
                     <button onClick={() => updateQuantity(item.id, 1)}><Plus size={14} /></button>
                   </div>
+                  <button onClick={() => updateQuantity(item.id, -item.quantity)} className="text-red-500/50 hover:text-red-500 transition-colors">
+                    <Trash2 size={18} />
+                  </button>
                 </div>
               ))}
             </div>
