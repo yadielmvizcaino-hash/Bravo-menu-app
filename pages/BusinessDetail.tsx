@@ -199,11 +199,11 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
   const updateQuantity = (id: string, delta: number) => {
     setCart(prev => prev.map(item => {
       if (item.id === id) {
-        const newQty = Math.max(1, item.quantity + delta);
+        const newQty = item.quantity + delta;
         return { ...item, quantity: newQty };
       }
       return item;
-    }));
+    }).filter(item => item.quantity > 0));
   };
 
   const cartTotal = useMemo(() => cart.reduce((sum, item) => sum + (item.price * item.quantity), 0), [cart]);
