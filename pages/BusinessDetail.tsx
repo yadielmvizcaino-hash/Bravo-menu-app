@@ -742,7 +742,13 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             </div>
             <div className="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar">
               {cart.map(item => (
-                <div key={item.id} className="flex items-center gap-4 bg-[#1a1a1c] p-3 rounded-2xl border border-white/5">
+                <div key={item.id} className="flex items-center gap-4 bg-[#1a1a1c] p-3 rounded-2xl border border-white/5 relative">
+                  <button 
+                    onClick={() => updateQuantity(item.id, -item.quantity)} 
+                    className="absolute -top-2 -left-2 bg-red-500/20 text-red-500 rounded-full p-1 hover:bg-red-500 hover:text-white transition-all shadow-lg"
+                  >
+                    <X size={12} />
+                  </button>
                   <img src={item.imageUrl} className="w-16 h-16 rounded-xl object-cover" />
                   <div className="flex-1">
                     <h4 className="text-white font-semibold text-sm uppercase truncate">{item.name}</h4>
@@ -753,9 +759,6 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                     <span className="text-white font-semibold">{item.quantity}</span>
                     <button onClick={() => updateQuantity(item.id, 1)}><Plus size={14} /></button>
                   </div>
-                  <button onClick={() => updateQuantity(item.id, -item.quantity)} className="text-red-500/50 hover:text-red-500 transition-colors">
-                    <Trash2 size={18} />
-                  </button>
                 </div>
               ))}
             </div>
