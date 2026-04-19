@@ -36,11 +36,6 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
 
   // Category Handlers
   const openCreateCatModal = () => {
-    const maxCategories = Infinity;
-    if (business.categories.length >= maxCategories) {
-      alert(`Tu plan actual (${business.plan}) solo permite hasta ${maxCategories} categorías. ¡Sube a PRO para categorías ilimitadas!`);
-      return;
-    }
     setEditingCategory(null);
     setCatName('');
     setIsCatModalOpen(true);
@@ -204,11 +199,6 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
   }, [business.products, searchTerm, selectedCatId]);
 
   const openNewProductModal = () => {
-    const maxProducts = Infinity;
-    if (business.products.length >= maxProducts) {
-      alert(`Tu plan actual (${business.plan}) solo permite hasta ${maxProducts} productos. ¡Sube a PRO para productos ilimitados!`);
-      return;
-    }
     setEditingProduct(null);
     setFormData({
       name: '',

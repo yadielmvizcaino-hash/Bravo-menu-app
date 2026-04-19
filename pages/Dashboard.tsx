@@ -77,6 +77,7 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
   
   const [showExpiredPopup, setShowExpiredPopup] = useState(false);
   const [isDowngrading, setIsDowngrading] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleContinueFree = async () => {
     setIsDowngrading(true);

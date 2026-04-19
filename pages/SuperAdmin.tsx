@@ -164,18 +164,6 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
     }
   };
 
-  const getTimeRemaining = (expiresAt: string | null | undefined) => {
-    if (!expiresAt) return null;
-    const now = new Date();
-    const expiry = new Date(expiresAt);
-    const diff = expiry.getTime() - now.getTime();
-    
-    if (diff <= 0) return { text: "Vencido", color: "text-red-500" };
-    
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    if (days > 0) return { text: `${days}d restantes`, color: "text-amber-500" };
-    return { text: "Vence hoy", color: "text-red-400" };
-  };
 
   const stats = useMemo(() => {
     const activeProCount = 0;
@@ -312,14 +300,11 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
               <thead className="text-gray-500 text-[10px] font-extrabold uppercase tracking-[0.2em] bg-black/40 border-b border-white/5">
                 <tr>
                   <th className="px-6 py-5">Establecimiento</th>
-                  <th className="px-6 py-5">Plan Actual</th>
-                  <th className="px-6 py-5">Vencimiento</th>
                   <th className="px-6 py-5 text-right">Controles</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {filteredBusinesses.map((biz) => {
-                  const time = getTimeRemaining(biz.planExpiresAt);
                   const isVisible = biz.isVisible !== false;
                   const isBizActionLoading = isActionLoading === biz.id;
 
@@ -338,9 +323,6 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
                         <div className="flex items-center gap-2">
                            <span className={`w-1.5 h-1.5 rounded-full ${isVisible ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500'}`} />
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-gray-700 text-[10px] font-extrabold tracking-widest">---</span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex justify-end items-center gap-2.5">

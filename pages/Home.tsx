@@ -20,9 +20,7 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
   const municipalities = selectedProvince ? CUBA_MUNICIPALITIES_BY_PROVINCE[selectedProvince] || [] : [];
 
   const isProActive = (b: Business) => {
-// Removed plan check
-    if (!b.planExpiresAt) return false;
-    return new Date(b.planExpiresAt) > new Date();
+    return true;
   };
 
   const filteredBusinesses = businesses.filter(b => {

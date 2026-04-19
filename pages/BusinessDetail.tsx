@@ -299,9 +299,6 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
             />
             <div className="flex-1 pb-2 md:pb-3">
               <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                 <span className="bg-amber-500 text-black text-[9px] md:text-[10px] font-extrabold px-2.5 py-0.5 rounded-lg flex items-center gap-1.5 uppercase tracking-wider shadow-lg shadow-amber-500/20">
-                   <Crown size={10} fill="currentColor" /> {business?.plan}
-                 </span>
                  <span className="text-white/90 text-[9px] md:text-[10px] font-extrabold uppercase tracking-widest bg-white/10 backdrop-blur-xl px-2.5 py-0.5 rounded-lg border border-white/10">{business?.type}</span>
               </div>
               <h1 className="text-xl md:text-3xl font-extrabold text-white tracking-tighter mb-1.5 leading-tight drop-shadow-2xl">{business?.name}</h1>

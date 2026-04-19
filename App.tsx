@@ -85,8 +85,6 @@ const App: React.FC = () => {
       email: updated.email,
       logo_url: updated.logoUrl,
       cover_photos: updated.coverPhotos,
-      plan: updated.plan,
-      plan_expires_at: updated.planExpiresAt,
       is_visible: updated.isVisible,
       cuisine_types: updated.cuisineTypes,
       delivery_enabled: updated.deliveryEnabled,
@@ -290,7 +288,6 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
             <div className="overflow-hidden">
               <h3 className="text-sm font-semibold text-white truncate">{business.name}</h3>
               <div className="flex gap-1 flex-wrap">
-                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isPro ? 'bg-amber-500 text-black' : 'bg-gray-700 text-gray-300'}`}>{isPro ? '⭐ PRO' : '✨ GRATIS'}</span>
                 {isAdmin && <span className="bg-blue-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-tighter">Admin</span>}
               </div>
             </div>
