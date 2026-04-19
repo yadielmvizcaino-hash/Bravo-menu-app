@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Plus, Info, Crown, Edit2, Trash2, GripVertical, Link as LinkIcon, Eye, Image as ImageIcon, X, Save, Upload, Loader2, ChevronRight } from 'lucide-react';
-import { Business, PlanType, Banner } from '../types.ts';
+import { Business, Banner } from '../types.ts';
 import { Link } from 'react-router-dom';
 import { compressImage } from '../utils/image.ts';
 import { supabase, uploadImage } from '../lib/supabase.ts';
@@ -22,7 +22,8 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
     position: 'header' as 'header' | 'middle' | 'footer'
   });
 
-  const isPro = business.plan === PlanType.PRO;
+
+  const isPro = false;
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

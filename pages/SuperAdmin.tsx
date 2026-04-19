@@ -7,7 +7,7 @@ import {
   Clock, Calendar, ArrowLeft, Zap, RefreshCw, PlusCircle,
   TrendingUp, AlertCircle, ExternalLink, Banknote, CreditCard, Save
 } from 'lucide-react';
-import { Business, PlanType } from '../types.ts';
+import { Business } from '../types.ts';
 import { supabase } from '../lib/supabase.ts';
 import { Link } from 'react-router-dom';
 import { useAllBusinesses } from '../hooks/useBusinesses.ts';
@@ -81,7 +81,6 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
       const { error } = await supabase
         .from('businesses')
         .update({ 
-          plan: PlanType.PRO, 
           plan_expires_at: expiresAt.toISOString() 
         })
         .eq('id', selectedBizId);
@@ -106,7 +105,6 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
       const { error } = await supabase
         .from('businesses')
         .update({ 
-          plan: PlanType.FREE, 
           plan_expires_at: null 
         })
         .eq('id', id);
@@ -339,19 +337,10 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                            <span className={`w-1.5 h-1.5 rounded-full ${isVisible ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500'}`} />
-                           <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg uppercase tracking-wider ${biz.plan === PlanType.PRO ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' : 'bg-gray-800 text-gray-500'}`}>
-                             {biz.plan}
-                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        {biz.plan === PlanType.PRO && time ? (
-                          <div className={`flex items-center gap-1.5 text-[11px] font-extrabold uppercase ${time.color}`}>
-                            <Clock size={12} /> {time.text}
-                          </div>
-                        ) : (
-                          <span className="text-gray-700 text-[10px] font-extrabold tracking-widest">---</span>
-                        )}
+                        <span className="text-gray-700 text-[10px] font-extrabold tracking-widest">---</span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex justify-end items-center gap-2.5">
@@ -362,26 +351,6 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
                           >
                             {isBizActionLoading ? <Loader2 size={16} className="animate-spin" /> : isVisible ? <Eye size={16} /> : <EyeOff size={16} />}
                           </button>
-                          
-                          {biz.plan === PlanType.FREE ? (
-                            <button 
-                              onClick={() => handleOpenProModal(biz.id)}
-                              disabled={isBizActionLoading}
-                              className="px-4 py-2 bg-amber-500 text-black rounded-xl text-[10px] font-extrabold uppercase tracking-widest hover:bg-amber-400 transition-all hover:scale-105 active:scale-95 disabled:opacity-30 flex items-center gap-2"
-                            >
-                              <Zap size={12} fill="currentColor" />
-                              Activar PRO
-                            </button>
-                          ) : (
-                            <button 
-                              onClick={() => handleDowngradeToFree(biz.id)}
-                              disabled={isBizActionLoading}
-                              title="Degradar a Gratis"
-                              className="p-2.5 bg-amber-500/10 text-amber-500 rounded-xl border border-amber-500/20 hover:bg-amber-500 hover:text-black transition-all disabled:opacity-30"
-                            >
-                              {isBizActionLoading ? <Loader2 size={16} className="animate-spin" /> : <ArrowDown size={16} />}
-                            </button>
-                          )}
                           
                           <button 
                             onClick={() => deleteBusiness(biz.id)} 

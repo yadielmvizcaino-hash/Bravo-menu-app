@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo, useRef } from 'react';
 import { Plus, Search, Filter, Edit2, Trash2, X, Save, Upload, Image as ImageIcon, Eye, EyeOff, Loader2, Layers } from 'lucide-react';
-import { Business, PlanType, Product, Category } from '../types';
+import { Business, Product, Category } from '../types';
 import { compressImage } from '../utils/image';
 import { supabase, uploadImage } from '../lib/supabase';
 import OptimizedImage from '../components/OptimizedImage';
@@ -36,7 +36,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
 
   // Category Handlers
   const openCreateCatModal = () => {
-    const maxCategories = business.plan === PlanType.FREE ? 3 : Infinity;
+    const maxCategories = Infinity;
     if (business.categories.length >= maxCategories) {
       alert(`Tu plan actual (${business.plan}) solo permite hasta ${maxCategories} categorías. ¡Sube a PRO para categorías ilimitadas!`);
       return;
@@ -204,7 +204,7 @@ const OwnerMenu: React.FC<{ business: Business, onUpdate: (b: Business) => void 
   }, [business.products, searchTerm, selectedCatId]);
 
   const openNewProductModal = () => {
-    const maxProducts = business.plan === PlanType.FREE ? 10 : Infinity;
+    const maxProducts = Infinity;
     if (business.products.length >= maxProducts) {
       alert(`Tu plan actual (${business.plan}) solo permite hasta ${maxProducts} productos. ¡Sube a PRO para productos ilimitados!`);
       return;

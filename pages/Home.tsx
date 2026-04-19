@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search, MapPin, Star, Crown, ChevronRight, Utensils, ChevronDown, Calendar, Clock, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Business, BusinessType, PlanType, Event } from '../types';
+import { Business, BusinessType, Event } from '../types';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
 import OptimizedImage from '../components/OptimizedImage';
 import { incrementClicks } from '../lib/supabase';
@@ -20,7 +20,7 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
   const municipalities = selectedProvince ? CUBA_MUNICIPALITIES_BY_PROVINCE[selectedProvince] || [] : [];
 
   const isProActive = (b: Business) => {
-    if (b.plan !== PlanType.PRO) return false;
+// Removed plan check
     if (!b.planExpiresAt) return false;
     return new Date(b.planExpiresAt) > new Date();
   };

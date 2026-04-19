@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Plus, Crown, Calendar as CalendarIcon, Trash2, Edit2, Users, Clock, X, Save, Upload, Loader2, Eye } from 'lucide-react';
-import { Business, PlanType, Event } from '../types';
+import { Business, Event } from '../types';
 import { Link } from 'react-router-dom';
 import { compressImage } from '../utils/image';
 import { supabase, uploadImage } from '../lib/supabase';
@@ -24,7 +24,7 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
     price: ''
   });
 
-  const isPro = business.plan === PlanType.PRO;
+  const isPro = false;
 
   if (!isPro) {
     return (
