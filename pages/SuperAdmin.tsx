@@ -180,14 +180,14 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
   };
 
   const stats = useMemo(() => {
-    const activeProCount = businesses.filter(b => b.plan === PlanType.PRO).length;
+    const activeProCount = 0;
     // Asumimos 500 CUP por plan PRO según la página de precios
-    const estimatedIncome = activeProCount * 500;
+    const estimatedIncome = 0;
     
     return {
       total: businesses.length,
-      pro: activeProCount,
-      income: estimatedIncome
+      pro: 0,
+      income: 0
     };
   }, [businesses]);
 

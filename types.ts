@@ -1,9 +1,4 @@
 
-export enum PlanType {
-  FREE = 'FREE',
-  PRO = 'PRO'
-}
-
 export enum BusinessType {
   RESTAURANT = 'Restaurante',
   BAR = 'Bar',
@@ -70,8 +65,6 @@ export interface Business {
   email?: string;
   logoUrl: string;
   coverPhotos: string[];
-  plan: PlanType;
-  planExpiresAt?: string | null;
   categories: Category[];
   products: Product[];
   events: Event[];

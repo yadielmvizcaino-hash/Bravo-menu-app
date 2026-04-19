@@ -1,10 +1,10 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
-import { Business, PlanType } from '../types';
+import { Business } from '../types';
 import { getWithCache } from '../utils/cache';
 
-const BUSINESS_LIST_COLUMNS = 'id, name, type, province, municipality, logo_url, cover_photos, plan, plan_expires_at, is_visible, average_rating, ratings_count, cuisine_types, events(*)';
+const BUSINESS_LIST_COLUMNS = 'id, name, type, province, municipality, logo_url, cover_photos, is_visible, average_rating, ratings_count, cuisine_types, events(*)';
 
 export const useBusinesses = () => {
   const queryClient = useQueryClient();
@@ -29,7 +29,6 @@ export const useBusinesses = () => {
           coverPhotos: biz.cover_photos ?? [],
           averageRating: biz.average_rating ?? 0,
           ratingsCount: biz.ratings_count ?? 0,
-          planExpiresAt: biz.plan_expires_at,
           cuisineTypes: biz.cuisine_types ?? [],
           events: (biz.events || []).map((e: any) => ({
             ...e,

@@ -1,5 +1,5 @@
 
-import { Business, PlanType, BusinessType } from './types';
+import { Business, BusinessType } from './types';
 
 export const CUBA_PROVINCES = [
   "La Habana", "Santiago de Cuba", "Villa Clara", "Holguín", "Camagüey", 

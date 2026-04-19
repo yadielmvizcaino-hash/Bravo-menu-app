@@ -93,11 +93,6 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
   return (
     <div className="min-h-screen bg-black font-sans text-gray-200">
       <header className="relative min-h-[75vh] flex flex-col items-center justify-center pt-10 pb-8 px-4 overflow-hidden">
-        <div className="absolute top-6 right-6 z-20">
-          <Link to="/admin" className="text-[10px] font-extrabold uppercase tracking-widest text-amber-500 hover:text-white transition-all">
-            Login Dueños
-          </Link>
-        </div>
         <div className="absolute inset-0 z-0 bg-black" />
         
         <div className="relative z-10 max-w-4xl w-full text-center px-4 animate-fade-in">
@@ -298,11 +293,6 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
                     fetchPriority={index < 3 ? "high" : "auto"}
                   />
                   <div className="absolute top-5 left-5 flex flex-col gap-2">
-                    {isProActive(business) && (
-                      <span className="bg-amber-500 text-black font-extrabold text-[10px] px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-2xl uppercase tracking-wider">
-                        <Crown size={12} fill="currentColor" /> Recomendado
-                      </span>
-                    )}
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1c] via-transparent to-transparent" />
                   <div className="absolute bottom-5 left-6 right-6">

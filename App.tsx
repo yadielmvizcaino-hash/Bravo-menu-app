@@ -17,7 +17,7 @@ import Onboarding from './pages/Onboarding.tsx';
 import Auth from './pages/Auth.tsx';
 
 import { supabase } from './lib/supabase.ts';
-import { Business, PlanType } from './types.ts';
+import { Business } from './types.ts';
 import { useBusinesses, useBusiness } from './hooks/useBusinesses.ts';
 
 const App: React.FC = () => {
@@ -222,6 +222,11 @@ const PublicHeader: React.FC<{ loggedInBusinessId: string | null }> = ({ loggedI
         >
           Gallery menus
         </div>
+        {!loggedInBusinessId && (
+          <Link to="/admin" className="text-white text-xs font-semibold hover:text-amber-500 transition-colors">
+            Ingresar
+          </Link>
+        )}
       </div>
       <div className="flex items-center gap-4">
         {loggedInBusinessId ? (
@@ -249,7 +254,6 @@ const AdminLayout: React.FC<{ children: React.ReactNode, business: Business, onL
   const [clickCount, setClickCount] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
-  const isPro = business?.plan === PlanType.PRO;
   const isAdmin = business?.role === 'admin';
 
   const handleSecretClick = () => {
