@@ -202,27 +202,7 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Estado del plan */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-[#0d0d0e] border border-white/5 p-8 rounded-[2.5rem] shadow-xl flex flex-col justify-between group hover:border-amber-500/30 transition-all"
-        >
-          <div>
-            <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.25em] mb-4 opacity-60">Plan Actual</p>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
-                <Crown size={28} fill="currentColor" />
-              </div>
-              <h3 className="text-3xl font-black text-white tracking-tight">{isPro ? 'Plan PRO' : 'Plan Gratis'}</h3>
-            </div>
-          </div>
-          <Link to="/admin/pricing" className="w-full bg-amber-500 text-black py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] text-center hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/10">
-            {isPro ? 'Gestionar Suscripción' : 'Mejorar a PRO'}
-          </Link>
-        </motion.div>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Calificación del Negocio */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

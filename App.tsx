@@ -231,14 +231,7 @@ const PublicHeader: React.FC<{ loggedInBusinessId: string | null }> = ({ loggedI
           >
             Ir a mi Panel
           </Link>
-        ) : (
-          <Link 
-            to="/login" 
-            className="bg-amber-500 text-black px-5 py-2 rounded-xl font-medium text-xs hover:bg-amber-400 transition-all flex items-center gap-2"
-          >
-            Crea tu menú
-          </Link>
-        )}
+        ) : null}
       </div>
     </header>
   );

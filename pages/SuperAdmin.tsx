@@ -216,6 +216,12 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
             </div>
           </div>
           <div className="flex items-center gap-2 w-full md:w-auto">
+             <Link 
+               to="/crear-negocio"
+               className="px-4 py-2.5 bg-white text-black rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-200 transition-all flex items-center gap-2"
+             >
+               <PlusCircle size={14} /> Añadir Negocio
+             </Link>
              <div className="relative flex-1 md:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={14} />
                 <input 
