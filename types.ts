@@ -8,7 +8,8 @@ export enum BusinessType {
   RESTAURANT = 'Restaurante',
   BAR = 'Bar',
   CAFETERIA = 'Cafetería',
-  ICE_CREAM = 'Heladería'
+  ICE_CREAM = 'Heladería',
+  TIENDA = 'Tienda'
 }
 
 export interface Category {

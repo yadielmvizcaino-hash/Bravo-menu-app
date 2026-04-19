@@ -159,7 +159,8 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
                 { label: 'Restaurantes', type: BusinessType.RESTAURANT, icon: '🍴' },
                 { label: 'Bares', type: BusinessType.BAR, icon: '🍸' },
                 { label: 'Cafeterías', type: BusinessType.CAFETERIA, icon: '☕' },
-                { label: 'Heladerías', type: BusinessType.ICE_CREAM, icon: '🍦' }
+                { label: 'Heladerías', type: BusinessType.ICE_CREAM, icon: '🍦' },
+                { label: 'Tiendas', type: BusinessType.TIENDA, icon: '🛍️' }
               ].map((filter) => (
                 <button
                   key={filter.label}
