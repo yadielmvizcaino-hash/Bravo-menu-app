@@ -93,6 +93,11 @@ const Home: React.FC<{ businesses: Business[], loading?: boolean }> = ({ busines
   return (
     <div className="min-h-screen bg-black font-sans text-gray-200">
       <header className="relative min-h-[75vh] flex flex-col items-center justify-center pt-10 pb-8 px-4 overflow-hidden">
+        <div className="absolute top-6 right-6 z-20">
+          <Link to="/admin" className="text-[10px] font-extrabold uppercase tracking-widest text-amber-500 hover:text-white transition-all">
+            Login Dueños
+          </Link>
+        </div>
         <div className="absolute inset-0 z-0 bg-black" />
         
         <div className="relative z-10 max-w-4xl w-full text-center px-4 animate-fade-in">
