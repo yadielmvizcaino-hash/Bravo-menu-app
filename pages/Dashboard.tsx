@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Eye, Users, Package, Download, Crown, Info, ChevronRight, TrendingUp, Calendar, Zap, Layers, Image as ImageIcon, Settings, Shield, Star, Loader2, MousePointer2, QrCode, AlertCircle, ArrowUpRight } from 'lucide-react';
-import { Business, PlanType } from '../types';
+import { Business } from '../types';
 import { Link } from 'react-router-dom';
 import { AreaChart, Area, ResponsiveContainer, YAxis, XAxis, Tooltip } from 'recharts';
 import { supabase } from '../lib/supabase';
@@ -72,17 +72,10 @@ const StatCard: React.FC<{
 );
 
 const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) => void }> = ({ business, onUpdate }) => {
-  const isPro = business.plan === PlanType.PRO;
-  const isAdmin = business.role === 'admin';
-  const [isDownloading, setIsDownloading] = useState(false);
-
-  const isExpiredPro = useMemo(() => {
-    if (business.plan !== PlanType.PRO) return false;
-    if (!business.planExpiresAt) return false;
-    return new Date(business.planExpiresAt) < new Date();
-  }, [business]);
-
-  const [showExpiredPopup, setShowExpiredPopup] = useState(isExpiredPro);
+  const isPro = false;
+  const isExpiredPro = false;
+  
+  const [showExpiredPopup, setShowExpiredPopup] = useState(false);
   const [isDowngrading, setIsDowngrading] = useState(false);
 
   const handleContinueFree = async () => {
@@ -90,13 +83,12 @@ const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) =
     try {
       const updatedBusiness = {
         ...business,
-        plan: PlanType.FREE,
         planExpiresAt: null
       };
 
       const { error } = await supabase
         .from('businesses')
-        .update({ plan: PlanType.FREE, plan_expires_at: null })
+        .update({ plan_expires_at: null })
         .eq('id', business.id);
 
       if (error) throw error;

@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Save, Store, MapPin, Phone, MessageSquare, Info, Loader2, X, Plus, Clock, Instagram, Facebook, Mail, Crown, Copy, Truck, ChevronDown, Upload, Image as ImageIcon, Camera, Palette, Trash2, AlertTriangle } from 'lucide-react';
-import { Business, BusinessType, PlanType } from '../types';
+import { Business, BusinessType } from '../types';
 import { compressImage } from '../utils/image';
 import { uploadImage } from '../lib/supabase';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
@@ -123,11 +123,11 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
     const files = e.target.files;
     if (!files || files.length === 0) return;
     
-    const maxPhotos = business.plan === PlanType.PRO ? 10 : 1;
+    const maxPhotos = 10;
     const currentPhotos = formData.coverPhotos || [];
     
     if (currentPhotos.length >= maxPhotos) {
-      alert(`Tu plan actual (${business.plan}) solo permite hasta ${maxPhotos} fotos en la galería.`);
+      alert(`Solo se permiten hasta ${maxPhotos} fotos en la galería.`);
       return;
     }
 
@@ -327,7 +327,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
           <h3 className="text-white font-semibold text-base mb-6 flex items-center gap-2 uppercase tracking-tight"><Camera size={18} className="text-amber-500" /> Galería de fotos</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Fotos adicionales ({formData.coverPhotos?.length || 0}/{business.plan === PlanType.PRO ? 10 : 1})</label>
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Fotos adicionales ({formData.coverPhotos?.length || 0}/10)</label>
             </div>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -346,7 +346,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                 )
               ))}
               
-              {(formData.coverPhotos?.length || 0) < (business.plan === PlanType.PRO ? 10 : 1) && (
+              {(formData.coverPhotos?.length || 0) < 10 && (
                 <button 
                   type="button" 
                   onClick={() => coverInputRef.current?.click()} 

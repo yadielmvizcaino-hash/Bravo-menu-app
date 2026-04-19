@@ -7,7 +7,7 @@ import {
   Crown, Loader2, ShoppingBag, X, Minus, Truck, Info, CheckCircle, Send,
   Instagram, Facebook, Mail, Globe, ChevronDown, ChevronUp, Trash2, Navigation
 } from 'lucide-react';
-import { Business, Product, Category, PlanType, Event } from '../types.ts';
+import { Business, Product, Category, Event } from '../types.ts';
 import { supabase, incrementClicks } from '../lib/supabase.ts';
 import OptimizedImage from '../components/OptimizedImage.tsx';
 import { useBusiness } from '../hooks/useBusinesses.ts';
@@ -145,9 +145,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
   };
 
   const isProActive = useMemo(() => {
-    if (business?.plan !== PlanType.PRO) return false;
-    if (!business?.planExpiresAt) return false;
-    return new Date(business.planExpiresAt) > new Date();
+    return true; // All features enabled for all businesses
   }, [business]);
 
   const banners = useMemo(() => {
@@ -781,9 +779,7 @@ const BusinessDetail: React.FC<{ businesses: Business[] }> = ({ businesses }) =>
                     <Info size={20} />
                   </div>
                   <p className="text-amber-500/90 text-sm font-medium leading-relaxed">
-                    {!isProActive && business?.plan === PlanType.PRO 
-                      ? "El servicio de pedidos a domicilio está temporalmente desactivado por vencimiento de plan."
-                      : "Esta lista es solo de referencia para mostrar al camarero y agilizar tu pedido en mesa."}
+                    Esta lista es solo de referencia para mostrar al encargado y agilizar tu pedido en mesa.
                   </p>
                 </div>
               )}

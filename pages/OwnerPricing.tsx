@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { Crown, Check, X, ShieldCheck, CreditCard, Copy, CheckCircle2, Loader2 } from 'lucide-react';
-import { Business, PlanType } from '../types';
+import { Business } from '../types';
 import { supabase } from '../lib/supabase';
 
 const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
-  const isPro = business.plan === PlanType.PRO;
+  const isPro = false;
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isLoadingSettings, setIsLoadingSettings] = useState(false);
   const [systemSettings, setSystemSettings] = useState({

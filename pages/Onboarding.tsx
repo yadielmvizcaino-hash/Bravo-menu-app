@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Store, MapPin, Phone, ArrowRight, Loader2, Zap, Check, PlusCircle, Lock, Eye, EyeOff } from 'lucide-react';
-import { BusinessType, PlanType } from '../types';
+import { BusinessType } from '../types';
 import { CUBA_PROVINCES, CUBA_MUNICIPALITIES_BY_PROVINCE } from '../data';
 import { supabase } from '../lib/supabase';
 import { sanitizeString, isValidPhone } from '../utils/security';
@@ -55,7 +55,6 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
         phone: formData.phone,
         password: formData.password,
         description: sanitizeString(formData.description),
-        plan: PlanType.FREE,
         logo_url: 'https://via.placeholder.com/150',
         cover_photos: ['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200'],
         delivery_price_inside: 0,
