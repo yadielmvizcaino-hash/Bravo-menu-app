@@ -4,7 +4,7 @@ import {
   Shield, LayoutGrid, Crown, Users, Search, 
   Eye, EyeOff, Trash2, ArrowDown, 
   X, Loader2, CheckCircle2, 
-  Clock, Calendar, ArrowLeft, Zap, RefreshCw,
+  Clock, Calendar, ArrowLeft, Zap, RefreshCw, PlusCircle,
   TrendingUp, AlertCircle, ExternalLink, Banknote, CreditCard, Save
 } from 'lucide-react';
 import { Business, PlanType } from '../types.ts';
