@@ -84,4 +84,5 @@ export interface Business {
   deliveryPriceOutside?: number;
   role?: 'admin' | 'user';
   isVisible?: boolean;
+  isPro?: boolean;
 }

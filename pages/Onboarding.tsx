@@ -61,6 +61,7 @@ const Onboarding: React.FC<{ onComplete: (businessId: string) => Promise<void> }
         delivery_price_outside: 0,
         stats: { visits: 0, qrScans: 0, uniqueVisitors: 0 },
         is_visible: true,
+        is_pro: true,
         role: 'user',
         average_rating: 0,
         ratings_count: 0

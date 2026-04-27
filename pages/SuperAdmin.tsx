@@ -45,6 +45,25 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
     fetchSettings();
   }, []);
 
+  const toggleProStatus = async (id: string, currentStatus: boolean | undefined) => {
+    setIsActionLoading(id);
+    try {
+      const { error } = await supabase
+        .from('businesses')
+        .update({ is_pro: !currentStatus })
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      queryClient.invalidateQueries({ queryKey: ['all-businesses'] });
+      queryClient.invalidateQueries({ queryKey: ['businesses'] });
+    } catch (err) {
+      alert("Error al actualizar estado PRO.");
+    } finally {
+      setIsActionLoading(null);
+    }
+  };
+
   const toggleVisibility = async (id: string, currentStatus: boolean) => {
     setIsActionLoading(id);
     try {
@@ -197,6 +216,18 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-extrabold text-white uppercase tracking-tight">Panel Maestro</h1>
+                <button 
+                  onClick={async () => {
+                     if (confirm("¿Activar PRO para todos los negocios?")) {
+                        await supabase.from('businesses').update({is_pro: true}).neq('is_pro', true);
+                        queryClient.invalidateQueries({ queryKey: ['all-businesses'] });
+                        alert("Hecho.");
+                     }
+                  }}
+                  className="text-xs bg-amber-500/10 text-amber-500 px-3 py-1.5 rounded-lg border border-amber-500/20 hover:bg-amber-500 hover:text-black transition-all"
+                >
+                  Activar PRO para Todos
+                </button>
               </div>
               <p className="text-[10px] text-gray-500 font-extrabold uppercase tracking-widest">Infraestructura Gallery menus</p>
             </div>
@@ -332,6 +363,14 @@ const SuperAdmin: React.FC<{ businesses?: Business[], onRefresh?: () => void }> 
                             className={`p-2.5 rounded-xl transition-all border ${isVisible ? 'bg-blue-500/10 text-blue-400 border-blue-500/10' : 'bg-gray-800 text-gray-500 border-white/5'} hover:scale-105 active:scale-95 disabled:opacity-30`}
                           >
                             {isBizActionLoading ? <Loader2 size={16} className="animate-spin" /> : isVisible ? <Eye size={16} /> : <EyeOff size={16} />}
+                          </button>
+                          
+                          <button 
+                            onClick={() => toggleProStatus(biz.id, biz.isPro)} 
+                            disabled={isBizActionLoading}
+                            className={`p-2.5 rounded-xl transition-all border ${biz.isPro ? 'bg-amber-500/10 text-amber-500 border-amber-500/10' : 'bg-gray-800 text-gray-500 border-white/5'} hover:scale-105 active:scale-95 disabled:opacity-30`}
+                          >
+                            <Crown size={16} />
                           </button>
                           
                           <button 
