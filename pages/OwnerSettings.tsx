@@ -60,7 +60,7 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
     email: business.email || '',
     instagram: business.instagram || '',
     facebook: business.facebook || '',
-    cuisineTypes: business.cuisineTypes || ['Comida', 'Bebida'],
+    productTypes: business.productTypes || ['Comida', 'Bebida'],
     schedule: getInitialSchedule(business.schedule),
     deliveryEnabled: business.deliveryEnabled ?? false,
     deliveryPriceInside: business.deliveryPriceInside || 0,
@@ -87,20 +87,20 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
   const logoInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
 
-  const addCuisine = () => {
-    if (newCuisine.trim() && !formData.cuisineTypes?.includes(newCuisine.trim())) {
+  const addProductType = () => {
+    if (newCuisine.trim() && !formData.productTypes?.includes(newCuisine.trim())) {
       setFormData(prev => ({
         ...prev,
-        cuisineTypes: [...(prev.cuisineTypes || []), newCuisine.trim()]
+        productTypes: [...(prev.productTypes || []), newCuisine.trim()]
       }));
       setNewCuisine('');
     }
   };
 
-  const removeCuisine = (tag: string) => {
+  const removeProductType = (tag: string) => {
     setFormData(prev => ({
       ...prev,
-      cuisineTypes: prev.cuisineTypes?.filter(t => t !== tag) || []
+      productTypes: prev.productTypes?.filter(t => t !== tag) || []
     }));
   };
 
@@ -243,20 +243,20 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
               </div>
               
               <div className="space-y-1.5">
-                <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Tipos de cocina</label>
+                <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest ml-1">Tipos de producto</label>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <div className="flex-1 flex gap-2">
                     <input 
                       type="text" 
                       className="flex-1 bg-black border border-gray-700 rounded-xl py-3 px-4 text-white focus:border-amber-500/50 outline-none text-sm font-medium"
-                      placeholder="Ej: Cubana, Internacional..."
+                      placeholder="Ej: Comida, Bebida..."
                       value={newCuisine}
                       onChange={e => setNewCuisine(e.target.value)}
-                      onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addCuisine())}
+                      onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addProductType())}
                     />
                     <button 
                       type="button"
-                      onClick={addCuisine}
+                      onClick={addProductType}
                       className="bg-black border border-gray-700 text-gray-400 p-3 rounded-xl hover:text-white transition-colors"
                     >
                       <Plus size={20} />
@@ -264,10 +264,10 @@ const OwnerSettings: React.FC<{ business: Business, onUpdate: (b: Business) => v
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-3">
-                  {formData.cuisineTypes?.map(tag => (
+                  {formData.productTypes?.map(tag => (
                     <span key={tag} className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-3 py-1 rounded-lg text-[10px] font-semibold uppercase flex items-center gap-2">
                       {tag}
-                      <button type="button" onClick={() => removeCuisine(tag)} className="hover:text-amber-400"><X size={12} /></button>
+                      <button type="button" onClick={() => removeProductType(tag)} className="hover:text-amber-400"><X size={12} /></button>
                     </span>
                   ))}
                 </div>

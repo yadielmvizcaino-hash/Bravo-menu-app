@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { Business } from '../types';
 import { getWithCache } from '../utils/cache';
 
-const BUSINESS_LIST_COLUMNS = 'id, name, type, province, municipality, logo_url, cover_photos, is_visible, average_rating, ratings_count, cuisine_types, events(*)';
+const BUSINESS_LIST_COLUMNS = 'id, name, type, province, municipality, logo_url, cover_photos, is_visible, average_rating, ratings_count, product_types, events(*)';
 
 export const useBusinesses = () => {
   const queryClient = useQueryClient();
@@ -29,7 +29,7 @@ export const useBusinesses = () => {
           coverPhotos: biz.cover_photos ?? [],
           averageRating: biz.average_rating ?? 0,
           ratingsCount: biz.ratings_count ?? 0,
-          cuisineTypes: biz.cuisine_types ?? [],
+          productTypes: biz.product_types ?? [],
           events: (biz.events || []).map((e: any) => ({
             ...e,
             dateTime: e.dateTime ?? e.date_time,
@@ -76,7 +76,7 @@ export const useBusiness = (id: string | undefined) => {
           averageRating: business.averageRating ?? business.average_rating ?? 0,
           ratingsCount: business.ratingsCount ?? business.ratings_count ?? 0,
           planExpiresAt: business.planExpiresAt ?? business.plan_expires_at,
-          cuisineTypes: business.cuisineTypes ?? business.cuisine_types ?? [],
+          productTypes: business.productTypes ?? business.product_types ?? [],
           deliveryEnabled: business.deliveryEnabled ?? business.delivery_enabled ?? false,
           deliveryPriceInside: business.deliveryPriceInside ?? business.delivery_price_inside ?? 0,
           deliveryPriceOutside: business.deliveryPriceOutside ?? business.delivery_price_outside ?? 0,

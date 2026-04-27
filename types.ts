@@ -77,7 +77,7 @@ export interface Business {
   };
   averageRating?: number;
   ratingsCount?: number;
-  cuisineTypes?: string[];
+  productTypes?: string[];
   schedule?: Record<string, { open: boolean; from: string; to: string }>;
   deliveryEnabled?: boolean;
   deliveryPriceInside?: number;
