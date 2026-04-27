@@ -24,20 +24,7 @@ const OwnerEvents: React.FC<{ business: Business, onUpdate: (b: Business) => voi
     price: ''
   });
 
-  const isPro = false;
 
-  if (!isPro) {
-    return (
-      <div className="max-w-7xl mx-auto h-[70vh] flex flex-col items-center justify-center text-center px-6">
-         <div className="w-24 h-24 bg-amber-500/10 text-amber-500 rounded-3xl flex items-center justify-center mb-6 border border-amber-500/20 shadow-2xl">
-           <CalendarIcon size={48} />
-         </div>
-         <h1 className="text-4xl font-extrabold text-white mb-4 uppercase tracking-tight">Gestor de Eventos</h1>
-         <p className="text-gray-500 max-w-lg mb-10 text-lg leading-relaxed">Organiza noches temáticas y promociones especiales. Función exclusiva del Plan PRO.</p>
-         <Link to="/admin/pricing" className="bg-amber-500 text-black px-12 py-5 rounded-2xl font-extrabold uppercase tracking-widest hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/10">Actualizar a PRO</Link>
-      </div>
-    );
-  }
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

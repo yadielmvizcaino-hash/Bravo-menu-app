@@ -23,8 +23,6 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
   });
 
 
-  const isPro = false;
-
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -97,10 +95,6 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
   };
 
   const openCreateModal = () => {
-    if (business.banners.length >= 3) {
-      alert('Has alcanzado el límite de 3 banners promocionales permitido en el Plan PRO.');
-      return;
-    }
     setEditingBanner(null);
     setFormData({ title: '', imageUrl: '', linkUrl: '#', position: 'header' });
     setIsModalOpen(true);
@@ -111,24 +105,6 @@ const OwnerBanners: React.FC<{ business: Business, onUpdate: (b: Business) => vo
     setFormData({ title: banner.title || '', imageUrl: banner.imageUrl, linkUrl: banner.linkUrl, position: banner.position });
     setIsModalOpen(true);
   };
-
-  if (!isPro) {
-    return (
-      <div className="max-w-4xl mx-auto h-[80vh] flex items-center justify-center px-6">
-        <div className="relative bg-black border border-white/5 rounded-3xl p-12 text-center overflow-hidden shadow-2xl">
-          <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-500/20 blur-[100px] rounded-full" />
-          <div className="relative z-10">
-            <div className="w-24 h-24 bg-amber-500 text-black rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl">
-              <Crown size={48} fill="currentColor" />
-            </div>
-            <h1 className="text-4xl font-extrabold text-white mb-4 tracking-tight uppercase">Publicidad PRO</h1>
-            <p className="text-gray-400 text-lg max-w-sm mx-auto mb-10 leading-relaxed">Destaca ofertas y novedades con banners visuales en el menú. Función exclusiva del Plan PRO.</p>
-            <Link to="/admin/pricing" className="inline-flex items-center gap-3 bg-amber-500 text-black px-10 py-5 rounded-2xl font-extrabold text-sm uppercase tracking-widest hover:bg-amber-400 transition-all shadow-xl">Actualizar a PRO <ChevronRight size={20} /></Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-5xl mx-auto pb-10">

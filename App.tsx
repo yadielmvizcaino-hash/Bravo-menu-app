@@ -87,7 +87,7 @@ const App: React.FC = () => {
       cover_photos: updated.coverPhotos,
       is_visible: updated.isVisible,
       is_pro: updated.isPro,
-      product_types: updated.productTypes,
+      product_types: updated.cuisineTypes,
       delivery_enabled: updated.deliveryEnabled,
       delivery_price_inside: updated.deliveryPriceInside,
       delivery_price_outside: updated.deliveryPriceOutside,

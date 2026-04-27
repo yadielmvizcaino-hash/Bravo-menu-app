@@ -72,7 +72,7 @@ const StatCard: React.FC<{
 );
 
 const Dashboard: React.FC<{ business: Business, onUpdate?: (updated: Business) => void }> = ({ business, onUpdate }) => {
-  const isPro = false;
+  const isPro = true;
   const isExpiredPro = false;
   
   const [showExpiredPopup, setShowExpiredPopup] = useState(false);
