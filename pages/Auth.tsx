@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, Loader2, Zap, AlertCircle, LogIn, PlusCircle, Lock, Eye, EyeOff } from 'lucide-react';
-import { supabase } from '../lib/supabase.ts';
+import { supabase } from '../lib/supabase';
 
 const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
   const navigate = useNavigate();
@@ -33,7 +33,10 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
         .eq('password', password)
         .maybeSingle();
 
-      if (fetchError) throw fetchError;
+      if (fetchError) {
+        console.error('Database Error:', fetchError);
+        throw new Error(`Error BD: ${fetchError.message}`);
+      }
 
       if (data) {
         onLogin(data.id);
@@ -42,8 +45,8 @@ const Auth: React.FC<{ onLogin: (id: string) => void }> = ({ onLogin }) => {
         setError('Número de teléfono o contraseña incorrectos.');
       }
     } catch (err: any) {
-      setError('Error al intentar acceder. Por favor, reintenta.');
-      console.error(err);
+      setError(`Error al intentar acceder: ${err.message}`);
+      console.error('Full Auth Error:', err);
     } finally {
       setLoading(false);
     }
