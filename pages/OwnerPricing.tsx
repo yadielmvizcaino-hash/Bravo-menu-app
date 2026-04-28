@@ -5,7 +5,7 @@ import { Business } from '../types';
 import { supabase } from '../lib/supabase';
 
 const OwnerPricing: React.FC<{ business: Business }> = ({ business }) => {
-  const isPro = false;
+  const isPro = true;
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isLoadingSettings, setIsLoadingSettings] = useState(false);
   const [systemSettings, setSystemSettings] = useState({
