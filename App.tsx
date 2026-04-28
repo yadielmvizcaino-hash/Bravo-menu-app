@@ -221,11 +221,6 @@ const PublicHeader: React.FC<{ loggedInBusinessId: string | null }> = ({ loggedI
         >
           Gallery menus
         </div>
-        {!loggedInBusinessId && (
-          <Link to="/admin" className="text-white text-xs font-semibold hover:text-amber-500 transition-colors">
-            Ingresar
-          </Link>
-        )}
       </div>
       <div className="flex items-center gap-4">
         {loggedInBusinessId ? (
@@ -235,7 +230,14 @@ const PublicHeader: React.FC<{ loggedInBusinessId: string | null }> = ({ loggedI
           >
             Ir a mi Panel
           </Link>
-        ) : null}
+        ) : (
+          <Link 
+            to="/admin" 
+            className="bg-white text-black px-5 py-2 rounded-xl font-medium text-xs hover:bg-gray-200 transition-all"
+          >
+            Ingresar
+          </Link>
+        )}
       </div>
     </header>
   );
